@@ -64,9 +64,11 @@ export default class KeyManagerService {
 
   async getDepositData(seed: string, index: number, publicKey: string, network: string): Promise<any> {
     try {
+      console.log('---getdep cmd', `${this.executablePath} wallet account deposit-data --seed=${seed} --index=${index} --public-key=${publicKey} --network=${network}`);
       const { stdout } = await this.executor(
         `${this.executablePath} wallet account deposit-data --seed=${seed} --index=${index} --public-key=${publicKey} --network=${network}`
       );
+      console.log('---getdep stdout', stdout);
       return stdout ? JSON.parse(stdout) : {};
     } catch (e) {
       throw new Error(`Get ${network} deposit account data with index ${JSON.stringify(index)} was failed.`);
