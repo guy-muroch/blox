@@ -13,7 +13,7 @@ const CongratulationPage = (props) => {
   const { setPage, page, setStep, step } = props;
   const onClick = () => {
     setStep(step + 1);
-    setPage(page + 1);
+    setPage(4);
   };
   return (
     <>

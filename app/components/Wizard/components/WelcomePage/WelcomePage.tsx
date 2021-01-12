@@ -132,16 +132,16 @@ const WelcomePage = (props: Props) => {
     }
   };
 
-  const redirectToPassPhrasePage = () => setPage(3);
+  const redirectToPassPhrasePage = () => setPage(4);
 
   const redirectToCreateAccount = () => {
     setStep(step + 1);
-    setPage(5);
+    setPage(6);
   };
 
   const redirectToDepositPage = () => {
     setStep(step + 1);
-    setPage(7);
+    setPage(8);
   };
 
   return (

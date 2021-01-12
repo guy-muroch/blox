@@ -14,6 +14,7 @@ const Wrapper = styled.div`
   cursor: ${({ isDisabled }) => (isDisabled ? 'default' : 'pointer')};
   background-color: ${({ theme, isDisabled }) => isDisabled ? theme.gray5050 : '#ffffff'};
   opacity: ${({ isDisabled }) => (isDisabled ? 0.5 : 1)};
+  box-shadow: ${({theme, border}) => border ? null : `1px 2px ${theme.gray300}`};
 `;
 
 const BorderPlaceholder = styled.div`
@@ -23,17 +24,21 @@ const BorderPlaceholder = styled.div`
   z-index: 2;
   border-radius: 7px;
   transition: all 0.5s;
-  box-shadow: ${({ theme, isDisabled }) => isDisabled ? `${theme.gray600} inset 0px 0px 0px 1px`
-      : `${theme.primary900} inset 0px 0px 0px 2px`};
+  box-shadow: ${({ theme, isDisabled, border}) => border ? (isDisabled ? `${theme.gray600} inset 0px 0px 0px 1px`
+      : `${theme.primary900} inset 0px 0px 0px 2px`) : null};
   &:hover {
     box-shadow: ${({ theme, isDisabled }) => isDisabled
      ? `${theme.gray600} inset 0px 0px 0px 1px`
      : `${theme.primary900} inset 0px 0px 0px 4px`};
   }
+   &:active {
+   opacity: 0.5;
+   background-color: ${({theme}) => theme.primary050};
+  }
 `;
 
 const Button = (props) => {
-  const { width, height, onClick, isDisabled, children, direction } = props;
+  const { width, height, onClick, isDisabled, children, direction, border } = props;
   return (
     <Wrapper
       width={width}
@@ -41,8 +46,9 @@ const Button = (props) => {
       isDisabled={isDisabled}
       onClick={onClick}
       direction={direction}
+      border={border}
     >
-      <BorderPlaceholder isDisabled={isDisabled} />
+      <BorderPlaceholder isDisabled={isDisabled} border={border}/>
       {children}
     </Wrapper>
   );
@@ -50,6 +56,7 @@ const Button = (props) => {
 
 Button.defaultProps = {
   isDisabled: false,
+  border: true,
   width: '310px',
   height: '100px',
 };
@@ -59,6 +66,7 @@ Button.propTypes = {
   height: PropTypes.string,
   onClick: PropTypes.func,
   isDisabled: PropTypes.bool,
+  border: PropTypes.bool,
   direction: PropTypes.string,
   children: PropTypes.node,
 };

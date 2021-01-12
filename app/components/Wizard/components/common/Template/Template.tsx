@@ -45,9 +45,23 @@ const CloseButton = styled.div`
   cursor:pointer;
 `;
 
+const BackButton = styled.div`
+  position:absolute;
+  left:112px;
+  top:64px;
+  z-index:10;
+  cursor:pointer;
+   display: flex;
+  align-items: center;
+  justify-content: center;
+   font-size: 12px;
+  font-weight: 500;
+  color: ${({theme}) => theme.primary600}
+`;
+
 const Template = (props: Props) => {
-  const { component, bgImage, wizardActions, accountsActions, ...rest } = props;
-  const { isFinishedWizard, addAnotherAccount, step } = rest;
+  const { component, bgImage, backButton, wizardActions, accountsActions, ...rest } = props;
+  const { isFinishedWizard, addAnotherAccount, step, setStep, page, setPage } = rest;
   const { clearAccountsData } = accountsActions;
   const { setFinishedWizard, clearWizardData } = wizardActions;
   const addAdditionalAccount = !isFinishedWizard && addAnotherAccount && step === 2;
@@ -55,6 +69,9 @@ const Template = (props: Props) => {
     await clearAccountsData();
     await clearWizardData();
     await setFinishedWizard(true);
+  };
+  const onBackClick = () => {
+    setPage(page - 1);
   };
 
   return (
@@ -66,6 +83,10 @@ const Template = (props: Props) => {
             <Icon name={'close'} fontSize={'24px'} color={'gray900'} />
           </CloseButton>
         )}
+        {backButton && <BackButton onClick={onBackClick} >
+          <Icon name={'arrow-back'} fontSize={'15px'} color={'primary600'} />
+          {'Back'}
+        </BackButton>}
         <ComponentWrapper>{React.cloneElement(component)}</ComponentWrapper>
         {bgImage && <BackgroundImage src={bgImage} />}
       </Content>
@@ -86,6 +107,7 @@ const mapDispatchToProps = (dispatch) => ({
 type Props = {
   component: JSX.Element;
   bgImage: string;
+  backButton: boolean;
   page: number;
   setPage: (page: number) => void;
   step: number;

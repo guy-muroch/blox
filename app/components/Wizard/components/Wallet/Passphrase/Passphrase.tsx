@@ -14,9 +14,25 @@ import keyvaultSaga from '../../../../KeyVaultManagement/saga';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import useCreatePassword from 'common/hooks/useCreatePassword';
+import styled from "styled-components/dist/styled-components.esm";
+import {Icon} from "../../../../../common/components";
 
 const keyvaultKey = 'keyvaultManagement';
 const passwordKey = 'password';
+
+const BackButton = styled.div`
+  width:40px;
+  display: flex;
+  align-items:center;
+  justify-content: space-between;
+  color:${({theme}) => theme.primary900};
+  font-size:12px;
+  cursor:pointer;
+`;
+
+const IconWrapper = styled.div`
+  transform:rotate(180deg);
+`;
 
 const Passphrase = (props: Props) => {
   const { page, setPage, mnemonic, isLoading, keyvaultActions, passwordActions } = props;
@@ -73,8 +89,17 @@ const Passphrase = (props: Props) => {
     setDuplicatedMnemonicErrorDisplay(false);
   };
 
+  const onBackButtonClick = () => {
+    showBackup ? toggleBackupDisplay(false) : setPage(page -1)
+  };
   return (
-    <>
+    <div>
+      <BackButton onClick={onBackButtonClick}>
+        <IconWrapper>
+          <Icon name={'arrow-forward'} color={'primary900'} />
+        </IconWrapper>
+        Back
+      </BackButton>
       {showBackup ? (
         <Backup onNextButtonClick={onSaveAndConfirmClick} onBackButtonClick={hideBackupScreen}
           password={password} setPassword={setPassword} confirmPassword={confirmPassword}
@@ -89,7 +114,7 @@ const Passphrase = (props: Props) => {
           onNextButtonClick={showBackupScreen} onDownloadClick={onDownloadClick}
         />
       )}
-    </>
+    </div>
   );
 };
 
