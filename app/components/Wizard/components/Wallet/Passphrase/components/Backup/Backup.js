@@ -32,7 +32,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const Backup = (props) => {
-  const { onNextButtonClick, onBackButtonClick, password, setPassword, confirmPassword,
+  const { isImport, onNextButtonClick, password, setPassword, confirmPassword,
           setConfirmPassword, isSaveAndConfirmEnabled, duplicatedMnemonic, setDuplicatedMnemonic,
           isLoading, showDuplicatedMnemonicError, onDuplicateMnemonicBlur,
           showPasswordError, onPasswordBlur, showConfirmPasswordError, onConfirmPasswordBlur
@@ -43,14 +43,18 @@ const Backup = (props) => {
   };
   return (
     <Wrapper>
-      <Title>Backup Recovery Passphrase</Title>
+      <Title>{isImport ? 'Backup Recovery Passphrase' : 'Import Seed'}</Title>
 
-      <Paragraph>
-        Confirm your Passphrase and set a password for critical actions such as <br />
-        creating/removing a validator.
+      <Paragraph>{
+        isImport ?
+          "Input the Seed provided by your Eth2 launchpad or current staking provider.\ Set a password to start staking with Blox." :
+          "Confirm your Passphrase and set a password for critical actions such as \ creating/removing a validator."
+      }
       </Paragraph>
 
-      <TextArea value={duplicatedMnemonic} onChange={handleChange} onBlur={onDuplicateMnemonicBlur} autoFocus
+      {isImport && <Warning style={{'marginBottom': '34px'}} text={'Please be sure to store your 24 passphrase seed safely and do not share it with anyone.'} />}
+
+      <TextArea marginTop={} value={duplicatedMnemonic} onChange={handleChange} onBlur={onDuplicateMnemonicBlur} autoFocus
         placeholder={'Separate each word with a space'} error={showDuplicatedMnemonicError ? 'Passphrase not correct' : ''}
       />
 
@@ -70,14 +74,14 @@ const Backup = (props) => {
         {isLoading && <Spinner />}
       </ButtonWrapper>
 
-      <Warning text={'The only way to restore your account or to reset your password is using your passphrase.'} />
+      { !isImport && <Warning text={'The only way to restore your account or to reset your password is using your passphrase.'} />}
     </Wrapper>
   );
 };
 
 Backup.propTypes = {
+  isImport: PropTypes.bool,
   onNextButtonClick: PropTypes.func,
-  onBackButtonClick: PropTypes.func,
   password: PropTypes.string,
   setPassword: PropTypes.func,
   confirmPassword: PropTypes.string,

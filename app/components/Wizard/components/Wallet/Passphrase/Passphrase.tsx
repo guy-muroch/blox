@@ -16,23 +16,11 @@ import { useInjectSaga } from 'utils/injectSaga';
 import useCreatePassword from 'common/hooks/useCreatePassword';
 import styled from "styled-components/dist/styled-components.esm";
 import {Icon} from "../../../../../common/components";
+import BackButton from "../../common/BackButton";
 
 const keyvaultKey = 'keyvaultManagement';
 const passwordKey = 'password';
 
-const BackButton = styled.div`
-  width:40px;
-  display: flex;
-  align-items:center;
-  justify-content: space-between;
-  color:${({theme}) => theme.primary900};
-  font-size:12px;
-  cursor:pointer;
-`;
-
-const IconWrapper = styled.div`
-  transform:rotate(180deg);
-`;
 
 const Passphrase = (props: Props) => {
   const { page, setPage, mnemonic, isLoading, keyvaultActions, passwordActions } = props;
@@ -94,12 +82,7 @@ const Passphrase = (props: Props) => {
   };
   return (
     <div>
-      <BackButton onClick={onBackButtonClick}>
-        <IconWrapper>
-          <Icon name={'arrow-forward'} color={'primary900'} />
-        </IconWrapper>
-        Back
-      </BackButton>
+      <BackButton onClick={onBackButtonClick}/>
       {showBackup ? (
         <Backup onNextButtonClick={onSaveAndConfirmClick} onBackButtonClick={hideBackupScreen}
           password={password} setPassword={setPassword} confirmPassword={confirmPassword}

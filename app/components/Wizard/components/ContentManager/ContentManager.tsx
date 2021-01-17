@@ -79,6 +79,12 @@ const switcher = (props: Props) => {
                   component={<ValidatorPages.CongratulationPage {...props} />}
         />
       );
+    case 10:
+      return (
+        <Template key={10} bgImage={walletImage} {...props}
+                  component={<WalletPages.ImportPassphrase {...props} />}
+        />
+      );
     default:
       return <WelcomePage {...props} />;
   }

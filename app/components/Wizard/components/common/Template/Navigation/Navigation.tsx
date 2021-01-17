@@ -41,18 +41,23 @@ const Navigation = (props: Props) => {
         </>
       )}
 
-      <MenuItem text="Validator Setup" hideNumber={addAdditionalAccount} number={2} step={step} page={page} finalPage={8} />
+      <MenuItem text="Validator Setup" hideNumber={addAdditionalAccount} number={2} step={step} page={page} finalPage={10} />
       {(step === 2 || page === 4) && (
         <>
           <SubMenuItem text="Import/Create Seed" page={page} number={4} />
         </>
       )}
-      {(step === 2 && page > 4) && (
+      {(step === 2 && page > 4 && page < 10) && (
         <>
           <SubMenuItem text="Generate Seed" page={page} number={5} />
           <SubMenuItem text="Select Staking Network" page={page} number={6} />
           <SubMenuItem text="Generate Keys" page={page} number={7} />
           <SubMenuItem text="Staking Deposit" page={page} number={8} />
+        </>
+      )}
+      {(step === 2 && page >= 10) && (
+        <>
+          <SubMenuItem text="Validator Selection" page={page} number={10} />
         </>
       )}
     </Wrapper>

@@ -88,7 +88,7 @@ const ImportOrGenerateSeed = (props: Props) => {
             <SubTitle>Generate Seed</SubTitle>
           </TextWrapper>
         </Button>
-        <Button width={btnWidth} height={btnHeight} border={false} onClick={() => setPage(5)} direction={'center'}>
+        <Button width={btnWidth} height={btnHeight} border={false} onClick={() => setPage(10)} direction={'center'}>
            <Sticker isDisabled={false}>{'Mainnet Only'}</Sticker>
           <Icon name="cloud-upload" fontSize="38px" color={'primary900'}/>
           <InnerWrapper>
