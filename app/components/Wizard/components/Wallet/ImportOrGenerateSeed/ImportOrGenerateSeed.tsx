@@ -1,10 +1,9 @@
-import styled from "styled-components";
-import Title from "../../common/Title";
-import {Button} from "../../common";
-import React from "react";
-import theme from "../../../../../theme";
-import Icon from "../../../../../common/components/Icon";
-
+import React from 'react';
+import styled from 'styled-components';
+import { Button } from '../../common';
+import Title from '../../common/Title';
+import theme from '../../../../../theme';
+import Icon from '../../../../../common/components/Icon';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -68,29 +67,31 @@ const Sticker = styled.div`
 `;
 
 const ImportOrGenerateSeed = (props: Props) => {
-  const {page, setPage, setCloudProvider} = props;
+  const { setPage } = props;
   const btnWidth = '260px';
   const btnHeight = '100px';
+  const btnStyle = { padding: 30 };
+
   return (
     <Wrapper>
-      <Title style={{'marginTop':'64px'}}>Import or Generate Seed</Title>
+      <Title style={{'marginTop': '64px'}}>Import or Generate Seed</Title>
       <SubTitle style={{'paddingRight': '200px'}}>
-        {"Create a new validator with Blox Staking or import the Seed of an existing"}
-        <br/>
-        {"validator from a different source."}
-        <br/><br/>
-        {"Import is only available for Mainnet Network."}
+        {'Create a new validator with Blox Staking or import the Seed of an existing'}
+        <br />
+        {'validator from a different source.'}
+        <br /><br />
+        {'Import is only available for Mainnet Network.'}
       </SubTitle>
       <ButtonsWrapper>
-        <Button width={btnWidth} height={btnHeight} onClick={() => setPage(5)} direction={'center'}>
-          <Icon name="generate-seed-icon" fontSize="38px" color={'plgreen'}/>
+        <Button style={btnStyle} width={btnWidth} height={btnHeight} onClick={() => setPage(5)} direction={'center'}>
+          <Icon name="generate-seed-icon" fontSize="38px" color={'plgreen'} />
           <TextWrapper>
             <SubTitle>Generate Seed</SubTitle>
           </TextWrapper>
         </Button>
-        <Button width={btnWidth} height={btnHeight} border={false} onClick={() => setPage(10)} direction={'center'}>
-           <Sticker isDisabled={false}>{'Mainnet Only'}</Sticker>
-          <Icon name="cloud-upload" fontSize="38px" color={'primary900'}/>
+        <Button style={{ ...btnStyle, marginLeft: 15 }} width={btnWidth} height={btnHeight} border={false} onClick={() => setPage(10)} direction={'center'}>
+          <Sticker isDisabled={false}>{'Mainnet Only'}</Sticker>
+          <Icon name="cloud-upload" fontSize="38px" color={'primary900'} />
           <InnerWrapper>
             <SubTitle>Import Seed</SubTitle>
           </InnerWrapper>
@@ -105,7 +106,7 @@ type Props = {
   setPage: (page: number) => void;
   step: number;
   setStep: (page: number) => void;
-  setCloudProvider: (label: string) => void;
+  setCloudProvider?: (label: string) => void;
 };
 
 export default ImportOrGenerateSeed;

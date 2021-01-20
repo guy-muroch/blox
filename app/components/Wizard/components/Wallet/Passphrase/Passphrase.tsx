@@ -14,13 +14,10 @@ import keyvaultSaga from '../../../../KeyVaultManagement/saga';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import useCreatePassword from 'common/hooks/useCreatePassword';
-import styled from "styled-components/dist/styled-components.esm";
-import {Icon} from "../../../../../common/components";
-import BackButton from "../../common/BackButton";
+import BackButton from '../../common/BackButton';
 
 const keyvaultKey = 'keyvaultManagement';
 const passwordKey = 'password';
-
 
 const Passphrase = (props: Props) => {
   const { page, setPage, mnemonic, isLoading, keyvaultActions, passwordActions } = props;
@@ -60,8 +57,6 @@ const Passphrase = (props: Props) => {
 
   const showBackupScreen = () => mnemonic && toggleBackupDisplay(true);
 
-  const hideBackupScreen = () => toggleBackupDisplay(false);
-
   const canGenerateMnemonic = () => {
     const mnemonicsAreEqual = mnemonic === duplicatedMnemonic;
     const passwordsAreEqual = password === confirmPassword;
@@ -78,13 +73,13 @@ const Passphrase = (props: Props) => {
   };
 
   const onBackButtonClick = () => {
-    showBackup ? toggleBackupDisplay(false) : setPage(page -1)
+    showBackup ? toggleBackupDisplay(false) : setPage(page - 1);
   };
   return (
     <div>
-      <BackButton onClick={onBackButtonClick}/>
+      <BackButton onClick={onBackButtonClick} />
       {showBackup ? (
-        <Backup onNextButtonClick={onSaveAndConfirmClick} onBackButtonClick={hideBackupScreen}
+        <Backup onNextButtonClick={onSaveAndConfirmClick}
           password={password} setPassword={setPassword} confirmPassword={confirmPassword}
           setConfirmPassword={setConfirmPassword} isSaveAndConfirmEnabled={canGenerateMnemonic}
           duplicatedMnemonic={duplicatedMnemonic} setDuplicatedMnemonic={setDuplicatedMnemonic}

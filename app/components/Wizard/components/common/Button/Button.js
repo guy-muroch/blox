@@ -38,9 +38,10 @@ const BorderPlaceholder = styled.div`
 `;
 
 const Button = (props) => {
-  const { width, height, onClick, isDisabled, children, direction, border } = props;
+  const { width, height, onClick, isDisabled, children, direction, border, style } = props;
   return (
     <Wrapper
+      style={style || {}}
       width={width}
       height={height}
       isDisabled={isDisabled}
@@ -48,7 +49,7 @@ const Button = (props) => {
       direction={direction}
       border={border}
     >
-      <BorderPlaceholder isDisabled={isDisabled} border={border}/>
+      <BorderPlaceholder style={{ margin: -(style.padding || 0) }} isDisabled={isDisabled} border={border} />
       {children}
     </Wrapper>
   );
@@ -59,6 +60,7 @@ Button.defaultProps = {
   border: true,
   width: '310px',
   height: '100px',
+  style: {}
 };
 
 Button.propTypes = {
@@ -69,6 +71,7 @@ Button.propTypes = {
   border: PropTypes.bool,
   direction: PropTypes.string,
   children: PropTypes.node,
+  style: PropTypes.object
 };
 
 export default Button;
