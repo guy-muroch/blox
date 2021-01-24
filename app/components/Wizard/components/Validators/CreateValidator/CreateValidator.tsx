@@ -67,7 +67,7 @@ type Props = {
   setPage: (page: number) => void;
   step: number;
   setStep: (page: number) => void;
-  processData: Record<string, any> | null;
+  processData?: Record<string, any> | null;
   callLoadDepositData: (publicKey: string, accountIndex: number, network: string) => void;
   callSetDepositNeeded: (payload: DepositNeededPayload) => void;
   selectedNetwork: string;

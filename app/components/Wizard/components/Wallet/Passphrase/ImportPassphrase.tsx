@@ -42,7 +42,7 @@ const ImportPassphrase = (props: Props) => {
       await replacePassword(password);
       // Generate seed and save
       await keyvaultSaveMnemonic(userMnemonic);
-      !isButtonDisabled && setPage(page + 1);
+      await (!isButtonDisabled && setPage(page + 1));
     }
   };
 

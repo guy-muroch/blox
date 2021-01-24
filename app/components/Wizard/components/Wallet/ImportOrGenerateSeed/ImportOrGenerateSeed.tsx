@@ -53,7 +53,7 @@ const Sticker = styled.div`
   font-size: 12px;
   font-weight: 500;
   color: ${({ theme }) => theme.white};
-  background-color: ${({ theme, isDisabled }) => isDisabled ? theme.gray400 : theme.accent2600};
+  background-color: ${({ theme, disabled }) => disabled ? theme.gray400 : theme.accent2600};
   border-top-right-radius: 7px;
   border-top-left-radius: 0px;
   border-bottom-left-radius: 7px;

@@ -28,15 +28,15 @@ const Table = (props: Props) => {
 };
 
 type Props = {
-  data: [];
-  columns: [];
+  data: any[];
+  columns: any[];
   withHeader: boolean;
   isPagination: boolean;
-  selectedSorting: string;
-  sortType: string;
-  onSortClick: () => void;
+  selectedSorting?: string;
+  sortType?: string;
+  onSortClick?: () => void;
   paginationInfo: Record<string, any>;
-  onPageClick: () => void;
+  onPageClick: (offset) => void;
 };
 
 export default Table;

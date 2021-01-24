@@ -1,4 +1,4 @@
-import { Catch, CatchClass } from '../../decorators';
+import {Catch, CatchClass, Step} from '../../decorators';
 import util from 'util';
 import { exec } from 'child_process';
 import { execPath } from '../../../binaries';
@@ -32,6 +32,28 @@ export default class KeyManagerService {
       return stdout.replace('\n', '');
     } catch (e) {
       throw new Error(`Create account with index ${JSON.stringify(index)} was failed`);
+    }
+  }
+
+  @Catch({
+    displayMessage: 'Import validators failed'
+  })
+  @Step({
+    name: 'Importing validators...'
+  })
+  async importValidators({ seed, index, network, highestSource, highestTarget, highestProposal }): Promise<{ validators: any }> {
+    try {
+      console.log(`${this.executablePath} wallet account create --seed=${seed} --index=${index} --network=${network} --accumulate=true --highest-source=${highestSource} --highest-target=${highestTarget} --highest-proposal=${highestProposal} --response-type=object`);
+      const { stdout } = await this.executor(
+        `${this.executablePath} wallet account create --seed=${seed} --index=${index} --network=${network} --accumulate=true --highest-source=${highestSource} --highest-target=${highestTarget} --highest-proposal=${highestProposal} --response-type=object`
+      );
+      console.log({ stdout: JSON.parse(stdout) });
+      return {
+        validators: JSON.parse(stdout)
+      };
+    } catch (e) {
+      console.log(e);
+      throw new Error(`Import validators with index ${JSON.stringify(index)} was failed`);
     }
   }
 

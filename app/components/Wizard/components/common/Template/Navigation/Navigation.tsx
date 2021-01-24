@@ -57,7 +57,8 @@ const Navigation = (props: Props) => {
       )}
       {(step === 2 && page >= 10) && (
         <>
-          <SubMenuItem text="Validator Selection" page={page} number={10} />
+          <SubMenuItem text="Import Seed" page={page} number={10} />
+          <SubMenuItem text="Validator Section" page={page} number={11} />
         </>
       )}
     </Wrapper>
