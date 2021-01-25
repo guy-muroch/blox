@@ -36,6 +36,8 @@ const Backup = (props) => {
           showPasswordError, onPasswordBlur, showConfirmPasswordError, onConfirmPasswordBlur
         } = props;
 
+  const confirmButtonStyle = { width: 190, height: 40 };
+
   const handleChange = event => {
     const value = event.replace(/[\r\n\v]+/g, '');
     setDuplicatedMnemonic(value);
@@ -70,7 +72,13 @@ const Backup = (props) => {
       </PasswordInputsWrapper>
 
       <ButtonWrapper>
-        <Button isDisabled={!isSaveAndConfirmEnabled()} onClick={onNextButtonClick}>Save &amp; Confirm</Button>
+        <Button
+          style={confirmButtonStyle}
+          isDisabled={!isSaveAndConfirmEnabled()}
+          onClick={onNextButtonClick}
+        >
+          Save &amp; Confirm
+        </Button>
         {isLoading && <Spinner />}
       </ButtonWrapper>
 

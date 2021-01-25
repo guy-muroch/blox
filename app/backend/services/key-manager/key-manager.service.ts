@@ -43,16 +43,16 @@ export default class KeyManagerService {
   })
   async importValidators({ seed, index, network, highestSource, highestTarget, highestProposal }): Promise<{ validators: any }> {
     try {
-      console.log(`${this.executablePath} wallet account create --seed=${seed} --index=${index} --network=${network} --accumulate=true --highest-source=${highestSource} --highest-target=${highestTarget} --highest-proposal=${highestProposal} --response-type=object`);
       const { stdout } = await this.executor(
         `${this.executablePath} wallet account create --seed=${seed} --index=${index} --network=${network} --accumulate=true --highest-source=${highestSource} --highest-target=${highestTarget} --highest-proposal=${highestProposal} --response-type=object`
       );
-      console.log({ stdout: JSON.parse(stdout) });
-      return {
-        validators: JSON.parse(stdout)
-      };
+      let validators = JSON.parse(stdout);
+      if (validators.length && validators.length > index) {
+        validators = validators.slice(1).reverse();
+      }
+      return { validators };
     } catch (e) {
-      console.log(e);
+      console.error(e);
       throw new Error(`Import validators with index ${JSON.stringify(index)} was failed`);
     }
   }

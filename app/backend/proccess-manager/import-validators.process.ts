@@ -10,18 +10,19 @@ export default class ImportValidatorsProcess extends ProcessClass {
     super();
 
     const highest = [];
-    for (let i = 0; i <= index; i += 1) {
+    for (let i = 1; i <= index + 1; i += 1) {
       highest.push(String(i));
     }
     const highestStr = highest.join(',');
     const highestSource = highestStr;
     const highestTarget = highestStr;
     const highestProposal = highestStr;
-
-    // TODO: what is the prefix for db?
     const seed = Connection.db().get('seed');
-    const network = Connection.db().get('network') || 'pyrmont'; // Not working
-    console.debug({ seed, network });
+
+    let network = 'mainnet';
+    if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+      network = 'pyrmont';
+    }
 
     this.keyManagerService = new KeyManagerService();
 
