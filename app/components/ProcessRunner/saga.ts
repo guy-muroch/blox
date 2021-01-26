@@ -8,7 +8,7 @@ import { getNetwork } from '../Wizard/selectors';
 function* startProcess(action) {
   const { payload } = action;
   const { name, credentials } = payload;
-  const network = yield select(getNetwork);
+  const network = payload.network || (yield select(getNetwork));
   const process = processInstantiator(name, { credentials, network });
   const channel = yield call(createChannel, process);
   let isActive = false;
@@ -44,6 +44,7 @@ function* startProcess(action) {
       yield put(actions.processObserve(observePayload));
     }
   } catch (e) {
+    console.error('Running process error:', e);
     yield put(actions.processFailure(e));
     channel.close();
   } finally {

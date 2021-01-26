@@ -31,8 +31,8 @@ const useProcessRunner = () => {
   };
   const loaderPrecentage = precentageCalculator(steps.currentStep, steps.overallSteps);
 
-  const startProcess: StartProcess = async (name, defaultMessage, credentials) => {
-    await dispatch(processSubscribe(name, defaultMessage, credentials));
+  const startProcess: StartProcess = async (name, defaultMessage, credentials, network?: string) => {
+    await dispatch(processSubscribe(name, defaultMessage, credentials, network));
   };
 
   const clearProcessState: ClearProcess = () => dispatch(processClearState());
@@ -55,7 +55,7 @@ type Props = {
   error: string;
 };
 
-type StartProcess = (name: string, defaultMessage: string, credentials: Record<string, any> | null) => void;
+type StartProcess = (name: string, defaultMessage: string, credentials: Record<string, any> | null, network?: string) => void;
 type ClearProcess = () => void;
 
 export default useProcessRunner;

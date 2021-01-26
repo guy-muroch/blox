@@ -16,8 +16,8 @@ const Wrapper = styled.div`
 
 const Wizard = (props: Props) => {
   const { isFinishedWizard, addAnotherAccount } = props;
-  const [step, setStep] = useState(2);
-  const [page, setPage] = useState(4);
+  const [step, setStep] = useState(1);
+  const [page, setPage] = useState(0);
 
   const withMenu = !isFinishedWizard && addAnotherAccount && step === 2;
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/dist/styled-components.esm';
 
 import tableColumns from './table-columns';
@@ -6,6 +6,7 @@ import Table from 'common/components/Table';
 import { Paragraph, Link } from '../../../common';
 import { Checkbox, Spinner } from '../../../../../../common/components';
 import useProcessRunner from '../../../../../ProcessRunner/useProcessRunner';
+import usePasswordHandler from '../../../../../PasswordHandler/usePasswordHandler';
 import { handlePageClick } from '../../../../../../common/components/Table/service';
 
 const TableWrapper = styled.div`
@@ -64,46 +65,45 @@ const ImportedValidatorsList = ({ show, validators, onDone }: ImportedValidators
   const privacyPolicyLink = 'https://www.bloxstaking.com/privacy-policy/';
   const serviceAgreementLink = 'https://www.bloxstaking.com/license-agreement/';
 
-  const { isLoading } = useProcessRunner();
   const [pagedValidators, setPagedValidators] = useState([]);
   const [paginationInfo, setPaginationInfo] = useState(null);
   const [isValidatorsOfflineCheckbox, setValidatorsOfflineCheckbox] = useState(false);
   const [isAgreementReadCheckbox, setAgreementReadCheckbox] = useState(false);
 
-  /**
-   * Table navigation handler
-   *
-   * @param offset
-   */
+  const { checkIfPasswordIsNeeded } = usePasswordHandler();
+  const { isLoading, isDone, processData, error, startProcess, clearProcessState } = useProcessRunner();
+
   const onPageClick = (offset) => {
     handlePageClick(validators, offset, setPagedValidators, setPaginationInfo, PAGE_SIZE);
   };
 
-  /**
-   * Checkboxes should not react on links clicks
-   *
-   * @param event
-   */
-  const onLinkClick = (event) => { event.stopPropagation(); };
+  const onLinkClick = (event) => {
+    event.stopPropagation();
+  };
 
-  /**
-   * Final import step, when all validators are shown
-   * and user checked all checkboxes and pressed Continue button
-   *
-   * Here should be following actions:
-   *  1. Save validators in KeyVault
-   *  2. Create user account
-   *  3. Redirect to dashboard where all validators will be displayed
-   */
+  useEffect(() => {
+    if (isDone && processData && !error) {
+      onDone();
+    }
+  }, [isLoading, processData, error]);
+
   const onCreateAccountButtonClick = () => {
-    // TODO: create account
-
-    onDone();
+    const onSuccess = () => {
+      if (error) {
+        clearProcessState();
+      }
+      if (!isLoading) {
+        startProcess('createAccount', 'Creating account..', null, 'mainnet'); // TODO: move to constants
+      }
+    };
+    checkIfPasswordIsNeeded(onSuccess);
   };
 
   if (!paginationInfo) {
     onPageClick(0);
   }
+
+  const isContinueButtonDisabled = !(isValidatorsOfflineCheckbox && isAgreementReadCheckbox) || (isLoading && !isDone);
 
   return (
     <>
@@ -152,8 +152,8 @@ const ImportedValidatorsList = ({ show, validators, onDone }: ImportedValidators
 
       <ButtonWrapper>
         <Button
-          isDisabled={!(isValidatorsOfflineCheckbox && isAgreementReadCheckbox) || isLoading}
-          onClick={onCreateAccountButtonClick}>
+          isDisabled={isContinueButtonDisabled}
+          onClick={() => { !isContinueButtonDisabled && onCreateAccountButtonClick(); }}>
           Continue
         </Button>
         {isLoading && <Spinner />}
