@@ -4,8 +4,8 @@ import styled from 'styled-components/dist/styled-components.esm';
 import tableColumns from './table-columns';
 import Table from 'common/components/Table';
 import { Paragraph, Link } from '../../../common';
-import { Checkbox, Spinner } from '../../../../../../common/components';
 import useProcessRunner from '../../../../../ProcessRunner/useProcessRunner';
+import { Checkbox, ProcessLoader } from '../../../../../../common/components';
 import usePasswordHandler from '../../../../../PasswordHandler/usePasswordHandler';
 import { handlePageClick } from '../../../../../../common/components/Table/service';
 
@@ -39,6 +39,11 @@ const Button = styled.button`
   cursor:${({isDisabled}) => isDisabled ? 'default' : 'pointer'};
 `;
 
+const ProgressWrapper = styled.div`
+  width:238px;
+  margin-top:20px;
+`;
+
 type ImportedValidatorsListProps = {
   show: boolean,
   validators: any[],
@@ -65,13 +70,14 @@ const ImportedValidatorsList = ({ show, validators, onDone }: ImportedValidators
   const privacyPolicyLink = 'https://www.bloxstaking.com/privacy-policy/';
   const serviceAgreementLink = 'https://www.bloxstaking.com/license-agreement/';
 
+  const [processMessage, setProcessMessage] = useState('');
   const [pagedValidators, setPagedValidators] = useState([]);
   const [paginationInfo, setPaginationInfo] = useState(null);
-  const [isValidatorsOfflineCheckbox, setValidatorsOfflineCheckbox] = useState(false);
   const [isAgreementReadCheckbox, setAgreementReadCheckbox] = useState(false);
+  const [isValidatorsOfflineCheckbox, setValidatorsOfflineCheckbox] = useState(false);
 
   const { checkIfPasswordIsNeeded } = usePasswordHandler();
-  const { isLoading, isDone, processData, error, startProcess, clearProcessState } = useProcessRunner();
+  const { isLoading, isDone, processData, error, startProcess, clearProcessState, loaderPercentage } = useProcessRunner();
 
   const onPageClick = (offset) => {
     handlePageClick(validators, offset, setPagedValidators, setPaginationInfo, PAGE_SIZE);
@@ -93,7 +99,8 @@ const ImportedValidatorsList = ({ show, validators, onDone }: ImportedValidators
         clearProcessState();
       }
       if (!isLoading) {
-        startProcess('createAccount', 'Creating account..', null, 'mainnet'); // TODO: move to constants
+        startProcess('createAccount', 'Creating account..', null, 'mainnet');
+        setProcessMessage('Importing validator(s)');
       }
     };
     checkIfPasswordIsNeeded(onSuccess);
@@ -156,7 +163,12 @@ const ImportedValidatorsList = ({ show, validators, onDone }: ImportedValidators
           onClick={() => { !isContinueButtonDisabled && onCreateAccountButtonClick(); }}>
           Continue
         </Button>
-        {isLoading && <Spinner />}
+
+        {isLoading && processMessage && !error && !isDone && (
+          <ProgressWrapper>
+            <ProcessLoader text={processMessage} precentage={loaderPercentage} />
+          </ProgressWrapper>
+        )}
       </ButtonWrapper>
     </>
   );

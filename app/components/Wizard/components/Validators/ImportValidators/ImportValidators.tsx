@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components/dist/styled-components.esm';
+
 import { Title } from '../../common';
 import BackButton from '../../common/BackButton';
+import CongratulationPage from '../CongratulationPage';
 import { EnterValidatorsNumber, ImportedValidatorsList } from './components';
 
 const ImportValidatorsWrapper = styled.div`
@@ -15,10 +17,6 @@ const ImportValidatorsWrapper = styled.div`
   font-size: 16px;
   font-weight: 500;
 `;
-
-const ImportValidatorsFinished = () => {
-  return <div>Thank you!</div>;
-};
 
 const ImportValidators = (props: Props) => {
   const { page, setPage } = props;
@@ -52,7 +50,14 @@ const ImportValidators = (props: Props) => {
         </>
       )}
 
-      { finishedImport && <ImportValidatorsFinished /> }
+      { finishedImport && (
+        <CongratulationPage
+          {...props}
+          isImportValidators
+          importedValidatorsCount={validators.length}
+        />
+      ) }
+
     </ImportValidatorsWrapper>
   );
 };
