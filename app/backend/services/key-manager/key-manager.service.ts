@@ -1,7 +1,9 @@
-import {Catch, CatchClass, Step} from '../../decorators';
 import util from 'util';
 import { exec } from 'child_process';
+import config from '../../common/config';
 import { execPath } from '../../../binaries';
+import {Catch, CatchClass, Step} from '../../decorators';
+import Connection from '../../common/store-manager/connection';
 
 @CatchClass<KeyManagerService>()
 export default class KeyManagerService {
@@ -36,24 +38,56 @@ export default class KeyManagerService {
   }
 
   @Catch({
-    displayMessage: 'Import validators failed'
+    displayMessage: 'Getting validators list failed'
   })
   @Step({
-    name: 'Importing validators...'
+    name: 'Getting validators list..'
   })
-  async importValidators({ seed, index, network, highestSource, highestTarget, highestProposal }): Promise<{ validators: any }> {
+  async getValidatorsList({ index, network }: { index: number, network?: string }): Promise<{ validators: any[], error: string }> {
     try {
-      const { stdout } = await this.executor(
-        `${this.executablePath} wallet account create --seed=${seed} --index=${index} --network=${network} --accumulate=true --highest-source=${highestSource} --highest-target=${highestTarget} --highest-proposal=${highestProposal} --response-type=object`
-      );
-      let validators = JSON.parse(stdout);
-      if (validators.length && validators.length > index) {
-        validators = validators.slice(1).reverse();
+      const highest = [];
+      for (let i = 1; i <= index; i += 1) {
+        highest.push(String(i));
       }
-      return { validators };
+      const highestStr = highest.join(',');
+      const highestSource = highestStr;
+      const highestTarget = highestStr;
+      const highestProposal = highestStr;
+      const seed = Connection.db().get('seed');
+      const theIndex = index - 1;
+
+      let theNetwork = network || config.env.MAINNET_NETWORK;
+      if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+        theNetwork = config.env.PYRMONT_NETWORK;
+      }
+
+      const getValidatorsObjectCommand = `${this.executablePath} wallet account create \
+        --seed=${seed} \
+        --index=${theIndex} \
+        --network=${theNetwork} \
+        --highest-source=${highestSource} \
+        --highest-target=${highestTarget} \
+        --highest-proposal=${highestProposal} \
+        --response-type=object \
+        --accumulate=true`;
+
+      const { stdout } = await this.executor(getValidatorsObjectCommand);
+
+      let validators = JSON.parse(stdout);
+      if (validators && validators.length) {
+        validators = validators.reverse();
+      }
+
+      return {
+        validators,
+        error: ''
+      };
     } catch (e) {
-      console.error(e);
-      throw new Error(`Import validators with index ${JSON.stringify(index)} was failed`);
+      console.error('Import validators error', e);
+      return {
+        validators: [],
+        error: e.message || e.stack || e
+      };
     }
   }
 

@@ -5,6 +5,7 @@ import styled from 'styled-components/dist/styled-components.esm';
 import { Title } from '../../common';
 import BackButton from '../../common/BackButton';
 import CongratulationPage from '../CongratulationPage';
+import useProcessRunner from '../../../../ProcessRunner/useProcessRunner';
 import { EnterValidatorsNumber, ImportedValidatorsList } from './components';
 
 const ImportValidatorsWrapper = styled.div`
@@ -20,6 +21,7 @@ const ImportValidatorsWrapper = styled.div`
 
 const ImportValidators = (props: Props) => {
   const { page, setPage } = props;
+  const { isLoading } = useProcessRunner();
   const [validators, setValidators] = useState([]);
   const [finishedImport, finishImport] = useState(false);
 
@@ -34,7 +36,7 @@ const ImportValidators = (props: Props) => {
     <ImportValidatorsWrapper>
       { !finishedImport && (
         <>
-          <BackButton onClick={onBackButtonClick} />
+          {!isLoading && <BackButton onClick={onBackButtonClick} />}
           <Title>Validator Selection</Title>
 
           <EnterValidatorsNumber

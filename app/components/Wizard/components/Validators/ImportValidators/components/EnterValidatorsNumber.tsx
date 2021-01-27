@@ -5,7 +5,7 @@ import { Paragraph, Warning } from '../../../common';
 import { ArrowButton } from '../../../../../../common/components';
 import { GeneratedValidatorsListener } from './process-listeners';
 import BloxTooltip from '../../../../../../common/components/Tooltip';
-import ImportValidatorsProcess from '../../../../../../backend/proccess-manager/import-validators.process';
+import ValidatorsListProcess from '../../../../../../backend/proccess-manager/validators-list.process';
 
 import InfoImage from '../../../../../../assets/images/info.svg';
 
@@ -93,7 +93,7 @@ const EnterValidatorsNumber = ({ show, setValidators }: EnterValidatorsNumberPro
    * Generating validators
    */
   const generateValidators = async () => {
-    const importValidatorsProcess = new ImportValidatorsProcess(validatorsNumber);
+    const importValidatorsProcess = new ValidatorsListProcess(validatorsNumber);
     const listener = new GeneratedValidatorsListener(setGeneratedValidators);
     importValidatorsProcess.subscribe(listener);
     try {

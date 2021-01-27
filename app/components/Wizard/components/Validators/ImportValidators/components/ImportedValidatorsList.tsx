@@ -127,6 +127,7 @@ const ImportedValidatorsList = ({ show, validators, onDone }: ImportedValidators
       </TableWrapper>
 
       <Checkbox
+        disabled={isLoading}
         checked={isValidatorsOfflineCheckbox}
         onClick={() => { setValidatorsOfflineCheckbox(!isValidatorsOfflineCheckbox); }}
         checkboxStyle={checkboxStyle}
@@ -136,6 +137,7 @@ const ImportedValidatorsList = ({ show, validators, onDone }: ImportedValidators
       </Checkbox>
 
       <Checkbox
+        disabled={isLoading}
         checked={isAgreementReadCheckbox}
         onClick={() => { setAgreementReadCheckbox(!isAgreementReadCheckbox); }}
         checkboxStyle={checkboxStyle}
