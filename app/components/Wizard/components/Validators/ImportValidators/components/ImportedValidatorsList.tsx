@@ -3,6 +3,7 @@ import styled from 'styled-components/dist/styled-components.esm';
 
 import tableColumns from './table-columns';
 import Table from 'common/components/Table';
+import { getNetworkForImport } from './helpers';
 import { Paragraph, Link } from '../../../common';
 import useProcessRunner from '../../../../../ProcessRunner/useProcessRunner';
 import { Checkbox, ProcessLoader } from '../../../../../../common/components';
@@ -99,7 +100,13 @@ const ImportedValidatorsList = ({ show, validators, onDone }: ImportedValidators
         clearProcessState();
       }
       if (!isLoading) {
-        startProcess('createAccount', 'Creating account..', null, 'mainnet');
+        startProcess(
+          'createAccount',
+          'Creating account..',
+          null,
+          getNetworkForImport(),
+          validators.length
+        );
         setProcessMessage('Importing validator(s)');
       }
     };

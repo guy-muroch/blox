@@ -111,17 +111,28 @@ export default class AccountService {
   }
 
   @Step({
-    name: 'Create Blox Account'
+    name: 'Create Blox Accounts'
   })
   @Catch({
-    displayMessage: 'Create Blox Account failed'
+    displayMessage: 'Create Blox Accounts failed'
   })
-  async createBloxAccount(): Promise<any> {
+  async createBloxAccounts({ accountsNumber }: { accountsNumber?: number }): Promise<any> {
     const network = Connection.db(this.storePrefix).get('network');
-    const index: number = +Connection.db(this.storePrefix).get(`index.${network}`) + 1;
-    const lastIndexedAccount = await this.keyManagerService.getAccount(Connection.db(this.storePrefix).get('seed'), index, network);
-    lastIndexedAccount.network = network;
-    const account = await this.create(lastIndexedAccount);
+    const index: number = accountsNumber || +Connection.db(this.storePrefix).get(`index.${network}`) + 1;
+
+    // Get cumulative accounts list
+    let accounts = await this.keyManagerService.getAccount(
+      Connection.db(this.storePrefix).get('seed'),
+      index,
+      network,
+      true
+    );
+
+    // Reverse for account-0 on index 0 etc
+    accounts = { data: accounts.reverse(), network };
+    console.log({ createBloxAccounts: accounts });
+
+    const account = await this.create(accounts);
     if (account.error && account.error instanceof Error) return;
     return { data: account };
   }
@@ -132,7 +143,7 @@ export default class AccountService {
   @Catch({
     displayMessage: 'CLI Create Account failed'
   })
-  async createAccount(getNextIndex = true, indexToRestore = 0): Promise<void> {
+  async createAccount({ getNextIndex = true, indexToRestore = 0 }: { getNextIndex: boolean, indexToRestore: number }): Promise<void> {
     const network = Connection.db(this.storePrefix).get('network');
     const index: number = getNextIndex ? await this.getNextIndex(network) : indexToRestore;
     // 1. get public-keys to create
@@ -205,7 +216,7 @@ export default class AccountService {
         if (index > -1) {
           Connection.db(this.storePrefix).set('network', network);
           // eslint-disable-next-line no-await-in-loop
-          await this.createAccount(false, index);
+          await this.createAccount({ getNextIndex: false, indexToRestore: index });
         }
       }
     }
@@ -278,7 +289,7 @@ export default class AccountService {
     if (index < 0) {
       await this.walletService.createWallet();
     } else {
-      await this.createAccount(false, index);
+      await this.createAccount({ getNextIndex: false, indexToRestore: index });
     }
   }
 
@@ -314,7 +325,8 @@ export default class AccountService {
         .sort((a, b) => a.name.localeCompare(b.name));
 
       const lastIndex = networkAccounts[networkAccounts.length - 1].name.split('-')[1];
-      await this.createAccount(false, +lastIndex);
+      // eslint-disable-next-line no-await-in-loop
+      await this.createAccount({ getNextIndex: false, indexToRestore: +lastIndex });
     }
   }
 

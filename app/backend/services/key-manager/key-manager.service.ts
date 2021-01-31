@@ -108,25 +108,41 @@ export default class KeyManagerService {
       highestProposal = highestSource;
     }
 
+    const getAccountCommand = `${this.executablePath} \
+      wallet account create \
+      --seed=${seed} \
+      --index=${index} \
+      --network=${network} \
+      --response-type=object \
+      --accumulate=${accumulate} \
+      --highest-source=${highestSource} \
+      --highest-target=${highestTarget} \
+      --highest-proposal=${highestProposal}`;
+
+    console.log({ getAccountCommand });
+
     try {
-      const { stdout } = await this.executor(
-        `${this.executablePath} wallet account create --seed=${seed} --index=${index} --network=${network} --response-type=object --accumulate=${accumulate} --highest-source=${highestSource} --highest-target=${highestTarget} --highest-proposal=${highestProposal}`
-      );
+      const { stdout } = await this.executor(getAccountCommand);
       return stdout ? JSON.parse(stdout) : {};
-    } catch (e) {
+    } catch (error) {
+      console.error('KeyManagerService::getAccount error', { command: getAccountCommand, error });
       throw new Error(`Get keyvault account with index ${JSON.stringify(index)} was failed.`);
     }
   }
 
   async getDepositData(seed: string, index: number, publicKey: string, network: string): Promise<any> {
+    const getDepositDataCommand = `${this.executablePath} \
+      wallet account deposit-data \
+      --seed=${seed} \
+      --index=${index} \
+      --publickey=${publicKey} \
+      --network=${network}`;
+
     try {
-      console.log('---getdep cmd', `${this.executablePath} wallet account deposit-data --seed=${seed} --index=${index} --public-key=${publicKey} --network=${network}`);
-      const { stdout } = await this.executor(
-        `${this.executablePath} wallet account deposit-data --seed=${seed} --index=${index} --public-key=${publicKey} --network=${network}`
-      );
-      console.log('---getdep stdout', stdout);
+      const { stdout } = await this.executor(getDepositDataCommand);
       return stdout ? JSON.parse(stdout) : {};
-    } catch (e) {
+    } catch (error) {
+      console.error('KeyManagerService::getDepositData error', { command: getDepositDataCommand, error });
       throw new Error(`Get ${network} deposit account data with index ${JSON.stringify(index)} was failed.`);
     }
   }

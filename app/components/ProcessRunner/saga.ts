@@ -7,9 +7,9 @@ import { getNetwork } from '../Wizard/selectors';
 
 function* startProcess(action) {
   const { payload } = action;
-  const { name, credentials } = payload;
+  const { name } = payload;
   const network = payload.network || (yield select(getNetwork));
-  const process = processInstantiator(name, { credentials, network });
+  const process = processInstantiator(name, { ...payload, network });
   const channel = yield call(createChannel, process);
   let isActive = false;
   let data;

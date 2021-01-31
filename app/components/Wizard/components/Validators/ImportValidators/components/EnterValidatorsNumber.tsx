@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/dist/styled-components.esm';
 
+import { getNetworkForImport } from './helpers';
 import { Paragraph, Warning } from '../../../common';
 import { ArrowButton } from '../../../../../../common/components';
-import { GeneratedValidatorsListener } from './process-listeners';
 import BloxTooltip from '../../../../../../common/components/Tooltip';
-import ValidatorsListProcess from '../../../../../../backend/proccess-manager/validators-list.process';
+import Connection from '../../../../../../backend/common/store-manager/connection';
+import KeyManagerService from '../../../../../../backend/services/key-manager/key-manager.service';
 
 import InfoImage from '../../../../../../assets/images/info.svg';
 
@@ -93,14 +94,14 @@ const EnterValidatorsNumber = ({ show, setValidators }: EnterValidatorsNumberPro
    * Generating validators
    */
   const generateValidators = async () => {
-    const importValidatorsProcess = new ValidatorsListProcess(validatorsNumber);
-    const listener = new GeneratedValidatorsListener(setGeneratedValidators);
-    importValidatorsProcess.subscribe(listener);
-    try {
-      await importValidatorsProcess.run();
-    } catch (e) {
-      console.error(e);
-      setGeneratedValidators([]);
+    const seed = Connection.db().get('seed');
+    const network = getNetworkForImport();
+
+    const keyManagerService = new KeyManagerService();
+    let validators = await keyManagerService.getAccount(seed, validatorsNumber - 1, network, true);
+    if (validators && validators.length) {
+      validators = validators.reverse();
+      setGeneratedValidators(validators);
     }
   };
 
