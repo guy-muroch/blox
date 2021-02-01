@@ -119,17 +119,22 @@ export default class AccountService {
   async createBloxAccounts({ accountsNumber }: { accountsNumber?: number }): Promise<any> {
     const network = Connection.db(this.storePrefix).get('network');
     const index: number = accountsNumber || +Connection.db(this.storePrefix).get(`index.${network}`) + 1;
+    const accumulate = !!accountsNumber;
 
     // Get cumulative accounts list
     let accounts = await this.keyManagerService.getAccount(
       Connection.db(this.storePrefix).get('seed'),
       index,
       network,
-      true
+      accumulate
     );
 
-    // Reverse for account-0 on index 0 etc
-    accounts = { data: accounts.reverse(), network };
+    if (accumulate) {
+      // Reverse for account-0 on index 0 etc
+      accounts = { data: accounts.reverse(), network };
+    } else {
+      accounts = { data: [accounts], network };
+    }
     console.log({ createBloxAccounts: accounts });
 
     const account = await this.create(accounts);
