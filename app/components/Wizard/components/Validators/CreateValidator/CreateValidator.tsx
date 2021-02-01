@@ -1,14 +1,11 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-
-import { loadDepositData } from '../../../actions';
-import { setDepositNeeded } from '../../../../Accounts/actions';
 import { getNetwork } from '../../../selectors';
-
+import { loadDepositData } from '../../../actions';
+import { GenerateKeys, KeysGenerated } from './components';
+import { setDepositNeeded } from '../../../../Accounts/actions';
 import useProcessRunner from 'components/ProcessRunner/useProcessRunner';
 import usePasswordHandler from '../../../../PasswordHandler/usePasswordHandler';
-
-import { GenerateKeys, KeysGenerated } from './components';
 
 const CreateValidator = (props: Props) => {
   const { isLoading, isDone, processData, error, startProcess, clearProcessState } = useProcessRunner();

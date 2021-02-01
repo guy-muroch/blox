@@ -118,10 +118,15 @@ export default class AccountService {
   })
   async createBloxAccounts({ accountsNumber }: { accountsNumber?: number }): Promise<any> {
     const network = Connection.db(this.storePrefix).get('network');
-    const index: number = accountsNumber || +Connection.db(this.storePrefix).get(`index.${network}`) + 1;
+    let index: number;
+    if (accountsNumber) {
+      index = accountsNumber - 1;
+    } else {
+      index = +Connection.db(this.storePrefix).get(`index.${network}`) + 1;
+    }
     const accumulate = !!accountsNumber;
 
-    // Get cumulative accounts list
+    // Get cumulative accounts list or one account
     let accounts = await this.keyManagerService.getAccount(
       Connection.db(this.storePrefix).get('seed'),
       index,
@@ -135,6 +140,13 @@ export default class AccountService {
     } else {
       accounts = { data: [accounts], network };
     }
+
+    // Set imported flag for imported accounts
+    accounts.data = accounts.data.map((acc) => {
+      acc.imported = accumulate;
+      return acc;
+    });
+
     console.log({ createBloxAccounts: accounts });
 
     const account = await this.create(accounts);
@@ -299,6 +311,12 @@ export default class AccountService {
   }
 
   // TODO delete per network, blocked by web-api
+  @Step({
+    name: 'Delete all accounts'
+  })
+  @Catch({
+    displayMessage: 'Failed to delete all accounts'
+  })
   async deleteAllAccounts(): Promise<void> {
     const supportedNetworks = [config.env.PYRMONT_NETWORK, config.env.MAINNET_NETWORK];
     // eslint-disable-next-line no-restricted-syntax

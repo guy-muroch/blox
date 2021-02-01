@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import { NETWORKS } from '../../constants';
 import { InfoWithTooltip } from 'common/components';
 import { Title, SubTitle, Paragraph, BigButton, SuccessIcon } from '../../../common';
-import { NETWORKS } from '../../constants';
 
 const Wrapper = styled.div``;
 

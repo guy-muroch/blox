@@ -36,8 +36,7 @@ export default class AccountCreateProcess extends ProcessClass {
         instance: this.accountService,
         method: 'createBloxAccounts',
         params: {
-          // Accounts number here can be undefined or equal to highest index (i.e. accountsNumber - 1)
-          accountsNumber: accountsNumber ? accountsNumber - 1 : accountsNumber
+          accountsNumber
         }
       }
     ];
@@ -46,8 +45,19 @@ export default class AccountCreateProcess extends ProcessClass {
       {
         method: 'createBloxAccounts',
         actions: [
-          { instance: this.accountService, method: 'deleteLastIndexedAccount' },
-          { instance: this.keyVaultService, method: 'updateVaultStorage' }
+          {
+            instance: this.accountService,
+            /**
+             * In case of issues we should remove:
+             *  - one last indexed account if it was attempt to create validator
+             *  - all accounts if it was attempt to import validators
+             */
+            method: accountsNumber ? 'deleteAllAccounts' : 'deleteLastIndexedAccount'
+          },
+          {
+            instance: this.keyVaultService,
+            method: 'updateVaultStorage'
+          }
         ]
       }
     ];
