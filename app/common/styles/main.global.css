@@ -547,3 +547,6 @@
 .icon-generate-seed-icon:before {
   content: "\63";
 }
+.icon-export:before {
+  content: "\68";
+}

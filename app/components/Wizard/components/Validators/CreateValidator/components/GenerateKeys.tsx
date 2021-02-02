@@ -1,10 +1,9 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
-
-import { Spinner } from 'common/components';
-import { Title, Paragraph, BigButton, Link, ErrorMessage } from '../../../common';
-import { openExternalLink } from '../../../../../common/service';
 import { NETWORKS } from '../../constants';
+import { Spinner, Checkbox } from 'common/components';
+import { openExternalLink } from '../../../../../common/service';
+import { Title, Paragraph, BigButton, Link, ErrorMessage } from '../../../common';
 
 const Wrapper = styled.div``;
 
@@ -25,6 +24,15 @@ const LoaderText = styled.span`
 
 const GenerateKeys = (props: Props) => {
   const { isLoading, onClick, error, network } = props;
+  const [checkedAwarenessCheckbox, setAwarenessCheckboxChecked] = useState(false);
+  const [isButtonDisabled, setButtonDisabled] = useState(true);
+  const checkboxStyle = { marginRight: 5 };
+  const checkboxLabelStyle = { fontSize: 12 };
+
+  useEffect(() => {
+    setButtonDisabled(isLoading || !checkedAwarenessCheckbox);
+  }, [isLoading, checkedAwarenessCheckbox]);
+
   if (network) {
     return (
       <Wrapper>
@@ -36,8 +44,18 @@ const GenerateKeys = (props: Props) => {
           <br />
           <Link onClick={() => openExternalLink('docs-guides/#pp-toc__heading-anchor-4')}>What is a validator key?</Link>
         </Paragraph>
+        <Checkbox
+          disabled={isLoading}
+          checkboxStyle={checkboxStyle}
+          labelStyle={checkboxLabelStyle}
+          checked={checkedAwarenessCheckbox}
+          onClick={() => { setAwarenessCheckboxChecked(!checkedAwarenessCheckbox); }}
+        >
+          I&apos;m aware that before importing, to avoid slashing risks, my validator needs to be offline
+        </Checkbox>
+        <br />
         <ButtonWrapper>
-          <BigButton isDisabled={isLoading} onClick={onClick}>
+          <BigButton isDisabled={isButtonDisabled} onClick={() => { !isButtonDisabled && onClick(); }}>
             Generate Validator Keys
           </BigButton>
         </ButtonWrapper>

@@ -1,9 +1,7 @@
 import util from 'util';
 import { exec } from 'child_process';
-import config from '../../common/config';
 import { execPath } from '../../../binaries';
-import {Catch, CatchClass, Step} from '../../decorators';
-import Connection from '../../common/store-manager/connection';
+import { Catch, CatchClass } from '../../decorators';
 
 @CatchClass<KeyManagerService>()
 export default class KeyManagerService {
@@ -34,60 +32,6 @@ export default class KeyManagerService {
       return stdout.replace('\n', '');
     } catch (e) {
       throw new Error(`Create account with index ${JSON.stringify(index)} was failed`);
-    }
-  }
-
-  @Catch({
-    displayMessage: 'Getting validators list failed'
-  })
-  @Step({
-    name: 'Getting validators list..'
-  })
-  async getValidatorsList({ index, network }: { index: number, network?: string }): Promise<{ validators: any[], error: string }> {
-    try {
-      const highest = [];
-      for (let i = 1; i <= index; i += 1) {
-        highest.push(String(i));
-      }
-      const highestStr = highest.join(',');
-      const highestSource = highestStr;
-      const highestTarget = highestStr;
-      const highestProposal = highestStr;
-      const seed = Connection.db().get('seed');
-      const theIndex = index - 1;
-
-      let theNetwork = network || config.env.MAINNET_NETWORK;
-      if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
-        theNetwork = config.env.PYRMONT_NETWORK;
-      }
-
-      const getValidatorsObjectCommand = `${this.executablePath} wallet account create \
-        --seed=${seed} \
-        --index=${theIndex} \
-        --network=${theNetwork} \
-        --highest-source=${highestSource} \
-        --highest-target=${highestTarget} \
-        --highest-proposal=${highestProposal} \
-        --response-type=object \
-        --accumulate=true`;
-
-      const { stdout } = await this.executor(getValidatorsObjectCommand);
-
-      let validators = JSON.parse(stdout);
-      if (validators && validators.length) {
-        validators = validators.reverse();
-      }
-
-      return {
-        validators,
-        error: ''
-      };
-    } catch (e) {
-      console.error('Import validators error', e);
-      return {
-        validators: [],
-        error: e.message || e.stack || e
-      };
     }
   }
 
