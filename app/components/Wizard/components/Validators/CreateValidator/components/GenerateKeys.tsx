@@ -1,9 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { NETWORKS } from '../../constants';
+import { getWallet } from '../../../../selectors';
 import { Spinner, Checkbox } from 'common/components';
+import config from '../../../../../../backend/common/config';
 import { openExternalLink } from '../../../../../common/service';
 import { Title, Paragraph, BigButton, Link, ErrorMessage } from '../../../common';
+import Connection from "../../../../../../backend/common/store-manager/connection";
 
 const Wrapper = styled.div``;
 
@@ -23,15 +27,24 @@ const LoaderText = styled.span`
 `;
 
 const GenerateKeys = (props: Props) => {
-  const { isLoading, onClick, error, network } = props;
-  const [checkedAwarenessCheckbox, setAwarenessCheckboxChecked] = useState(false);
-  const [isButtonDisabled, setButtonDisabled] = useState(true);
   const checkboxStyle = { marginRight: 5 };
   const checkboxLabelStyle = { fontSize: 12 };
+  const { isLoading, onClick, error, network, wallet } = props;
+  const [checkedAwarenessCheckbox, setAwarenessCheckboxChecked] = useState(false);
+  const isWalletImported = wallet && wallet.imported;
+  const showCheckbox = (
+      // The checkbox should appear when the wallet is imported and network is not pyrmont.
+      isWalletImported && network !== config.env.PYRMONT_NETWORK
+    ) || (
+      // Or when import feature network is pyrmont and current selected network is pyrmont too.
+      Connection.db().get('feature:import:network') === config.env.PYRMONT_NETWORK
+      && isWalletImported && network === config.env.PYRMONT_NETWORK
+    );
+  const [isButtonDisabled, setButtonDisabled] = useState(showCheckbox);
 
   useEffect(() => {
-    setButtonDisabled(isLoading || !checkedAwarenessCheckbox);
-  }, [isLoading, checkedAwarenessCheckbox]);
+    setButtonDisabled(showCheckbox ? (isLoading || !checkedAwarenessCheckbox) : isLoading);
+  }, [isLoading, checkedAwarenessCheckbox, showCheckbox]);
 
   if (network) {
     return (
@@ -44,27 +57,35 @@ const GenerateKeys = (props: Props) => {
           <br />
           <Link onClick={() => openExternalLink('docs-guides/#pp-toc__heading-anchor-4')}>What is a validator key?</Link>
         </Paragraph>
-        <Checkbox
-          disabled={isLoading}
-          checkboxStyle={checkboxStyle}
-          labelStyle={checkboxLabelStyle}
-          checked={checkedAwarenessCheckbox}
-          onClick={() => { setAwarenessCheckboxChecked(!checkedAwarenessCheckbox); }}
-        >
-          I&apos;m aware that before importing, to avoid slashing risks, my validator needs to be offline
-        </Checkbox>
-        <br />
+
+        {showCheckbox && (
+          <>
+            <Checkbox
+              disabled={isLoading}
+              checkboxStyle={checkboxStyle}
+              labelStyle={checkboxLabelStyle}
+              checked={checkedAwarenessCheckbox}
+              onClick={() => { setAwarenessCheckboxChecked(!checkedAwarenessCheckbox); }}
+            >
+              I&apos;m aware that before importing, to avoid slashing risks, my validator needs to be offline
+            </Checkbox>
+            <br />
+          </>
+        )}
+
         <ButtonWrapper>
           <BigButton isDisabled={isButtonDisabled} onClick={() => { !isButtonDisabled && onClick(); }}>
             Generate Validator Keys
           </BigButton>
         </ButtonWrapper>
+
         {isLoading && (
           <LoaderWrapper>
             <Spinner width="17px" />
             <LoaderText>Generating Validator Keys...</LoaderText>
           </LoaderWrapper>
         )}
+
         {error && (
           <ErrorMessage>
             {error}, please try again.
@@ -80,7 +101,12 @@ type Props = {
   isLoading: boolean;
   onClick: () => void;
   error: string;
-  network: string
+  network: string,
+  wallet: Record<string, any>
 };
 
-export default GenerateKeys;
+const mapStateToProps = (state) => ({
+  wallet: getWallet(state)
+});
+
+export default connect(mapStateToProps, null)(GenerateKeys);
