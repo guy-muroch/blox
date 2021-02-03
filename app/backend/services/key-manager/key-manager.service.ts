@@ -63,13 +63,11 @@ export default class KeyManagerService {
       --highest-target=${highestTarget} \
       --highest-proposal=${highestProposal}`;
 
-    console.log({ getAccountCommand });
-
     try {
       const { stdout } = await this.executor(getAccountCommand);
       return stdout ? JSON.parse(stdout) : {};
     } catch (error) {
-      console.error('KeyManagerService::getAccount error', { command: getAccountCommand, error });
+      console.error('KeyManagerService::getAccount error', { command: getAccountCommand.replace(seed, '***'), error });
       throw new Error(`Get keyvault account with index ${JSON.stringify(index)} was failed.`);
     }
   }
@@ -86,7 +84,7 @@ export default class KeyManagerService {
       const { stdout } = await this.executor(getDepositDataCommand);
       return stdout ? JSON.parse(stdout) : {};
     } catch (error) {
-      console.error('KeyManagerService::getDepositData error', { command: getDepositDataCommand, error });
+      console.error('KeyManagerService::getDepositData error', { command: getDepositDataCommand.replace(seed, '***'), error });
       throw new Error(`Get ${network} deposit account data with index ${JSON.stringify(index)} was failed.`);
     }
   }

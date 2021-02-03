@@ -105,7 +105,7 @@ const ImportedValidatorsList = ({ show, validators, onDone }: ImportedValidators
           'Creating account..',
           null,
           getNetworkForImport(),
-          validators.length
+          validators.length - 1
         );
         setProcessMessage('Importing validator(s)');
       }

@@ -9,7 +9,7 @@ export default class AccountCreateProcess extends ProcessClass {
   public readonly actions: Array<any>;
   public readonly fallbackActions: Array<any>;
 
-  constructor(network: string, accountsNumber?: number) {
+  constructor(network: string, indexToRestore?: number) {
     super();
     Connection.db().set('network', network);
     this.keyVaultService = new KeyVaultService();
@@ -23,9 +23,7 @@ export default class AccountCreateProcess extends ProcessClass {
         instance: this.accountService,
         method: 'createAccount',
         params: {
-          getNextIndex: !accountsNumber,
-          // indexToRestore should be >= 0 only, when accountsNumber can be undefined
-          indexToRestore: accountsNumber ? accountsNumber - 1 : 0
+          indexToRestore
         }
       },
       {
@@ -36,7 +34,7 @@ export default class AccountCreateProcess extends ProcessClass {
         instance: this.accountService,
         method: 'createBloxAccounts',
         params: {
-          accountsNumber
+          indexToRestore
         }
       }
     ];
@@ -52,7 +50,7 @@ export default class AccountCreateProcess extends ProcessClass {
              *  - one last indexed account if it was attempt to create validator
              *  - all accounts if it was attempt to import validators
              */
-            method: accountsNumber ? 'deleteAllAccounts' : 'deleteLastIndexedAccount'
+            method: indexToRestore != null ? 'deleteAllAccounts' : 'deleteLastIndexedAccount'
           },
           {
             instance: this.keyVaultService,

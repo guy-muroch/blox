@@ -116,15 +116,11 @@ export default class AccountService {
   @Catch({
     displayMessage: 'Create Blox Accounts failed'
   })
-  async createBloxAccounts({ accountsNumber }: { accountsNumber?: number }): Promise<any> {
+  async createBloxAccounts({ indexToRestore }: { indexToRestore?: number }): Promise<any> {
     const network = Connection.db(this.storePrefix).get('network');
-    let index: number;
-    if (accountsNumber) {
-      index = accountsNumber - 1;
-    } else {
-      index = +Connection.db(this.storePrefix).get(`index.${network}`) + 1;
-    }
-    const accumulate = !!accountsNumber;
+    const lastNetworkIndex = +Connection.db(this.storePrefix).get(`index.${network}`);
+    const index: number = indexToRestore ?? (lastNetworkIndex + 1 | 0);
+    const accumulate = indexToRestore != null;
 
     // Get cumulative accounts list or one account
     let accounts = await this.keyManagerService.getAccount(
@@ -160,9 +156,9 @@ export default class AccountService {
   @Catch({
     displayMessage: 'CLI Create Account failed'
   })
-  async createAccount({ getNextIndex = true, indexToRestore = 0 }: { getNextIndex: boolean, indexToRestore: number }): Promise<void> {
+  async createAccount({ indexToRestore }: { indexToRestore?: number }): Promise<void> {
     const network = Connection.db(this.storePrefix).get('network');
-    const index: number = getNextIndex ? await this.getNextIndex(network) : indexToRestore;
+    const index: number = indexToRestore ?? await this.getNextIndex(network);
     // 1. get public-keys to create
     const accounts = await this.keyManagerService.getAccount(Connection.db(this.storePrefix).get('seed'), index, network, true);
     const accountsHash = Object.assign({}, ...accounts.map(account => ({ [account.validationPubKey]: account })));
@@ -233,7 +229,7 @@ export default class AccountService {
         if (index > -1) {
           Connection.db(this.storePrefix).set('network', network);
           // eslint-disable-next-line no-await-in-loop
-          await this.createAccount({ getNextIndex: false, indexToRestore: index });
+          await this.createAccount({ indexToRestore: index });
         }
       }
     }
@@ -306,7 +302,7 @@ export default class AccountService {
     if (index < 0) {
       await this.walletService.createWallet();
     } else {
-      await this.createAccount({ getNextIndex: false, indexToRestore: index });
+      await this.createAccount({ indexToRestore: index });
     }
   }
 
@@ -349,7 +345,7 @@ export default class AccountService {
 
       const lastIndex = networkAccounts[networkAccounts.length - 1].name.split('-')[1];
       // eslint-disable-next-line no-await-in-loop
-      await this.createAccount({ getNextIndex: false, indexToRestore: +lastIndex });
+      await this.createAccount({ indexToRestore: +lastIndex });
     }
   }
 

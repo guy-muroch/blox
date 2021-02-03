@@ -7,7 +7,7 @@ import { Spinner, Checkbox } from 'common/components';
 import config from '../../../../../../backend/common/config';
 import { openExternalLink } from '../../../../../common/service';
 import { Title, Paragraph, BigButton, Link, ErrorMessage } from '../../../common';
-import Connection from "../../../../../../backend/common/store-manager/connection";
+import Connection from '../../../../../../backend/common/store-manager/connection';
 
 const Wrapper = styled.div``;
 
