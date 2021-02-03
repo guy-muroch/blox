@@ -12,7 +12,7 @@ export default class Store {
   private readonly encryptedKeys: Array<string> = ['keyPair', 'seed', 'credentials', 'vaultRootToken', 'vaultSignerToken'];
   private readonly cryptoAlgorithm: string = 'aes-256-ecb';
   public cryptoKey: string;
-  private cryptoKeyTTL: number = 20; // 20 minutes
+  private cryptoKeyTTL: number = 4 * 60; // 4 hours
   private timer: any;
   private logger: Logger;
 
