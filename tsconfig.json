@@ -24,7 +24,6 @@
     "outDir": "$$ts-jest$$",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "jsx-a11y/anchor-is-valid": false,
     "typeRoots": ["app/types/*.d.ts"]
   },
   "include": ["app/types/*.d.ts"],

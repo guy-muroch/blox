@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
-
 import * as actionsFromWizard from '../../../actions';
 import { SuccessIcon, Confetti } from 'common/components';
 import { Title, Paragraph, BigButton } from '../../common';
 import * as actionsFromAccounts from '../../../../Accounts/actions';
+import useDashboardData from '../../../../Dashboard/useDashboardData';
 
 const Wrapper = styled.div`
   position: relative;
@@ -17,11 +17,13 @@ const CongratulationPage = (props: Props) => {
   const { wizardActions, accountsActions, isImportValidators, importedValidatorsCount } = props;
   const { clearAccountsData } = accountsActions;
   const { setFinishedWizard, clearWizardData } = wizardActions;
+  const { loadDashboardData } = useDashboardData();
 
   const onClick = async () => {
     await clearAccountsData();
     await clearWizardData();
     await setFinishedWizard(true);
+    await loadDashboardData();
   };
 
   return (

@@ -6,9 +6,10 @@ import { Icon } from 'common/components';
 import Navigation from './Navigation';
 import { contentAnimation } from '..';
 import * as actionsFromWizard from '../../../actions';
-import * as actionsFromAccounts from '../../../../Accounts/actions';
 import { getWizardFinishedStatus } from '../../../selectors';
+import * as actionsFromAccounts from '../../../../Accounts/actions';
 import { getAddAnotherAccount } from '../../../../Accounts/selectors';
+import useDashboardData from '../../../../Dashboard/useDashboardData';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -28,13 +29,14 @@ const ComponentWrapper = styled.div`
   width: 100%;
   position: relative;
   animation: ${contentAnimation} 1s ease;
+  z-index: 1;
 `;
 
 const BackgroundImage = styled.img`
   width: 300px;
   height: 300px;
   position: absolute;
-  right: 0px;
+  right: 0;
 `;
 
 const CloseButton = styled.div`
@@ -65,11 +67,13 @@ const Template = (props: Props) => {
   const { clearAccountsData } = accountsActions;
   const { setFinishedWizard, clearWizardData } = wizardActions;
   const addAdditionalAccount = !isFinishedWizard && addAnotherAccount && step === 2;
+  const { loadDashboardData } = useDashboardData();
 
   const onCloseClick = async () => {
     await clearAccountsData();
     await clearWizardData();
     await setFinishedWizard(true);
+    await loadDashboardData();
   };
 
   const onBackClick = () => {

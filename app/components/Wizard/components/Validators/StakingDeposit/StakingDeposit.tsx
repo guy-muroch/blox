@@ -24,6 +24,7 @@ import {
   getAccounts, getDepositNeededStatus, getDepositToPublicKey,
   getDepositToIndex, getDepositToNetwork
 } from '../../../../Accounts/selectors';
+import useDashboardData from '../../../../Dashboard/useDashboardData';
 
 const Wrapper = styled.div`
   width:580px;
@@ -67,6 +68,7 @@ const StakingDeposit = (props: Props) => {
   } = props;
   const {updateAccountStatus, loadDepositData, setFinishedWizard, clearWizardData} = actions;
   const [showMoveToBrowserModal, setShowMoveToBrowserModal] = React.useState(false);
+  const { loadDashboardData } = useDashboardData();
 
   useEffect(() => {
     if (isDepositNeeded && publicKey) {
@@ -97,6 +99,7 @@ const StakingDeposit = (props: Props) => {
     await callClearAccountsData();
     await clearWizardData();
     await setFinishedWizard(true);
+    await loadDashboardData();
   };
 
   const openDepositBrowser = async (moveToBrowser) => {

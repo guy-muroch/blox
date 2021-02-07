@@ -1,17 +1,16 @@
-import Connection from '../../common/store-manager/connection';
-import BloxApi from '../../common/communication-manager/blox-api';
-import BeaconchaApi from '../../common/communication-manager/beaconcha-api';
-import { METHOD } from '../../common/communication-manager/constants';
-import { Catch, CatchClass, Step } from '../../decorators';
-import KeyVaultService from '../key-vault/key-vault.service';
-import KeyManagerService from '../key-manager/key-manager.service';
 import Web3 from 'web3';
-import WalletService from '../wallet/wallet.service';
 import config from '../../common/config';
+import { Catch, Step } from '../../decorators';
 import { hexDecode } from '../../../utils/service';
 import { Logger } from '../../common/logger/logger';
+import WalletService from '../wallet/wallet.service';
+import KeyVaultService from '../key-vault/key-vault.service';
+import Connection from '../../common/store-manager/connection';
+import BloxApi from '../../common/communication-manager/blox-api';
+import KeyManagerService from '../key-manager/key-manager.service';
+import { METHOD } from '../../common/communication-manager/constants';
+import BeaconchaApi from '../../common/communication-manager/beaconcha-api';
 
-// @CatchClass<AccountService>()
 export default class AccountService {
   private readonly walletService: WalletService;
   private readonly keyVaultService: KeyVaultService;
@@ -119,7 +118,7 @@ export default class AccountService {
   async createBloxAccounts({ indexToRestore }: { indexToRestore?: number }): Promise<any> {
     const network = Connection.db(this.storePrefix).get('network');
     const lastNetworkIndex = +Connection.db(this.storePrefix).get(`index.${network}`);
-    const index: number = indexToRestore ?? (lastNetworkIndex + 1 | 0);
+    const index: number = indexToRestore ?? (lastNetworkIndex + 1 || 0);
     const accumulate = indexToRestore != null;
 
     // Get cumulative accounts list or one account

@@ -260,7 +260,7 @@ const Test = () => {
           Create Wallet
         </button>
         <button onClick={async () => {
-          await accountService.createAccount({ getNextIndex: false, indexToRestore: 0 });
+          await accountService.createAccount({ indexToRestore: 0 });
         }}>
           Create Account
         </button>

@@ -1,16 +1,16 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
-
+import { Template } from '../common';
 import WelcomePage from '../WelcomePage';
-import {Template} from '../common';
 import * as WalletPages from '../Wallet';
 import * as ValidatorPages from '../Validators';
+import config from '../../../../backend/common/config';
+import { getDepositToNetwork } from '../../../Accounts/selectors';
 
 import walletImage from 'components/Wizard/assets/img-key-vault.svg';
 import testnetValidatorImage from '../../assets/img-validator-test-net.svg';
 import mainnetValidatorImage from '../../assets/img-validator-main-net.svg';
-import {getDepositToNetwork} from '../../../Accounts/selectors';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 
 const switcher = (props: Props) => {
   const {page, network} = props;
-  const validatorImage = network === 'pyrmont' ? testnetValidatorImage : mainnetValidatorImage;
+  const validatorImage = network === config.env.PYRMONT_NETWORK ? testnetValidatorImage : mainnetValidatorImage;
 
   switch (page) {
     case 0:

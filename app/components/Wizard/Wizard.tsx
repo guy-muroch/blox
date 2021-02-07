@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-
-import { getWizardFinishedStatus } from './selectors';
-import { getAddAnotherAccount } from '../Accounts/selectors';
-
 import Header from '../common/Header';
-import ContentManager from './components/ContentManager';
 import { DiscordButton } from 'common/components';
+import { getWizardFinishedStatus } from './selectors';
+import ContentManager from './components/ContentManager';
+import { getAddAnotherAccount } from '../Accounts/selectors';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -25,7 +23,7 @@ const Wizard = (props: Props) => {
 
   return (
     <Wrapper>
-      <Header withMenu={withMenu} />
+      <Header withMenu={withMenu} isDashboard={false} />
       <ContentManager {...contentManagerProps} />
       <DiscordButton />
     </Wrapper>

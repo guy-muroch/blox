@@ -1,27 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-
-import { useInjectSaga } from 'utils/injectSaga';
-
-import * as actionsFromDashboard from '../../../Dashboard/actions';
-import { MODAL_TYPES } from '../../../Dashboard/constants';
-
-import * as wizardActions from '../../actions';
-import * as wizardSelectors from '../../selectors';
+import { bindActionCreators } from 'redux';
 import saga from '../../saga';
-import usePasswordHandler from '../../../PasswordHandler/usePasswordHandler';
-
+import ButtonWithIcon from './ButtonWithIcon';
+import * as wizardActions from '../../actions';
+import { useInjectSaga } from 'utils/injectSaga';
+import * as wizardSelectors from '../../selectors';
+import { InfoWithTooltip } from 'common/components';
+import * as userSelectors from '../../../User/selectors';
+import { MODAL_TYPES } from '../../../Dashboard/constants';
 import * as accountSelectors from '../../../Accounts/selectors';
 import { allAccountsDeposited } from '../../../Accounts/service';
-
-import * as userSelectors from '../../../User/selectors';
-
-import { InfoWithTooltip } from 'common/components';
-import ButtonWithIcon from './ButtonWithIcon';
-
 import Connection from 'backend/common/store-manager/connection';
+import * as actionsFromDashboard from '../../../Dashboard/actions';
+import usePasswordHandler from '../../../PasswordHandler/usePasswordHandler';
 
 import bgImage from 'assets/images/bg_staking.jpg';
 import keyVaultImg from 'components/Wizard/assets/img-key-vault.svg';
@@ -51,7 +44,7 @@ const Left = styled.div`
 const Right = styled.div`
   width: 55vw;
   height: 100%;
-  padding: 100px 11vw 0px 11vw;
+  padding: 100px 11vw 0 11vw;
 `;
 
 const IntroText = styled.div`
@@ -135,8 +128,13 @@ const WelcomePage = (props: Props) => {
   const redirectToPassPhrasePage = () => setPage(4);
 
   const redirectToCreateAccount = () => {
-    setStep(step + 1);
-    setPage(6);
+    if (!accounts || !accounts.length) {
+      setStep(2);
+      setPage(4);
+    } else {
+      setStep(step + 1);
+      setPage(6);
+    }
   };
 
   const redirectToDepositPage = () => {

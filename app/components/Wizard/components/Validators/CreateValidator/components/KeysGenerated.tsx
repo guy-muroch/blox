@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import { NETWORKS } from '../../constants';
 import { InfoWithTooltip } from 'common/components';
 import * as actionsFromWizard from '../../../../actions';
+import useDashboardData from '../../../../../Dashboard/useDashboardData';
 import { Title, SubTitle, Paragraph, BigButton, SuccessIcon } from '../../../common';
 
 const Wrapper = styled.div``;
@@ -36,10 +37,12 @@ withdrawalKeyTooltip += 'which will later be used for identifying the entity tha
 const KeysGenerated = (props: Props) => {
   const { onClick, validatorData, wizardActions } = props;
   const { setFinishedWizard, clearWizardData } = wizardActions;
+  const { loadDashboardData } = useDashboardData();
 
   const onGoToDashboardClick = async () => {
     await clearWizardData();
     await setFinishedWizard(true);
+    await loadDashboardData();
   };
 
   return (
