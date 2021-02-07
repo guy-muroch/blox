@@ -1,14 +1,17 @@
 import util from 'util';
 import { exec } from 'child_process';
 import { execPath } from '../../../binaries';
+import { Log } from '../../common/logger/logger';
 import { Catch, CatchClass } from '../../decorators';
 
 @CatchClass<KeyManagerService>()
 export default class KeyManagerService {
   private readonly executablePath: string;
   private readonly executor: (command: string) => Promise<any>;
+  private logger: Log;
 
   constructor() {
+    this.logger = new Log();
     this.executor = util.promisify(exec);
     this.executablePath = execPath;
   }
@@ -92,7 +95,7 @@ export default class KeyManagerService {
   async mnemonicGenerate(): Promise<string> {
     try {
       const { stdout } = await this.executor(`${this.executablePath} mnemonic generate`);
-      console.log(stdout);
+      this.logger.trace(stdout);
       return stdout.replace('\n', '');
     } catch (e) {
       throw new Error('Generate mnemonic failed.');

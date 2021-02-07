@@ -1,11 +1,13 @@
 import { eventChannel, END } from 'redux-saga';
 import { call, put, take, takeLatest, select } from 'redux-saga/effects';
-import { PROCESS_SUBSCRIBE } from './actionTypes';
 import * as actions from './actions';
-import { processInstantiator, Listener } from './service';
 import { getNetwork } from '../Wizard/selectors';
+import { PROCESS_SUBSCRIBE } from './actionTypes';
+import { Log } from '../../backend/common/logger/logger';
+import { processInstantiator, Listener } from './service';
 
 function* startProcess(action) {
+  const logger = new Log();
   const { payload } = action;
   const { name } = payload;
   const network = payload.network || (yield select(getNetwork));
@@ -16,15 +18,14 @@ function* startProcess(action) {
   try {
     while (true) {
       const result = yield take(channel);
-      const { payload: { isActive: isActiveFromStep, step, state, data: stepData, error }, subject } = result;
+      const { payload: { isActive: isActiveFromStep, step, state, data: stepData, error }} = result;
       if (isActiveFromStep) {
         isActive = isActiveFromStep;
       }
       if (stepData) {
         data = stepData;
       }
-      console.log('result', result);
-      console.log(`${step?.num}/${step?.numOf} - ${step?.name}`);
+      step?.name && logger.info(`${step?.num}/${step?.numOf} - ${step?.name}`);
       let message = step?.name;
       let currentStep = 0;
       let overallSteps = 0;
@@ -57,7 +58,6 @@ function createChannel(process) {
   return eventChannel((emitter) => {
     const callback = (subject, payload) => {
       const { error, state } = payload;
-      console.log('==???', error, state);
       emitter({ subject, payload });
       if (state === 'completed') {
         process.unsubscribe(listener);
