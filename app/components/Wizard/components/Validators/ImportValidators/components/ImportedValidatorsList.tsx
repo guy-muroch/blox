@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import styled from 'styled-components/dist/styled-components.esm';
 
 import tableColumns from './table-columns';
 import Table from 'common/components/Table';
 import { getNetworkForImport } from './helpers';
 import { Paragraph, Link } from '../../../common';
+import { MODAL_TYPES } from '../../../../../Dashboard/constants';
+import * as actionsFromDashboard from '../../../../../Dashboard/actions';
 import useProcessRunner from '../../../../../ProcessRunner/useProcessRunner';
 import { Checkbox, ProcessLoader } from '../../../../../../common/components';
 import usePasswordHandler from '../../../../../PasswordHandler/usePasswordHandler';
@@ -48,18 +52,11 @@ const ProgressWrapper = styled.div`
 type ImportedValidatorsListProps = {
   show: boolean,
   validators: any[],
-  onDone: () => void
+  onDone: () => void;
+  dashboardActions: any;
 };
 
-/**
- * Table with list of imported validators
- *
- * @param show
- * @param validators
- * @param onDone
- * @constructor
- */
-const ImportedValidatorsList = ({ show, validators, onDone }: ImportedValidatorsListProps) => {
+const ImportedValidatorsList = ({ show, validators, onDone, dashboardActions }: ImportedValidatorsListProps) => {
   // Don't show component if not allowed to show or nothing to show
   if (!show || !validators || !validators.length) {
     return null;
@@ -77,6 +74,7 @@ const ImportedValidatorsList = ({ show, validators, onDone }: ImportedValidators
   const [isAgreementReadCheckbox, setAgreementReadCheckbox] = useState(false);
   const [isValidatorsOfflineCheckbox, setValidatorsOfflineCheckbox] = useState(false);
 
+  const { setModalDisplay } = dashboardActions;
   const { checkIfPasswordIsNeeded } = usePasswordHandler();
   const { isLoading, isDone, processData, error, startProcess, clearProcessState, loaderPercentage } = useProcessRunner();
 
@@ -91,6 +89,8 @@ const ImportedValidatorsList = ({ show, validators, onDone }: ImportedValidators
   useEffect(() => {
     if (isDone && processData && !error) {
       onDone();
+    } else if (isDone && error && !isLoading) {
+      setModalDisplay({ show: true, type: MODAL_TYPES.VALIDATORS_IMPORT_FAILED });
     }
   }, [isLoading, processData, error]);
 
@@ -184,4 +184,10 @@ const ImportedValidatorsList = ({ show, validators, onDone }: ImportedValidators
   );
 };
 
-export default ImportedValidatorsList;
+type Dispatch = (arg0: { type: string }) => any;
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  dashboardActions: bindActionCreators(actionsFromDashboard, dispatch)
+});
+
+export default connect(null, mapDispatchToProps)(ImportedValidatorsList);
