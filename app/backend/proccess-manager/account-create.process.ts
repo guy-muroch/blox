@@ -1,9 +1,11 @@
 import ProcessClass from './process.class';
 import Connection from '../common/store-manager/connection';
+import WalletService from '../services/wallet/wallet.service';
 import AccountService from '../services/account/account.service';
 import KeyVaultService from '../services/key-vault/key-vault.service';
 
 export default class AccountCreateProcess extends ProcessClass {
+  private readonly walletService: WalletService;
   private readonly accountService: AccountService;
   private readonly keyVaultService: KeyVaultService;
   public readonly actions: Array<any>;
@@ -44,20 +46,27 @@ export default class AccountCreateProcess extends ProcessClass {
         method: 'createBloxAccounts',
         actions: [
           {
-            instance: this.accountService,
-            /**
-             * In case of issues we should remove:
-             *  - one last indexed account if it was attempt to create validator
-             *  - all accounts if it was attempt to import validators
-             */
-            method: indexToRestore != null ? 'deleteAllAccounts' : 'deleteLastIndexedAccount'
-          },
-          {
             instance: this.keyVaultService,
             method: 'updateVaultStorage'
           }
         ]
       }
     ];
+
+    const firstAction = {
+      instance: null,
+      method: null
+    };
+    if (indexToRestore != null) {
+      // In case of import validators - create wallet from scratch
+      firstAction.instance = this.walletService;
+      firstAction.method = 'createWallet';
+    } else {
+      // In case of one validator creation - remove failed validator only
+      firstAction.instance = this.accountService;
+      firstAction.method = 'deleteLastIndexedAccount';
+    }
+
+    this.fallbackActions[0].actions.unshift(firstAction);
   }
 }

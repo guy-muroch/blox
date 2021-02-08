@@ -1,16 +1,13 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { Switch, Route } from 'react-router-dom';
 
-import Wizard from '../Wizard';
-import Dashboard from '../Dashboard';
-import Header from '../common/Header';
 import wizardSaga from '../Wizard/saga';
+import RootRoute from './routes/RootRoute';
 import { Loader } from 'common/components';
-import SettingsPage from '../SettingsPage';
 import { loadWallet } from '../Wizard/actions';
+import SettingsRoute from './routes/SettingsRoute';
 import walletSaga from '../KeyVaultManagement/saga';
 import { MODAL_TYPES } from '../Dashboard/constants';
 import * as wizardSelectors from '../Wizard/selectors';
@@ -26,28 +23,6 @@ import { keyvaultLoadLatestVersion } from '../KeyVaultManagement/actions';
 
 const wizardKey = 'wizard';
 const walletKey = 'keyvaultManagement';
-
-const DashboardWrapper = styled.div`
-  width: 100%;
-  min-height:100%;
-  padding-top: 70px;
-  background-color: #f7fcff;
-`;
-
-const WizardWrapper = styled.div`
-  width: 100%;
-  min-height:100%;
-  background-color: #f7fcff;
-`;
-
-const Content = styled.div`
-  width: 100%;
-  min-height:100%;
-  max-width: 1360px;
-  margin: auto;
-  display: flex;
-`;
-
 let initiallyShowDashboard = null;
 
 const EntryPage = (props: Props) => {
@@ -128,32 +103,24 @@ const EntryPage = (props: Props) => {
   const showWizard = !showDashboard;
 
   return (
-    <>
-      <Header withMenu isDashboard={showDashboard} />
-      <Content>
-        <Switch>
-          <Route exact path="/"
-            render={(renderProps) => (
-              <>
-                {showDashboard && (
-                  <DashboardWrapper>
-                    <Dashboard {...renderProps} {...otherProps} />
-                  </DashboardWrapper>
-                )}
-                {showWizard && (
-                  <WizardWrapper>
-                    <Wizard {...renderProps} {...otherProps} />
-                  </WizardWrapper>
-                )}
-              </>
-            )}
+    <Switch>
+      <Route exact path="/"
+        render={(renderProps) => (
+          <RootRoute
+            showDashboard={showDashboard}
+            showWizard={showWizard}
+            renderProps={{ ...renderProps, ...otherProps }}
           />
-          <Route path="/settings"
-            render={(renderProps) => (<SettingsPage withMenu {...renderProps} {...otherProps} />)}
+        )}
+      />
+      <Route path="/settings"
+        render={(renderProps) => (
+          <SettingsRoute
+            renderProps={{ ...renderProps, ...otherProps }}
           />
-        </Switch>
-      </Content>
-    </>
+        )}
+      />
+    </Switch>
   );
 };
 

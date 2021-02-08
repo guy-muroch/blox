@@ -29,7 +29,14 @@ const ImportValidators = (props: Props) => {
    * Back button handler for all the steps
    */
   const onBackButtonClick = () => {
-    setPage(page - 1);
+    if (validators && validators.length) {
+      // We already on validators list screen
+      // Back button should show validators number input
+      setValidators([]);
+    } else {
+      // We just in the beginning, should go back to import seed screen (mnemonic input)
+      setPage(page - 1);
+    }
   };
 
   return (

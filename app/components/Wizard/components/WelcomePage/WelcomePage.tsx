@@ -16,13 +16,14 @@ import Connection from 'backend/common/store-manager/connection';
 import * as actionsFromDashboard from '../../../Dashboard/actions';
 import usePasswordHandler from '../../../PasswordHandler/usePasswordHandler';
 
-import bgImage from 'assets/images/bg_staking.jpg';
-import keyVaultImg from 'components/Wizard/assets/img-key-vault.svg';
-import mainNetImg from 'components/Wizard/assets/img-validator-main-net.svg';
+import keyVaultImg from '../../assets/img-key-vault.svg';
+import mainNetImg from '../../assets/img-validator-main-net.svg';
+import bgImage from '../../../../../app/assets/images/bg_staking.jpg';
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
+  min-height:100%;
   display: flex;
 `;
 

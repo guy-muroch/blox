@@ -9,6 +9,7 @@ import { getAddAnotherAccount } from '../Accounts/selectors';
 
 const Wrapper = styled.div`
   height: 100%;
+  min-height:100%;
   background-color: ${({ theme }) => theme.gray50};
 `;
 

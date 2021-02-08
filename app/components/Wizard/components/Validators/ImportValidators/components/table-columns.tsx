@@ -10,9 +10,10 @@ export default [
         width: '10%',
         justifyContent: 'flex-start',
         compareFunction: (a, b, dir) => compareFunction('name', a, b, dir, 'string'),
-        valueRender: (index) => {
+        valueRender: (index, totalItems) => {
             const indexStr = index.replace('account-', '');
-            return String(parseInt(indexStr, 10) + 1).padStart(3, '0');
+            const padValue = totalItems && totalItems < 100 ? 2 : 3;
+            return String(parseInt(indexStr, 10) + 1).padStart(padValue, '0');
         },
     },
     {

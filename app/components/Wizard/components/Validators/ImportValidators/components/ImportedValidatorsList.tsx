@@ -130,6 +130,7 @@ const ImportedValidatorsList = ({ show, validators, onDone }: ImportedValidators
           onPageClick={onPageClick}
           isPagination
           paginationInfo={paginationInfo}
+          totalCount={validators.length}
         />
       </TableWrapper>
 
