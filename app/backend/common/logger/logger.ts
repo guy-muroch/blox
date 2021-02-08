@@ -34,24 +34,24 @@ export class Log {
     });
   }
 
-  error(first, ...rest): void {
-    this.logger.error(first, ...rest);
+  error(...args: any[]): void {
+    this.logger.error(...args);
   }
 
-  debug(first, ...rest): void {
-    this.logger.debug(first, ...rest);
+  debug(...args: any[]): void {
+    this.logger.debug(...args);
   }
 
-  trace(first, ...rest): void {
-    this.logger.trace(first, ...rest);
+  trace(...args: any[]): void {
+    this.logger.trace(...args);
   }
 
-  info(first, ...rest): void {
-    this.logger.info(first, ...rest);
+  info(...args: any[]): void {
+    this.logger.info(...args);
   }
 
-  warn(first, ...rest): void {
-    this.logger.warn(first, ...rest);
+  warn(...args: any[]): void {
+    this.logger.warn(...args);
   }
 
   async getArchivedLogs(): Promise<string> {
