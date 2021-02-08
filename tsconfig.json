@@ -24,6 +24,7 @@
     "outDir": "$$ts-jest$$",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "skipLibCheck": true
     "typeRoots": ["app/types/*.d.ts"]
   },
   "include": ["app/types/*.d.ts"],
@@ -33,6 +34,7 @@
     "app/main.prod.js",
     "app/renderer.prod.js",
     "app/dist",
-    "dll"
+    "dll",
+    "node_modules"
   ]
 }

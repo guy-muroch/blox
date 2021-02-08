@@ -14,6 +14,13 @@ import * as loginActions from '../CallbackPage/actions';
 import GlobalStyle from '../../common/styles/global-styles';
 import { getIsLoggedIn, getIsLoading } from '../CallbackPage/selectors';
 
+// analytics tools
+import analytics from '../../backend/analytics';
+import { getOsVersion } from 'utils/service';
+import { version } from 'package.json';
+import { v4 as uuidv4 } from 'uuid';
+import BaseStore from '../../backend/common/store-manager/base-store';
+
 const AppWrapper = styled.div`
   margin: 0 auto;
   height: 100%;
@@ -31,6 +38,24 @@ const App = (props: Props) => {
   const logger = new Log();
 
   const init = async () => {
+    const baseStore: BaseStore = new BaseStore();
+    if (!baseStore.get('appUuid')) {
+      baseStore.set('appUuid', uuidv4());
+    }
+    const appUuid = baseStore.get('appUuid');
+
+    // trigger analytics first event
+    /* Identify users */
+    await analytics.identify(appUuid, {
+      os: getOsVersion(),
+      appVersion: `v${version}`
+    });
+
+    /* Track events */
+    await analytics.track('appOpened', {
+      label: appUuid,
+    });
+
     logger.debug('initialize app window');
     await setAppInitialised(true);
     await initApp();

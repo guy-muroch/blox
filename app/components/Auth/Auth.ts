@@ -9,6 +9,11 @@ import { createLogoutWindow } from './Logout-Window';
 import Connection from 'backend/common/store-manager/connection';
 import BloxApi from 'backend/common/communication-manager/blox-api';
 import AuthApi from 'backend/common/communication-manager/auth-api';
+// analytics tools
+import analytics from '../../backend/analytics';
+import BaseStore from '../../backend/common/store-manager/base-store';
+import { getOsVersion } from 'utils/service';
+import { version } from 'package.json';
 import { METHOD } from 'backend/common/communication-manager/constants';
 
 export default class Auth {
@@ -105,13 +110,19 @@ export default class Auth {
   };
 
   setSession = async (authResult: Auth0ResponseData, userProfile: Profile) => {
+    const baseStore: BaseStore = new BaseStore();
     const { id_token } = authResult;
     this.idToken = id_token;
     this.userProfile = userProfile;
     this.logger.info('Setup user account');
     Connection.setup({ currentUserId: userProfile.sub, authToken: authResult.id_token });
     // Store.getStore().init(userProfile.sub, authResult.id_token);
-
+    await analytics.identify(userProfile.sub, {
+      appUuid: baseStore.get('appUuid'),
+      os: getOsVersion(),
+      appVersion: `v${version}`
+    });
+    await analytics.track('loggedIn', {});
     // await Migrate.runMain(userProfile.sub, Store.getStore().get('env'));
     this.bloxApi.init();
     await this.bloxApi.request(METHOD.GET, 'organizations/profile');
