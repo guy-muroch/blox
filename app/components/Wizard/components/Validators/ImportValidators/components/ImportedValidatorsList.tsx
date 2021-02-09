@@ -13,6 +13,7 @@ import useProcessRunner from '../../../../../ProcessRunner/useProcessRunner';
 import { Checkbox, ProcessLoader } from '../../../../../../common/components';
 import usePasswordHandler from '../../../../../PasswordHandler/usePasswordHandler';
 import { handlePageClick } from '../../../../../../common/components/Table/service';
+import analytics from 'backend/analytics';
 
 const TableWrapper = styled.div`
   width: 100%;
@@ -89,8 +90,10 @@ const ImportedValidatorsList = ({ show, validators, onDone, dashboardActions }: 
   useEffect(() => {
     if (isDone && processData && !error) {
       onDone();
+      analytics.track('import-completed');
     } else if (isDone && error && !isLoading) {
       setModalDisplay({ show: true, type: MODAL_TYPES.VALIDATORS_IMPORT_FAILED });
+      analytics.track('import-failed');
     }
   }, [isLoading, processData, error]);
 
