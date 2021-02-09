@@ -1,11 +1,11 @@
-import AwsService from '../services/aws/aws.service';
-import KeyVaultService from '../services/key-vault/key-vault.service';
-import ProcessClass from './process.class';
-import WalletService from '../services/wallet/wallet.service';
-import Connection from '../common/store-manager/connection';
-import BaseStore from '../common/store-manager/base-store';
-import AccountService from '../services/account/account.service';
 import analytics from '../analytics';
+import ProcessClass from './process.class';
+import AwsService from '../services/aws/aws.service';
+import BaseStore from '../common/store-manager/base-store';
+import Connection from '../common/store-manager/connection';
+import WalletService from '../services/wallet/wallet.service';
+import AccountService from '../services/account/account.service';
+import KeyVaultService from '../services/key-vault/key-vault.service';
 
 // TODO import from .env
 const tempStorePrefix = 'tmp';
@@ -116,7 +116,7 @@ export default class ReinstallProcess extends ProcessClass {
           },
           {
             hook: async() => {
-              await analytics.track('error-occured', {
+              await analytics.track('error-occurred', {
                 reason: 'kv-update-failed'
               });
             }

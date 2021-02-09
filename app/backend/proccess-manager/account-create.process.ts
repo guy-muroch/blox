@@ -1,10 +1,9 @@
+import analytics from '../analytics';
 import ProcessClass from './process.class';
 import Connection from '../common/store-manager/connection';
 import WalletService from '../services/wallet/wallet.service';
 import AccountService from '../services/account/account.service';
 import KeyVaultService from '../services/key-vault/key-vault.service';
-// analytics tools
-import analytics from '../analytics';
 
 export default class AccountCreateProcess extends ProcessClass {
   private readonly walletService: WalletService;
@@ -57,7 +56,7 @@ export default class AccountCreateProcess extends ProcessClass {
           },
           {
             hook: async() => {
-              await analytics.track('error-occured', {
+              await analytics.track('error-occurred', {
                 reason: 'validator-creation-failed'
               });
             }
