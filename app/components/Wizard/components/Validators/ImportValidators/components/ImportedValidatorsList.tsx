@@ -93,7 +93,9 @@ const ImportedValidatorsList = ({ show, validators, onDone, dashboardActions }: 
       analytics.track('import-completed');
     } else if (isDone && error && !isLoading) {
       setModalDisplay({ show: true, type: MODAL_TYPES.VALIDATORS_IMPORT_FAILED });
-      analytics.track('import-failed');
+      analytics.track('error-occured', {
+        reason: 'import-failed'
+      });
     }
   }, [isLoading, processData, error]);
 
