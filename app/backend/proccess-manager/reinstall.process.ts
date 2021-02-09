@@ -5,6 +5,7 @@ import WalletService from '../services/wallet/wallet.service';
 import Connection from '../common/store-manager/connection';
 import BaseStore from '../common/store-manager/base-store';
 import AccountService from '../services/account/account.service';
+import analytics from '../analytics';
 
 // TODO import from .env
 const tempStorePrefix = 'tmp';
@@ -20,7 +21,7 @@ export default class ReinstallProcess extends ProcessClass {
   public readonly fallbackActions: Array<any>;
 
   constructor() {
-    super();
+    super('Reinstallation');
     const baseStore = new BaseStore();
     Connection.setup({
       currentUserId: baseStore.get('currentUserId'),
@@ -85,6 +86,11 @@ export default class ReinstallProcess extends ProcessClass {
         params: {
           prefix: tempStorePrefix
         }
+      },
+      {
+        hook: async() => {
+          await analytics.track('kv-updated');
+        }
       }
     ];
 
@@ -106,6 +112,13 @@ export default class ReinstallProcess extends ProcessClass {
             method: 'remove',
             params: {
               prefix: tempStorePrefix
+            }
+          },
+          {
+            hook: async() => {
+              await analytics.track('error-occured', {
+                reason: 'kv-update-failed'
+              });
             }
           }
         ]

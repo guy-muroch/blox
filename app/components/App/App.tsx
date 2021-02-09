@@ -52,8 +52,8 @@ const App = (props: Props) => {
     });
 
     /* Track events */
-    await analytics.track('appOpened', {
-      label: appUuid,
+    await analytics.track('first-time', {
+      appUuid,
     });
 
     logger.debug('initialize app window');

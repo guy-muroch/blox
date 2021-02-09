@@ -6,6 +6,7 @@ import KeyVaultService from '../services/key-vault/key-vault.service';
 import UsersService from '../services/users/users.service';
 import ProcessClass from './process.class';
 import Connection from '../common/store-manager/connection';
+import analytics from '../analytics';
 
 export default class RecoveryProcess extends ProcessClass {
   private readonly accountService: AccountService;
@@ -17,7 +18,7 @@ export default class RecoveryProcess extends ProcessClass {
   public readonly fallbackActions: Array<any>;
 
   constructor({ accessKeyId, secretAccessKey, isNew = true }) {
-    super();
+    super('Recovery');
     this.accountService = new AccountService();
     this.awsService = new AwsService();
     this.keyVaultService = new KeyVaultService();
@@ -45,6 +46,11 @@ export default class RecoveryProcess extends ProcessClass {
       { instance: this.keyVaultService, method: 'getKeyVaultStatus' },
       { instance: this.keyVaultService, method: 'updateVaultMountsStorage' },
       { instance: this.awsService, method: 'truncateOldKvResources' },
+      {
+        hook: async() => {
+          await analytics.track('recovery-completed');
+        }
+      }
     ];
 
     this.fallbackActions = [
@@ -63,6 +69,13 @@ export default class RecoveryProcess extends ProcessClass {
             method: 'remove',
             params: {
               prefix: ''
+            }
+          },
+          {
+            hook: async() => {
+              await analytics.track('error-occured', {
+                reason: 'recovery-failed'
+              });
             }
           }
         ]

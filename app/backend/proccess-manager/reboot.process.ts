@@ -8,7 +8,7 @@ export default class RebootProcess extends ProcessClass {
   public readonly actions: Array<any>;
 
   constructor() {
-    super();
+    super('Reboot');
     this.awsService = new AwsService();
     this.keyVaultService = new KeyVaultService();
     this.actions = [

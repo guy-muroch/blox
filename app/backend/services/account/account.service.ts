@@ -10,7 +10,6 @@ import BloxApi from '../../common/communication-manager/blox-api';
 import KeyManagerService from '../key-manager/key-manager.service';
 import { METHOD } from '../../common/communication-manager/constants';
 import BeaconchaApi from '../../common/communication-manager/beaconcha-api';
-
 export default class AccountService {
   private readonly walletService: WalletService;
   private readonly keyVaultService: KeyVaultService;
@@ -141,7 +140,7 @@ export default class AccountService {
       return acc;
     });
 
-    console.log({ createBloxAccounts: accounts });
+    this.logger.debug('Created accounts', accounts);
 
     const account = await this.create(accounts);
     if (account.error && account.error instanceof Error) return;

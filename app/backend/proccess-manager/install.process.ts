@@ -5,6 +5,7 @@ import KeyVaultService from '../services/key-vault/key-vault.service';
 import UsersService from '../services/users/users.service';
 import ProcessClass from './process.class';
 import Connection from '../common/store-manager/connection';
+import analytics from '../analytics';
 
 export default class InstallProcess extends ProcessClass {
   private readonly awsService: AwsService;
@@ -16,7 +17,7 @@ export default class InstallProcess extends ProcessClass {
   public readonly maxRunBeforeFallback: number;
 
   constructor({ accessKeyId, secretAccessKey, isNew = true }) {
-    super();
+    super('Installation');
     this.userService = new UsersService();
     this.keyVaultService = new KeyVaultService();
     this.awsService = new AwsService();
@@ -42,7 +43,12 @@ export default class InstallProcess extends ProcessClass {
       { instance: this.walletService, method: 'syncVaultWithBlox', params: { isNew } },
       { instance: this.keyVaultService, method: 'getKeyVaultStatus' },
       { instance: this.awsService, method: 'truncateOldKvResources' },
-    ];
+      {
+        hook: async() => {
+          await analytics.track('kv-install-completed');
+        }
+      }
+  ];
 
     this.fallbackActions = [
       {
@@ -57,7 +63,14 @@ export default class InstallProcess extends ProcessClass {
             }
           },
           { instance: this.awsService, method: 'truncateOldKvResources' },
-          { instance: Connection, method: 'remove' }
+          { instance: Connection, method: 'remove' },
+          {
+            hook: async() => {
+              await analytics.track('error-occured', {
+                reason: 'kv-installation-failed'
+              });
+            }
+          }
         ]
       }
     ];

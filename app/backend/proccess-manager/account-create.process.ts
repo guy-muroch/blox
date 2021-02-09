@@ -3,6 +3,8 @@ import Connection from '../common/store-manager/connection';
 import WalletService from '../services/wallet/wallet.service';
 import AccountService from '../services/account/account.service';
 import KeyVaultService from '../services/key-vault/key-vault.service';
+// analytics tools
+import analytics from '../analytics';
 
 export default class AccountCreateProcess extends ProcessClass {
   private readonly walletService: WalletService;
@@ -12,7 +14,7 @@ export default class AccountCreateProcess extends ProcessClass {
   public readonly fallbackActions: Array<any>;
 
   constructor(network: string, indexToRestore?: number) {
-    super();
+    super('Account creation');
     Connection.db().set('network', network);
     this.keyVaultService = new KeyVaultService();
     this.accountService = new AccountService();
@@ -38,6 +40,10 @@ export default class AccountCreateProcess extends ProcessClass {
         params: {
           indexToRestore
         }
+      }, {
+        hook: async() => {
+          await analytics.track('validator-created');
+        }
       }
     ];
 
@@ -48,6 +54,13 @@ export default class AccountCreateProcess extends ProcessClass {
           {
             instance: this.keyVaultService,
             method: 'updateVaultStorage'
+          },
+          {
+            hook: async() => {
+              await analytics.track('error-occured', {
+                reason: 'validator-creation-failed'
+              });
+            }
           }
         ]
       }
