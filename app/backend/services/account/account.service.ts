@@ -26,7 +26,7 @@ export default class AccountService {
     this.keyManagerService = new KeyManagerService();
     this.bloxApi = new BloxApi();
     this.bloxApi.init();
-    this.logger = new Log();
+    this.logger = new Log('accounts');
 
     this.beaconchaApi = new BeaconchaApi();
   }

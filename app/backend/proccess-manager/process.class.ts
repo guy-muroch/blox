@@ -17,7 +17,7 @@ export default class ProcessClass implements Subject {
   processName: string;
 
   constructor(name = null) {
-    this.logger = new Log();
+    this.logger = new Log('process');
     if (name) {
       this.processName = name;
     }
@@ -144,9 +144,9 @@ export default class ProcessClass implements Subject {
     this.state = 'fallback';
     this.logger.warn('-----FALLBACK RUN-----');
     try {
-      const { actions = null} = this.fallbackActions.find(item => item.method === this.action.method) || this.fallbackActions.find(item => item.postActions);
-      if (!actions) return;
-      await this.processActions(actions);
+      const step = this.fallbackActions.find(item => item.method === this.action.method) || this.fallbackActions.find(item => item.postActions);
+      if (!step?.actions) return;
+      await this.processActions(step.actions);
     } catch (error) {
       this.logger.error('-----FALLBACK FAILED-----', error);
     }

@@ -13,7 +13,7 @@ export default class KeyVaultSsh {
 
   constructor(prefix: string = '') {
     this.storePrefix = prefix;
-    this.logger = new Log();
+    this.logger = new Log('key-vault-ssh');
   }
 
   async getConnection(customPort?: string): Promise<NodeSSH> {

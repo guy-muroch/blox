@@ -25,7 +25,7 @@ export default class Store {
     } else {
       this.prefix = prefix;
     }
-    this.logger = new Log();
+    this.logger = new Log('store');
   }
 
   init(userId: string, authToken: string): void {

@@ -11,7 +11,7 @@ export default class KeyVaultApi extends Http {
 
   constructor(prefix: string = '') {
     super();
-    this.logger = new Log();
+    this.logger = new Log('key-vault-api');
     this.storePrefix = prefix;
     this.keyVaultSsh = new KeyVaultSsh(prefix);
   }

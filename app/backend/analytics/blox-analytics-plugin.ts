@@ -5,7 +5,7 @@ import { METHOD } from '../common/communication-manager/constants';
 export default function bloxAnalyticsPlugin(pluginConfig = {}) {
   // return object for analytics to use
   const bloxApi = new BloxApi('', true);
-  const logger = new Log();
+  const logger = new Log('analytics');
 
   return {
     /* All plugins require a name */

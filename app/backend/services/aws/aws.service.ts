@@ -24,7 +24,7 @@ export default class AwsService {
   private logger: Log;
 
   constructor(prefix: string = '') {
-    this.logger = new Log();
+    this.logger = new Log('aws');
     this.storePrefix = prefix;
     if (!this.ec2 && Connection.db(this.storePrefix).exists('credentials')) {
       this.setAWSCredentials();

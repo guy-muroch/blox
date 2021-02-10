@@ -11,7 +11,7 @@ export default class KeyManagerService {
   private logger: Log;
 
   constructor() {
-    this.logger = new Log();
+    this.logger = new Log('key-manager');
     this.executor = util.promisify(exec);
     this.executablePath = execPath;
   }

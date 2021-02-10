@@ -43,7 +43,7 @@ const catchFunction = (payload: any = {}, toReflect: boolean = false) => {
 };
 
 function handleCatchFunctionError(key: string, error: Error, payload: any) {
-  const logger = new Log();
+  const logger = new Log('general-catch');
   const { handler } = catchDecoratorStore;
   const showErrorMessage = !!payload.showErrorMessage;
   const displayMessage = showErrorMessage

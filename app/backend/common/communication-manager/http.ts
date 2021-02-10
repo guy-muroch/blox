@@ -9,7 +9,7 @@ export default class Http {
   protected logger: Log;
 
   constructor() {
-    this.logger = new Log();
+    this.logger = new Log('http');
     this.instance = axios.create();
     axiosRetry(this.instance, {
       retries: +config.env.HTTP_RETRIES,
@@ -30,7 +30,17 @@ export default class Http {
       });
       return fullResponse ? response : response.data;
     } catch (error) {
-      this.logger.error(url, error);
+      error.config = {
+        url: error.config.url,
+        method: error.config.method,
+        baseURL: error.config.baseURL
+      };
+      error.config = {
+        url: error.config.url,
+        method: error.config.method,
+        baseURL: error.config.baseURL
+      };
+      this.logger.error(error);
       throw error;
     }
   }
