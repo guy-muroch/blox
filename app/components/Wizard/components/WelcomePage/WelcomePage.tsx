@@ -8,6 +8,7 @@ import * as wizardActions from '../../actions';
 import { useInjectSaga } from 'utils/injectSaga';
 import * as wizardSelectors from '../../selectors';
 import { InfoWithTooltip } from 'common/components';
+import config from '../../../../backend/common/config';
 import * as userSelectors from '../../../User/selectors';
 import { MODAL_TYPES } from '../../../Dashboard/constants';
 import * as accountSelectors from '../../../Accounts/selectors';
@@ -85,11 +86,11 @@ const WelcomePage = (props: Props) => {
 
     if (hasWallet) {
       if (!storedUuid && !userInfo.uuid && accounts?.length > 0) {
-        setModalDisplay({ show: true, type: MODAL_TYPES.DEVICE_SWITCH});
+        setModalDisplay({ show: true, type: MODAL_TYPES.DEVICE_SWITCH });
         return;
       }
       if (userInfo.uuid && ((!isPrimaryDevice && accounts?.length > 0) || isInRecoveryProcess)) {
-        setModalDisplay({ show: true, type: MODAL_TYPES.DEVICE_SWITCH});
+        setModalDisplay({ show: true, type: MODAL_TYPES.DEVICE_SWITCH });
         return;
       }
       if (hasSeed) {
@@ -114,7 +115,9 @@ const WelcomePage = (props: Props) => {
     }
   }, [isLoading]);
 
-  const onStep1Click = () => !showStep2 && setPage(1);
+  const onStep1Click = () => {
+    !showStep2 && setPage(config.PAGES.WALLET.SELECT_CLOUD_PROVIDER);
+  };
 
   const onStep2Click = () => {
     if (wallet.status === 'offline') {
@@ -126,21 +129,23 @@ const WelcomePage = (props: Props) => {
     }
   };
 
-  const redirectToPassPhrasePage = () => setPage(4);
+  const redirectToPassPhrasePage = () => {
+    setPage(config.PAGES.WALLET.IMPORT_OR_GENERATE_SEED);
+  };
 
   const redirectToCreateAccount = () => {
-    if (!accounts || !accounts.length) {
-      setStep(2);
-      setPage(4);
+    if (!accounts?.length) {
+      setStep(config.STEPS.VALIDATOR_SETUP);
+      setPage(config.PAGES.WALLET.IMPORT_OR_GENERATE_SEED);
     } else {
       setStep(step + 1);
-      setPage(6);
+      setPage(config.PAGES.VALIDATOR.SELECT_NETWORK);
     }
   };
 
   const redirectToDepositPage = () => {
     setStep(step + 1);
-    setPage(8);
+    setPage(config.PAGES.VALIDATOR.STAKING_DEPOSIT);
   };
 
   return (

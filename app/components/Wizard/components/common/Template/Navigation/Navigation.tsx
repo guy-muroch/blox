@@ -16,7 +16,7 @@ const Separator = styled.div`
   width: 100%;
   height: 1px;
   background-color: ${({ theme }) => theme.gray80015};
-  margin: 24px 0px;
+  margin: 24px 0;
 `;
 
 const Navigation = (props: Props) => {
@@ -33,8 +33,7 @@ const Navigation = (props: Props) => {
           {(step === 1 && page !== 4) && (
             <>
               <SubMenuItem text="Select Cloud Provider" page={page} number={1} />
-              <SubMenuItem text="Create Server" page={page} number={2} />
-              <SubMenuItem text="Save Passphrase" page={page} number={3} />
+              <SubMenuItem text="Create KeyVault" page={page} number={2} />
             </>
           )}
           <Separator />
@@ -58,7 +57,7 @@ const Navigation = (props: Props) => {
       {(step === 2 && page >= 10) && (
         <>
           <SubMenuItem text="Import Seed" page={page} number={10} />
-          <SubMenuItem text="Validator Section" page={page} number={11} />
+          <SubMenuItem text="Validator Selection" page={page} number={11} />
         </>
       )}
     </Wrapper>

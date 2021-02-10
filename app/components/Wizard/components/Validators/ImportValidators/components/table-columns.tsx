@@ -20,7 +20,7 @@ export default [
         key: 'validationPubKey',
         title: 'Validator',
         width: '90%',
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
         compareFunction: (a, b, dir) => compareFunction('validationPubKey', a, b, dir, 'string'),
         valueRender: (validator) => {
             const beaconchaLink = `https://beaconcha.in/validator/${validator}`;

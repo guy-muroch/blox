@@ -10,7 +10,7 @@ const Wrapper = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  font-family: Avenir;
+  font-family: Avenir, serif;
   font-size: 16px;
   font-weight: 500;
 `;

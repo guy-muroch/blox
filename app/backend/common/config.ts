@@ -32,6 +32,34 @@ export default class Config {
       BEACONCHA_URL: 'https://beaconcha.in/api/v1',
       PYRMONT_BEACONCHA_URL: 'https://pyrmont.beaconcha.in/api/v1',
       INFURA_API_KEY: 'ad49ce6ad5d64c2685f4b2ba86512c76',
+
+      // Application pages constants in one central place, environment-independent
+      APP_PAGES: {
+        WELCOME: {
+          DEFAULT: 0
+        },
+        WALLET: {
+          SELECT_CLOUD_PROVIDER: 1,
+          CREATE_SERVER: 2,
+          CONGRATULATIONS: 3,
+          IMPORT_OR_GENERATE_SEED: 4,
+          ENTER_MNEMONIC: 5,
+          IMPORT_MNEMONIC: 10,
+          IMPORT_VALIDATORS: 11
+        },
+        VALIDATOR: {
+          SELECT_NETWORK: 6,
+          CREATE_VALIDATOR: 7,
+          STAKING_DEPOSIT: 8,
+          CONGRATULATIONS: 9
+        }
+      },
+      APP_STEPS: {
+        WIZARD: {
+          KEY_VAULT_SETUP: 1,
+          VALIDATOR_SETUP: 2,
+        }
+      }
     }
   };
 
@@ -67,5 +95,13 @@ export default class Config {
       this.instance = new Config();
     }
     return this.instance;
+  }
+
+  static get PAGES(): any {
+    return this.env.APP_PAGES;
+  }
+
+  static get STEPS(): any {
+    return this.env.APP_STEPS;
   }
 }

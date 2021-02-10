@@ -16,6 +16,12 @@ const Image = styled.img`
   margin: 0 6px 2px 2px;
 `;
 
+const Question = styled.div`
+  font-size: 18px;
+  color: ${({ theme }) => theme.gray800 };
+  margin-bottom: 15px;
+`;
+
 const TextField = styled.input<{ error: string }>`
   height: 40px;
   color:${({theme, disabled}) => disabled ? theme.gray400 : theme.gray600};
@@ -79,7 +85,11 @@ const EnterValidatorsNumber = ({ show, setValidators }: EnterValidatorsNumberPro
   }, [validatorsNumber, validatorsNumberError, confirmedValidatorsNumber, generatedValidators]);
 
   const onValidatorsNumberInput = (event) => {
-    setValidatorsNumber(Math.abs(event.target.value));
+    try {
+      setValidatorsNumber(Math.abs(parseInt(event.target.value)));
+    } catch (e) {
+      setValidatorsNumber(0);
+    }
   };
 
   /**
@@ -105,9 +115,16 @@ const EnterValidatorsNumber = ({ show, setValidators }: EnterValidatorsNumberPro
     }
   };
 
+  const warningStyle = {
+    marginBottom: 34,
+    maxWidth: 590,
+    width: 590,
+    paddingRight: 5
+  };
+
   return (
     <>
-      <Warning style={{ marginBottom: '34px'}} text={'In order to avoid slashing, make sure to stop attesting with different providers before importing.'} />
+      <Warning style={warningStyle} text={'In order to avoid slashing, make sure to stop attesting with different providers before importing.'} />
       <Paragraph>
         All validators created or imported during our ‘early bird’ promotion will not be charged until phase 1.5.
         <BloxTooltip title="All validators created or imported during this promotion period will not pay service fees until Phase 1.5 when transfers are enabled, or for up to 2 years, whichever happens first." arrow>
@@ -115,16 +132,18 @@ const EnterValidatorsNumber = ({ show, setValidators }: EnterValidatorsNumberPro
         </BloxTooltip>
       </Paragraph>
       <Paragraph>
-        Validators will be imported in chronological order, according to their creation date.
+        Validators will be imported in chronological order, according to their <br /> creation date.
         <BloxTooltip title="Ex: if you have a total of 6 validators and would like to transfer 4, the first 4 validators that you created will be the ones imported." arrow>
           <Image src={InfoImage} />
         </BloxTooltip>
       </Paragraph>
 
+      <Question>How many Validators would you like to import?</Question>
+
       <Paragraph>
         <TextField
           id="validators-number"
-          type={'number'}
+          type="text"
           value={validatorsNumber || ''}
           placeholder={'# of validator(s)'}
           onChange={onValidatorsNumberInput}

@@ -136,6 +136,8 @@ const ImportedValidatorsList = ({ show, validators, onDone, dashboardActions }: 
           isPagination
           paginationInfo={paginationInfo}
           totalCount={validators.length}
+          sortType="disabled"
+          navButtonWidth="15%"
         />
       </TableWrapper>
 

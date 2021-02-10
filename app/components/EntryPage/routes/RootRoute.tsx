@@ -7,14 +7,14 @@ import Header from '../../common/Header';
 
 const DashboardWrapper = styled.div`
   width: 100%;
-  min-height:100%;
+  min-height: 100%;
   padding-top: 70px;
   background-color: #f7fcff;
 `;
 
 const WizardWrapper = styled.div`
   width: 100%;
-  min-height:100%;
+  min-height: 100%;
   background-color: #f7fcff;
   display: grid;
 `;
@@ -24,7 +24,7 @@ const RootRoute = ({ showDashboard, showWizard, renderProps }: RootRouteProps) =
     <>
       {showDashboard && (
         <>
-          <Header withMenu isDashboard={showDashboard} />
+          <Header withMenu isDashboard={true} />
           <Content>
             <DashboardWrapper>
               <Dashboard {...renderProps} />

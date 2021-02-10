@@ -66,6 +66,15 @@ const Template = (props: Props) => {
   const { isFinishedWizard, addAnotherAccount, step, page, setPage } = rest;
   const { clearAccountsData } = accountsActions;
   const { setFinishedWizard, clearWizardData } = wizardActions;
+
+  /**
+   * Close button is show in a template according to conditions:
+   *  - Wizard is opened
+   *  - Dashboard is shown
+   *    - accounts already exists
+   *    - or it was drop-off during first installation
+   *    - step == 2 means KeyVault setup already finished
+   */
   const addAdditionalAccount = !isFinishedWizard && addAnotherAccount && step === 2;
   const { loadDashboardData } = useDashboardData();
 

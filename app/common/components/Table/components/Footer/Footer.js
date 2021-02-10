@@ -12,11 +12,15 @@ const Wrapper = styled.div`
   border-top: solid 1px ${({theme}) => theme.gray300};
 `;
 
-const Footer = ({isPagination, paginationInfo, onPageClick}) => {
+const Footer = ({isPagination, paginationInfo, onPageClick, navButtonWidth}) => {
   if (isPagination) {
     return (
       <Wrapper>
-        <Pagination paginationInfo={paginationInfo} onPageClick={onPageClick} />
+        <Pagination
+          paginationInfo={paginationInfo}
+          onPageClick={onPageClick}
+          navButtonWidth={navButtonWidth}
+        />
       </Wrapper>
     );
   }
@@ -28,6 +32,7 @@ const Footer = ({isPagination, paginationInfo, onPageClick}) => {
 Footer.propTypes = {
   isPagination: PropTypes.bool,
   paginationInfo: PropTypes.object,
-  onPageClick: PropTypes.func
+  onPageClick: PropTypes.func,
+  navButtonWidth: PropTypes.oneOfType([PropTypes.string, undefined])
 };
 export default Footer;

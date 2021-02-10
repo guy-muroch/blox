@@ -18,82 +18,80 @@ const Wrapper = styled.div`
 `;
 
 const switcher = (props: Props) => {
-  const {page, network} = props;
+  const { page, network } = props;
   const validatorImage = network === config.env.PYRMONT_NETWORK ? testnetValidatorImage : mainnetValidatorImage;
+  const PAGES = config.PAGES;
+  let component;
+  let bgImage = "";
 
   switch (page) {
-    case 0:
-      return <WelcomePage {...props} />;
-    case 1:
-      return (
-        <Template key={1} bgImage={walletImage} {...props}
-          component={<WalletPages.CloudProvider {...props} />}
-        />
-      );
-    case 2:
-      return (
-        <Template key={2} bgImage={walletImage} {...props}
-          component={<WalletPages.CreateServer {...props} />}
-        />
-      );
-    case 3:
-      return (
-        <Template key={3} bgImage={walletImage} {...props}
-          component={<WalletPages.CongratulationPage {...props} />}
-        />
-      );
-    case 4:
-      return (
-        <Template key={4} bgImage={walletImage} {...props}
-          component={<WalletPages.ImportOrGenerateSeed {...props} />}
-        />
-      );
-    case 5:
-      return (
-        <Template key={5} bgImage={walletImage} {...props}
-          component={<WalletPages.Passphrase {...props} />}
-        />
-      );
+    case PAGES.WALLET.SELECT_CLOUD_PROVIDER:
+      bgImage = walletImage;
+      component = <WalletPages.CloudProvider {...props} />;
+      break;
 
-    case 6:
-      return (
-        <Template key={6} bgImage="" {...props}
-          component={<ValidatorPages.SelectNetwork {...props} />}
-        />
-      );
-    case 7:
-      return (
-        <Template key={7} bgImage={validatorImage} {...props}
-          component={<ValidatorPages.CreateValidator {...props} />}
-        />
-      );
-    case 8:
-      return (
-        <Template key={8} bgImage={validatorImage} {...props}
-          component={<ValidatorPages.StakingDeposit {...props} />}
-        />
-      );
-    case 9:
-      return (
-        <Template key={9} bgImage={validatorImage} {...props}
-          component={<ValidatorPages.CongratulationPage {...props} />}
-        />
-      );
-    case 10:
-      return (
-        <Template key={10} bgImage={walletImage} {...props}
-          component={<WalletPages.ImportPassphrase {...props} />}
-        />
-      );
-    case 11:
-      return (
-        <Template key={11} bgImage={mainnetValidatorImage} {...props}
-          component={<WalletPages.ImportValidators {...props} />}
-        />
-      );
-    default:
-      return <WelcomePage {...props} />;
+    case PAGES.WALLET.CREATE_SERVER:
+      bgImage = walletImage;
+      component = <WalletPages.CreateServer {...props} />;
+      break;
+
+    case PAGES.WALLET.CONGRATULATIONS:
+      bgImage = walletImage;
+      component = <WalletPages.CongratulationPage {...props} />;
+      break;
+
+    case PAGES.WALLET.IMPORT_OR_GENERATE_SEED:
+      bgImage = validatorImage;
+      component = <WalletPages.ImportOrGenerateSeed {...props} />;
+      break;
+
+    case PAGES.WALLET.ENTER_MNEMONIC:
+      bgImage = validatorImage;
+      component = <WalletPages.Passphrase {...props} />;
+      break;
+
+    case PAGES.VALIDATOR.SELECT_NETWORK:
+      component = <ValidatorPages.SelectNetwork {...props} />;
+      break;
+
+    case PAGES.VALIDATOR.CREATE_VALIDATOR:
+      bgImage = validatorImage;
+      component = <ValidatorPages.CreateValidator {...props} />;
+      break;
+
+    case PAGES.VALIDATOR.STAKING_DEPOSIT:
+      bgImage = validatorImage;
+      component = <ValidatorPages.StakingDeposit {...props} />;
+      break;
+
+    case PAGES.VALIDATOR.CONGRATULATIONS:
+      bgImage = validatorImage;
+      component = <ValidatorPages.CongratulationPage {...props} />;
+      break;
+
+    case PAGES.WALLET.IMPORT_MNEMONIC:
+      bgImage = validatorImage;
+      component = <WalletPages.ImportPassphrase {...props} />;
+      break;
+
+    case PAGES.WALLET.IMPORT_VALIDATORS:
+      bgImage = validatorImage;
+      component = <WalletPages.ImportValidators {...props} />;
+      break;
   }
+
+  if (!component || page === PAGES.WELCOME.DEFAULT) {
+    return <WelcomePage {...props} />;
+  }
+
+  return (
+    <Template
+      key={page}
+      bgImage={bgImage}
+      {...props}
+      component={component}
+    />
+  )
 };
 
 const ContentManager = (props: Props) => <Wrapper>{switcher(props)}</Wrapper>;

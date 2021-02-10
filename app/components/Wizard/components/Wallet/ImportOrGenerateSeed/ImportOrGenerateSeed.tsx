@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Button } from '../../common';
 import Title from '../../common/Title';
@@ -49,28 +49,40 @@ const SubTitle = styled.span`
 
 const Sticker = styled.div`
   height: 20px;
-  padding: 0px 7px;
+  padding: 0 7px;
   font-size: 12px;
   font-weight: 500;
   color: ${({ theme }) => theme.white};
   background-color: ${({ theme, disabled }) => disabled ? theme.gray400 : theme.accent2600};
   border-top-right-radius: 7px;
-  border-top-left-radius: 0px;
+  border-top-left-radius: 0;
   border-bottom-left-radius: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 0px;
-  right: 0px;
+  top: 0;
+  right: 0;
   z-index: 4;
 `;
 
 const ImportOrGenerateSeed = (props: Props) => {
-  const { setPage } = props;
+  const { setPage, setStep, accounts } = props;
   const btnWidth = '260px';
   const btnHeight = '100px';
   const btnStyle = { padding: 30 };
+  const rightButtonStyle = { marginLeft: 15, marginRight: 'auto' };
+
+  useEffect(() => {
+    // If this screen is shown from dashboard
+    // We should set step #2 in order to show close button
+    // Because this is part of condition for Add Validator button
+    // And in case of drop-off we should be able to close and
+    // return to empty dashboard
+    if (!accounts || !accounts.length) {
+      setStep(2);
+    }
+  }, [accounts]);
 
   return (
     <Wrapper>
@@ -83,13 +95,26 @@ const ImportOrGenerateSeed = (props: Props) => {
         {'Import is only available for Mainnet Network.'}
       </SubTitle>
       <ButtonsWrapper>
-        <Button style={btnStyle} width={btnWidth} height={btnHeight} onClick={() => setPage(5)} direction={'center'}>
+        <Button
+          style={btnStyle}
+          width={btnWidth}
+          height={btnHeight}
+          onClick={() => setPage(5)}
+          direction="center"
+        >
           <Icon name="generate-seed-icon" fontSize="38px" color={'plgreen'} />
           <TextWrapper>
             <SubTitle>Generate Seed</SubTitle>
           </TextWrapper>
         </Button>
-        <Button style={{ ...btnStyle, marginLeft: 15 }} width={btnWidth} height={btnHeight} border={false} onClick={() => setPage(10)} direction={'center'}>
+        <Button
+          style={{ ...btnStyle, ...rightButtonStyle }}
+          width={btnWidth}
+          height={btnHeight}
+          border={false}
+          onClick={() => setPage(10)}
+          direction="center"
+        >
           <Sticker isDisabled={false}>{'Mainnet Only'}</Sticker>
           <Icon name="cloud-upload" fontSize="38px" color={'primary900'} />
           <InnerWrapper>
@@ -106,6 +131,7 @@ type Props = {
   setPage: (page: number) => void;
   step: number;
   setStep: (page: number) => void;
+  accounts?: any[];
   setCloudProvider?: (label: string) => void;
 };
 

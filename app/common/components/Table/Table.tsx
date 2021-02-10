@@ -16,15 +16,30 @@ const Wrapper = styled.div`
 const Table = (props: Props) => {
   const {
     data, columns, withHeader, isPagination, selectedSorting,
-    sortType, onSortClick, paginationInfo, onPageClick, totalCount } = props;
+    sortType, onSortClick, paginationInfo, onPageClick, totalCount,
+    navButtonWidth } = props;
+
   return (
     <Wrapper>
       {withHeader && (
-        <Header columns={columns} selectedSorting={selectedSorting} sortType={sortType}
-          onSortClick={onSortClick} />
+        <Header
+          columns={columns}
+          selectedSorting={selectedSorting}
+          sortType={sortType}
+          onSortClick={onSortClick}
+        />
       )}
-      <Body columns={columns} data={data} totalCount={totalCount || null} />
-      <Footer isPagination={isPagination} paginationInfo={paginationInfo} onPageClick={onPageClick} />
+      <Body
+        columns={columns}
+        data={data}
+        totalCount={totalCount || null}
+      />
+      <Footer
+        isPagination={isPagination}
+        paginationInfo={paginationInfo}
+        onPageClick={onPageClick}
+        navButtonWidth={navButtonWidth}
+      />
     </Wrapper>
   );
 };
@@ -40,6 +55,7 @@ type Props = {
   onSortClick?: () => void;
   paginationInfo: Record<string, any>;
   onPageClick: (offset) => void;
+  navButtonWidth?: string;
 };
 
 export default Table;

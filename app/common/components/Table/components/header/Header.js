@@ -25,19 +25,36 @@ const Header = ({columns, selectedSorting, sortType, onSortClick}) => {
     <Wrapper>
       {columns.map((column) => {
         const {key, title, width, justifyContent, compareFunction} = column;
-        return compareFunction
-          ? (
-            <Cell width={width} key={key} justifyContent={justifyContent}>
+        const withSorting = compareFunction && sortType !== 'disabled';
+
+        if (withSorting) {
+          return (
+            <Cell
+              width={width}
+              key={key}
+              justifyContent={justifyContent}
+            >
               {title}
-              <Sorting sortKey={key} selectedSorting={selectedSorting} sortType={sortType}
-                onSortClick={onSortClick} compareFunction={compareFunction} />
-            </Cell>
-          )
-          : (
-            <Cell width={width} key={key} justifyContent={justifyContent}>
-              {title}
+              <Sorting
+                sortKey={key}
+                selectedSorting={selectedSorting}
+                sortType={sortType}
+                onSortClick={onSortClick}
+                compareFunction={compareFunction}
+              />
             </Cell>
           );
+        }
+
+        return (
+          <Cell
+            width={width}
+            key={key}
+            justifyContent={justifyContent}
+          >
+            {title}
+          </Cell>
+        );
       })}
     </Wrapper>
   );
