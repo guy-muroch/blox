@@ -40,6 +40,7 @@ export default class Http {
         method: error.config.method,
         baseURL: error.config.baseURL
       };
+      delete error.response.config;
       this.logger.error(error);
       throw error;
     }
