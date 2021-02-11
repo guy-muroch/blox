@@ -47,7 +47,11 @@ const CongratulationPage = (props: Props) => {
 
         {isImportValidators && (
           <>
-            <Title color="accent2400">{importedValidatorsCount || ''} Validator(s) imported successfully</Title>
+            <Title color="accent2400">
+              {importedValidatorsCount || ''}
+              &nbsp;Validator{(importedValidatorsCount && importedValidatorsCount === 1) ? '' : 's'}
+              &nbsp;imported successfully
+            </Title>
             <Paragraph>
               Please note that it can take a few minutes for newly imported validators to appear in your dashboard.
             </Paragraph>

@@ -64,7 +64,7 @@ const Validators = ({accounts}) => {
     return <Wrapper />;
   }
 
-  if (!accounts || !accounts.length) {
+  if (!accounts?.length) {
     const addValidatorButtonWrapperStyle = { display: 'inline-block' };
     return (
       <Wrapper>

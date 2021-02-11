@@ -86,7 +86,7 @@ const ImportOrGenerateSeed = (props: Props) => {
 
   return (
     <Wrapper>
-      <Title style={{'marginTop': '64px'}}>Import or Generate Seed</Title>
+      <Title>Import or Generate Seed</Title>
       <SubTitle style={{'paddingRight': '200px'}}>
         {'Create a new validator with Blox Staking or import the Seed of an existing'}
         <br />

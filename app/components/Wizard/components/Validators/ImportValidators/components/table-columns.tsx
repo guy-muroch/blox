@@ -1,7 +1,15 @@
 import React from 'react';
 import { shell } from 'electron';
+import styled from 'styled-components';
 import Icon from '../../../../../../common/components/Icon';
+import { truncateText } from '../../../../../common/service';
 import { compareFunction } from '../../../../../../common/components/Table/service';
+
+const AddressKey = styled.div`
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+`;
 
 export default [
     {
@@ -27,7 +35,7 @@ export default [
             const openBeaconchaLink = async () => shell.openExternal(beaconchaLink);
             return (
               <>
-                <span>{`0x${validator}`}</span>
+                <AddressKey>{truncateText(`0x${validator}`, 40, 6)}</AddressKey>
                 <span
                   style={{
                     alignSelf: 'center'
