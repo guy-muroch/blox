@@ -1,12 +1,10 @@
 import analytics from '../analytics';
 import ProcessClass from './process.class';
 import Connection from '../common/store-manager/connection';
-import WalletService from '../services/wallet/wallet.service';
 import AccountService from '../services/account/account.service';
 import KeyVaultService from '../services/key-vault/key-vault.service';
 
 export default class AccountCreateProcess extends ProcessClass {
-  private readonly walletService: WalletService;
   private readonly accountService: AccountService;
   private readonly keyVaultService: KeyVaultService;
   public readonly actions: Array<any>;
@@ -39,8 +37,9 @@ export default class AccountCreateProcess extends ProcessClass {
         params: {
           indexToRestore
         }
-      }, {
-        hook: async() => {
+      },
+      {
+        hook: async () => {
           await analytics.track('validator-created');
         }
       }
@@ -55,7 +54,7 @@ export default class AccountCreateProcess extends ProcessClass {
             method: 'updateVaultStorage'
           },
           {
-            hook: async() => {
+            hook: async () => {
               await analytics.track('error-occurred', {
                 reason: 'validator-creation-failed'
               });
@@ -71,8 +70,8 @@ export default class AccountCreateProcess extends ProcessClass {
     };
     if (indexToRestore != null) {
       // In case of import validators - create wallet from scratch
-      firstAction.instance = this.walletService;
-      firstAction.method = 'createWallet';
+      firstAction.instance = this.accountService;
+      firstAction.method = 'deleteAllAccounts';
     } else {
       // In case of one validator creation - remove failed validator only
       firstAction.instance = this.accountService;
