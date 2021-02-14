@@ -118,7 +118,9 @@ export default class Store {
   }
 
   logout(): void {
-    this.baseStore.clear();
+    this.baseStore.delete('currentUserId');
+    this.baseStore.delete('authToken');
+    // this.baseStore.clear();
     // this.cryptoKey = undefined;
     // Object.keys(Store.instances).forEach(prefix => Store.close(prefix));
   }

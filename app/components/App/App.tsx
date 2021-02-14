@@ -56,7 +56,11 @@ const App = (props: Props) => {
       appUuid,
     });
 
-    logger.debug('initialize app window');
+    logger.info('app opened', {
+      os: getOsVersion(),
+      appVersion: `v${version}`
+    });
+
     await setAppInitialised(true);
     await initApp();
   };
