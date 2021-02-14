@@ -16,13 +16,14 @@ const Wrapper = styled.div`
 const CongratulationPage = (props: Props) => {
   const { wizardActions, accountsActions, isImportValidators, importedValidatorsCount } = props;
   const { clearAccountsData } = accountsActions;
-  const { setFinishedWizard, clearWizardData } = wizardActions;
+  const { setFinishedWizard, setOpenedWizard, clearWizardData } = wizardActions;
   const { loadDashboardData } = useDashboardData();
 
   const onClick = async () => {
     await clearAccountsData();
     await clearWizardData();
     await setFinishedWizard(true);
+    await setOpenedWizard(false);
     await loadDashboardData();
   };
 

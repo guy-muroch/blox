@@ -22,7 +22,7 @@ const switcher = (props: Props) => {
   const validatorImage = network === config.env.PYRMONT_NETWORK ? testnetValidatorImage : mainnetValidatorImage;
   const PAGES = config.PAGES;
   let component;
-  let bgImage = "";
+  let bgImage = '';
 
   switch (page) {
     case PAGES.WALLET.SELECT_CLOUD_PROVIDER:
@@ -91,7 +91,7 @@ const switcher = (props: Props) => {
       {...props}
       component={component}
     />
-  )
+  );
 };
 
 const ContentManager = (props: Props) => <Wrapper>{switcher(props)}</Wrapper>;

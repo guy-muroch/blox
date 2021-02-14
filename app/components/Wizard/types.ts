@@ -6,4 +6,5 @@ export type WizardState = {
   account: Record<string, any> | null;
   depositData: Record<string, any> | null;
   isFinished: boolean;
+  isOpened: boolean;
 };

@@ -24,7 +24,7 @@ const RootRoute = ({ showDashboard, showWizard, renderProps }: RootRouteProps) =
     <>
       {showDashboard && (
         <>
-          <Header withMenu isDashboard={true} />
+          <Header withMenu isDashboard />
           <Content>
             <DashboardWrapper>
               <Dashboard {...renderProps} />
