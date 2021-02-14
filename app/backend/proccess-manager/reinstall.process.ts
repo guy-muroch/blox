@@ -88,7 +88,7 @@ export default class ReinstallProcess extends ProcessClass {
         }
       },
       {
-        hook: async() => {
+        hook: async () => {
           await analytics.track('kv-updated');
         }
       }
@@ -115,7 +115,7 @@ export default class ReinstallProcess extends ProcessClass {
             }
           },
           {
-            hook: async() => {
+            hook: async () => {
               await analytics.track('error-occurred', {
                 reason: 'kv-update-failed'
               });

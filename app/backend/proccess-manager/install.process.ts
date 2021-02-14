@@ -44,7 +44,7 @@ export default class InstallProcess extends ProcessClass {
       { instance: this.keyVaultService, method: 'getKeyVaultStatus' },
       { instance: this.awsService, method: 'truncateOldKvResources' },
       {
-        hook: async() => {
+        hook: async () => {
           await analytics.track('kv-install-completed');
         }
       }
@@ -65,7 +65,7 @@ export default class InstallProcess extends ProcessClass {
           { instance: this.awsService, method: 'truncateOldKvResources' },
           { instance: Connection, method: 'remove' },
           {
-            hook: async() => {
+            hook: async () => {
               await analytics.track('error-occurred', {
                 reason: 'kv-installation-failed'
               });

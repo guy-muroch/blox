@@ -47,7 +47,7 @@ export default class RecoveryProcess extends ProcessClass {
       { instance: this.keyVaultService, method: 'getKeyVaultStatus' },
       { instance: this.awsService, method: 'truncateOldKvResources' },
       {
-        hook: async() => {
+        hook: async () => {
           await analytics.track('recovery-completed');
         }
       }
@@ -72,7 +72,7 @@ export default class RecoveryProcess extends ProcessClass {
             }
           },
           {
-            hook: async() => {
+            hook: async () => {
               await analytics.track('error-occurred', {
                 reason: 'recovery-failed'
               });

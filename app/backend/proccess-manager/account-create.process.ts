@@ -40,7 +40,9 @@ export default class AccountCreateProcess extends ProcessClass {
       },
       {
         hook: async () => {
-          await analytics.track('validator-created');
+          await analytics.track('validator-created', {
+            network
+          });
         }
       }
     ];
@@ -56,7 +58,8 @@ export default class AccountCreateProcess extends ProcessClass {
           {
             hook: async () => {
               await analytics.track('error-occurred', {
-                reason: 'validator-creation-failed'
+                reason: 'validator-creation-failed',
+                network
               });
             }
           }
