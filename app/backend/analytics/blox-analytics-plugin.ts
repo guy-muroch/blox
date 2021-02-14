@@ -21,17 +21,29 @@ export default function bloxAnalyticsPlugin(pluginConfig = {}) {
     },
     page: async ({ payload }) => {
       // call provider specific page tracking
-      logger.trace('page', payload);
-      await bloxApi.request(METHOD.PUT, 'analytics/page', payload);
+      try {
+        logger.trace('page', payload);
+        await bloxApi.request(METHOD.PUT, 'analytics/page', payload);
+      } catch (e) {
+        logger.error('analytics request failed', e);
+      }
     },
     track: async ({ payload }) => {
-      logger.trace('track', payload);
-      await bloxApi.request(METHOD.PUT, 'analytics/track', payload);
+      try {
+        logger.trace('track', payload);
+        await bloxApi.request(METHOD.PUT, 'analytics/track', payload);
+      } catch (e) {
+        logger.error('analytics request failed', e);
+      }
       // call provider specific event tracking
     },
     identify: async ({ payload }) => {
-      logger.trace('identify', payload);
-      await bloxApi.request(METHOD.PUT, 'analytics/identify', payload);
+      try {
+        logger.trace('identify', payload);
+        await bloxApi.request(METHOD.PUT, 'analytics/identify', payload);
+      } catch (e) {
+        logger.error('analytics request failed', e);
+      }
       // call provider specific user identify method
     },
     loaded: () => {
