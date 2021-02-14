@@ -10,6 +10,7 @@ const initialState = {
   account: null,
   depositData: null,
   isFinished: false,
+  isOpened: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -55,6 +56,11 @@ const wizardReducer = (state = initialState, action: Action) => produce(state, (
 
     case actionTypes.SET_FINISHED_WIZARD:
       draft.isFinished = action.payload;
+      draft.isOpened = !draft.isFinished;
+      break;
+
+    case actionTypes.SET_OPENED_WIZARD:
+      draft.isOpened = action.payload;
       break;
 
     case actionTypes.CLEAR_DATA:

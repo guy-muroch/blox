@@ -13,24 +13,30 @@ const AddValidatorButtonWrapper = (props: AddValidatorButtonWrapperProps) => {
   const { dashboardActions, accountsActions, wizardActions, walletStatus, children, style } = props;
   const { setModalDisplay, clearModalDisplayData } = dashboardActions;
   const { setAddAnotherAccount } = accountsActions;
-  const { setFinishedWizard } = wizardActions;
+  const { setFinishedWizard, setOpenedWizard } = wizardActions;
   const { checkIfPasswordIsNeeded } = usePasswordHandler();
 
   const onAddValidatorPasswordSuccess = () => {
     setAddAnotherAccount(true);
     setFinishedWizard(false);
+    setOpenedWizard(true);
     clearModalDisplayData();
   };
 
-  const addValidatorHandler = async () => {
-    if (walletStatus === 'active') {
-      const cryptoKey = 'temp';
-      const isTemporaryCryptoKeyValid = await Connection.db().isCryptoKeyValid(cryptoKey);
-      if (isTemporaryCryptoKeyValid) {
-        // If temp crypto key is valid - we should set it anyway
-        await Connection.db().setCryptoKey(cryptoKey);
-      }
+  const showReactivationDialog = () => {
+    const text = 'Your KeyVault is inactive. Please reactivate your KeyVault before creating a new validator.';
+    setModalDisplay({ show: true, type: MODAL_TYPES.REACTIVATION, text });
+  };
 
+  const addValidatorHandler = async () => {
+    const cryptoKey = 'temp';
+    const isTemporaryCryptoKeyValid = await Connection.db().isCryptoKeyValid(cryptoKey);
+    if (isTemporaryCryptoKeyValid) {
+      // If temp crypto key is valid - we should set it anyway
+      await Connection.db().setCryptoKey(cryptoKey);
+    }
+
+    if (walletStatus === 'active') {
       // If credentials exists - they was saved with "temp" or user password before
       if (Connection.db().exists('credentials')) {
         if (isTemporaryCryptoKeyValid) {
@@ -44,10 +50,11 @@ const AddValidatorButtonWrapper = (props: AddValidatorButtonWrapperProps) => {
         // If credentials doesn't exists - it means user didn't install key vault
         onAddValidatorPasswordSuccess();
       }
-      return;
+    } else if (isTemporaryCryptoKeyValid) {
+      showReactivationDialog();
+    } else {
+      checkIfPasswordIsNeeded(showReactivationDialog);
     }
-    const text = 'Your KeyVault is inactive. Please reactivate your KeyVault before creating a new validator.';
-    setModalDisplay({ show: true, type: MODAL_TYPES.REACTIVATION, text });
   };
 
   return (

@@ -32,14 +32,16 @@ const ModalsManager = (props: Props) => {
   const onKeyvaultProcessSuccess = async () => {
     await loadWallet();
     await clearModalDisplayData();
+    await loadDashboardData();
   };
 
-  const onAccountRecoverySuccess = () => {
+  const onAccountRecoverySuccess = async () => {
     setFinishedWizard(true);
     loadUserInfo();
     loadWallet();
     loadAccounts();
     clearModalDisplayData();
+    await loadDashboardData();
   };
 
   if (showModal) {

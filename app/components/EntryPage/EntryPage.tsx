@@ -23,14 +23,13 @@ import { keyvaultLoadLatestVersion } from '../KeyVaultManagement/actions';
 
 const wizardKey = 'wizard';
 const walletKey = 'keyvaultManagement';
-let initiallyShowDashboard = null;
 
 const EntryPage = (props: Props) => {
   const {
     callLoadWallet, loadWalletLatestVersion, walletStatus,
-    isLoadingWallet, walletErorr, keyvaultCurrentVersion,
+    isLoadingWallet, walletError, keyvaultCurrentVersion,
     keyvaultLatestVersion, isLoadingKeyvault, keyvaultError,
-    dashboardActions, isFinishedWizard, wizardWallet
+    dashboardActions, isFinishedWizard, wizardWallet, isOpenedWizard
   } = props;
 
   const { setModalDisplay } = dashboardActions;
@@ -51,7 +50,7 @@ const EntryPage = (props: Props) => {
   }, []);
 
   useEffect(() => {
-    const didntLoadWallet = !walletStatus && !isLoadingWallet && !walletErorr;
+    const didntLoadWallet = !walletStatus && !isLoadingWallet && !walletError;
     const didntLoadKeyvaultVersion = !keyvaultLatestVersion && !isLoadingKeyvault && !keyvaultError;
 
     if (processData || error) {
@@ -86,20 +85,8 @@ const EntryPage = (props: Props) => {
   // Regarding the flow - the user will always reach the Empty Dashboard
   // when they have a wallet but no validators
   const haveWallet = wizardWallet && wizardWallet.status !== 'notExist';
-  const haveAccounts = accounts && accounts.length;
-  const shouldShowEmptyDashboard = !haveAccounts && haveWallet;
-
-  if (initiallyShowDashboard === null) {
-    // If dropped-off and this is first time dashboard is shown
-    initiallyShowDashboard = shouldShowEmptyDashboard;
-  } else if (initiallyShowDashboard) {
-    // When first time after dropped-off dashboard is shown,
-    // afterwards it will be always shown/hidden depending of isFinishedWizard value
-    // Dirty but it works as expected
-    initiallyShowDashboard = false;
-  }
-
-  const showDashboard = initiallyShowDashboard || isFinishedWizard;
+  const haveAccounts = Boolean(accounts?.length);
+  const showDashboard = (!haveAccounts && haveWallet && !isOpenedWizard) || isFinishedWizard;
   const showWizard = !showDashboard;
 
   return (
@@ -127,7 +114,7 @@ const EntryPage = (props: Props) => {
 type Props = {
   walletStatus: string;
   isLoadingWallet: boolean;
-  walletErorr: string;
+  walletError: string;
   callLoadWallet: () => void;
   loadWalletLatestVersion: () => void;
 
@@ -141,13 +128,14 @@ type Props = {
 
   dashboardActions: Record<string, any>;
   isFinishedWizard: boolean;
+  isOpenedWizard: boolean;
   wizardWallet: any;
 };
 
 const mapStateToProps = (state: State) => ({
   walletStatus: wizardSelectors.getWalletStatus(state),
   isLoadingWallet: wizardSelectors.getIsLoading(state),
-  walletErorr: wizardSelectors.getWalletError(state),
+  walletError: wizardSelectors.getWalletError(state),
 
   keyvaultCurrentVersion: wizardSelectors.getWalletVersion(state),
   keyvaultLatestVersion: keyvaultSelectors.getLatestVersion(state),
@@ -155,6 +143,7 @@ const mapStateToProps = (state: State) => ({
   keyvaultError: keyvaultSelectors.getError(state),
 
   isFinishedWizard: wizardSelectors.getWizardFinishedStatus(state),
+  isOpenedWizard: wizardSelectors.getWizardOpenedStatus(state),
   wizardWallet: wizardSelectors.getWallet(state),
 });
 
