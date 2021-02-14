@@ -11,9 +11,9 @@ import * as actionsFromAccounts from '../../../Accounts/actions';
 import * as actionsFromUser from '../../../User/actions';
 import * as selectors from '../../selectors';
 import { getActiveValidators } from '../../../EventLogs/selectors';
+import useDashboardData from '../../useDashboardData';
 
 import { MODAL_TYPES } from '../../constants';
-
 import imageImportFailed from '../../../Wizard/assets/img-import-failed.svg';
 
 const ModalsManager = (props: Props) => {
@@ -22,6 +22,7 @@ const ModalsManager = (props: Props) => {
   const { loadWallet, setFinishedWizard } = wizardActions;
   const { loadAccounts } = accountsActions;
   const { loadUserInfo } = userActions;
+  const { loadDashboardData } = useDashboardData();
 
   const onPasswordSuccess = () => {
     clearModalDisplayData();
@@ -72,7 +73,11 @@ const ModalsManager = (props: Props) => {
       case MODAL_TYPES.VALIDATORS_IMPORT_FAILED_THANKS:
         return (
           <ThankYouModal
-            onClose={() => clearModalDisplayData()}
+            onClose={async () => {
+              setFinishedWizard(true);
+              await loadDashboardData();
+              clearModalDisplayData();
+            }}
             customImage={imageImportFailed}
           />
         );
