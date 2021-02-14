@@ -6,20 +6,19 @@ import { Title, Description, Wrapper } from 'common/components/ModalTemplate/com
 import image from '../Wizard/assets/img-key-vault-inactive.svg';
 import { reportCrash } from '../common/service';
 
-const FailureModal = ({ title, onClick, onClose, customImage }) => {
+const FailureModal = ({ title, subtitle, onClick, onClose, customImage }) => {
   const contactSupport = async () => {
     await reportCrash();
     await onClick();
   };
+  const description = subtitle || 'Please contact our support team to resolve this issue.';
   return (
     <ModalTemplate onClose={onClose} image={customImage || image}>
       <Wrapper>
         <FailureIcon size={'40px'} fontSize={'30px'} />
         <Title fontSize={'32px'} color={'warning900'}>{title}</Title>
       </Wrapper>
-      <Description>
-        Please contact our support team to resolve this issue.
-      </Description>
+      <Description>{description}</Description>
       <Wrapper>
         <Button onClick={contactSupport}>Contact Blox</Button> <br />
       </Wrapper>
@@ -29,6 +28,7 @@ const FailureModal = ({ title, onClick, onClose, customImage }) => {
 
 FailureModal.propTypes = {
   title: PropTypes.string,
+  subtitle: PropTypes.oneOfType([PropTypes.string, undefined]),
   onClick: PropTypes.func,
   onClose: PropTypes.func,
   customImage: PropTypes.oneOfType([PropTypes.any, undefined])

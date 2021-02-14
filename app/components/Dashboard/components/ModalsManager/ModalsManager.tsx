@@ -62,6 +62,7 @@ const ModalsManager = (props: Props) => {
         return (
           <FailureModal
             title="Failed to Import"
+            subtitle="Please contact our support to help with the import."
             customImage={imageImportFailed}
             onClick={() => {
               setModalDisplay({ show: true, type: MODAL_TYPES.VALIDATORS_IMPORT_FAILED_THANKS });
