@@ -3,8 +3,10 @@ import {Icon} from '../../../index';
 import React from 'react';
 import styled from 'styled-components';
 
+const navButtonDefaultWidth = '8%';
+
 const Wrapper = styled.div`
-  width: 8%;
+  width: ${navButtonDefaultWidth};
   min-height: 50px;
   display: flex;
   align-items: center;
@@ -35,9 +37,11 @@ export const PaginationAction = {
   LAST: 'last'
 };
 
-const Pagination = ({paginationInfo, onPageClick}) => {
+const Pagination = ({paginationInfo, onPageClick, navButtonWidth}) => {
   const pageLength = (paginationInfo.offset) + paginationInfo.pageSize;
-
+  const navButtonStyle = {
+    width: navButtonWidth || navButtonDefaultWidth
+  };
   const paginationButtons = [
     {
       type: 'page',
@@ -113,7 +117,11 @@ const Pagination = ({paginationInfo, onPageClick}) => {
   return (
     paginationButtons.map(({type, title, icon, iconColor, color, reverse, clickable, withBorder}, index) => {
       return reverse ? (
-        <Wrapper key={index} onClick={() => clickable ? onPaginationClick(type) : false}>
+        <Wrapper
+          key={index}
+          onClick={() => clickable ? onPaginationClick(type) : false}
+          style={navButtonStyle}
+        >
           <Button color={color} withBorder={withBorder} clickable={clickable}>
             <Icon
               name={icon}
@@ -124,7 +132,11 @@ const Pagination = ({paginationInfo, onPageClick}) => {
           </Button>
         </Wrapper>
       ) : (
-        <Wrapper key={index} onClick={() => clickable ? onPaginationClick(type) : false}>
+        <Wrapper
+          key={index}
+          onClick={() => clickable ? onPaginationClick(type) : false}
+          style={navButtonStyle}
+        >
           <Button color={color} withBorder={withBorder} clickable={clickable}>
             {title}
             <Icon

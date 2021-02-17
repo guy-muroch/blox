@@ -1,8 +1,9 @@
-import { Catch, CatchClass } from '../../decorators';
 import util from 'util';
 import { exec } from 'child_process';
 import { execPath } from '../../../binaries';
 import { Log } from '../../common/logger/logger';
+import { Catch, CatchClass } from '../../decorators';
+
 @CatchClass<KeyManagerService>()
 export default class KeyManagerService {
   private readonly executablePath: string;
@@ -10,7 +11,7 @@ export default class KeyManagerService {
   private logger: Log;
 
   constructor() {
-    this.logger = new Log();
+    this.logger = new Log('key-manager');
     this.executor = util.promisify(exec);
     this.executablePath = execPath;
   }
@@ -54,23 +55,39 @@ export default class KeyManagerService {
       highestProposal = highestSource;
     }
 
+    const getAccountCommand = `${this.executablePath} \
+      wallet account create \
+      --seed=${seed} \
+      --index=${index} \
+      --network=${network} \
+      --response-type=object \
+      --accumulate=${accumulate} \
+      --highest-source=${highestSource} \
+      --highest-target=${highestTarget} \
+      --highest-proposal=${highestProposal}`;
+
     try {
-      const { stdout } = await this.executor(
-        `${this.executablePath} wallet account create --seed=${seed} --index=${index} --network=${network} --response-type=object --accumulate=${accumulate} --highest-source=${highestSource} --highest-target=${highestTarget} --highest-proposal=${highestProposal}`
-      );
+      const { stdout } = await this.executor(getAccountCommand);
       return stdout ? JSON.parse(stdout) : {};
-    } catch (e) {
+    } catch (error) {
+      console.error('KeyManagerService::getAccount error', { command: getAccountCommand.replace(seed, '***'), error });
       throw new Error(`Get keyvault account with index ${JSON.stringify(index)} was failed.`);
     }
   }
 
   async getDepositData(seed: string, index: number, publicKey: string, network: string): Promise<any> {
+    const getDepositDataCommand = `${this.executablePath} \
+      wallet account deposit-data \
+      --seed=${seed} \
+      --index=${index} \
+      --publickey=${publicKey} \
+      --network=${network}`;
+
     try {
-      const { stdout } = await this.executor(
-        `${this.executablePath} wallet account deposit-data --seed=${seed} --index=${index} --publickey=${publicKey} --network=${network}`
-      );
+      const { stdout } = await this.executor(getDepositDataCommand);
       return stdout ? JSON.parse(stdout) : {};
-    } catch (e) {
+    } catch (error) {
+      console.error('KeyManagerService::getDepositData error', { command: getDepositDataCommand.replace(seed, '***'), error });
       throw new Error(`Get ${network} deposit account data with index ${JSON.stringify(index)} was failed.`);
     }
   }

@@ -1,23 +1,25 @@
-import React, {useState, useEffect} from 'react';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
-
+import { bindActionCreators } from 'redux';
 import LoggedIn from '../LoggedIn';
-import NotLoggedIn from '../NotLoggedIn';
-
-import GlobalStyle from '../../common/styles/global-styles';
-import {deepLink, initApp} from './service';
-
-import {getIsLoggedIn, getIsLoading} from '../CallbackPage/selectors';
-import * as loginActions from '../CallbackPage/actions';
-import loginSaga from '../CallbackPage/saga';
 import userSaga from '../User/saga';
-
-import {Loader} from '../../common/components';
-import {useInjectSaga} from '../../utils/injectSaga';
-
+import NotLoggedIn from '../NotLoggedIn';
+import loginSaga from '../CallbackPage/saga';
+import { deepLink, initApp } from './service';
+import { Loader } from '../../common/components';
 import { Log } from 'backend/common/logger/logger';
+import { useInjectSaga } from '../../utils/injectSaga';
+import * as loginActions from '../CallbackPage/actions';
+import GlobalStyle from '../../common/styles/global-styles';
+import { getIsLoggedIn, getIsLoading } from '../CallbackPage/selectors';
+
+// analytics tools
+import analytics from '../../backend/analytics';
+import { getOsVersion } from 'utils/service';
+import { version } from 'package.json';
+import { v4 as uuidv4 } from 'uuid';
+import BaseStore from '../../backend/common/store-manager/base-store';
 
 const AppWrapper = styled.div`
   margin: 0 auto;
@@ -36,7 +38,29 @@ const App = (props: Props) => {
   const logger = new Log();
 
   const init = async () => {
-    logger.debug('initialize app window');
+    const baseStore: BaseStore = new BaseStore();
+    if (!baseStore.get('appUuid')) {
+      baseStore.set('appUuid', uuidv4());
+    }
+    const appUuid = baseStore.get('appUuid');
+
+    // trigger analytics first event
+    /* Identify users */
+    await analytics.identify(appUuid, {
+      os: getOsVersion(),
+      appVersion: `v${version}`
+    });
+
+    /* Track events */
+    await analytics.track('first-time', {
+      appUuid,
+    });
+
+    logger.info('app opened', {
+      os: getOsVersion(),
+      appVersion: `v${version}`
+    });
+
     await setAppInitialised(true);
     await initApp();
   };

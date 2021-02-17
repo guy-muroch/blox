@@ -12,4 +12,8 @@ export const getDepositData = (state) => state.wizard && state.wizard.depositDat
 
 export const getWizardFinishedStatus = (state) => state.wizard.isFinished;
 
+export const getWizardOpenedStatus = (state) => state.wizard.isOpened;
+
 export const getNetwork = (state) => state.wizard && state.wizard.network;
+
+export const getAccount = (state) => state.wizard && state.wizard.account;

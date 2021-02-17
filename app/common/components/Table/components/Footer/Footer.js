@@ -5,18 +5,24 @@ import Pagination from './Pagination';
 
 const Wrapper = styled.div`
   width: 100%;
-  min-height: 50px;
+  height: ${({height}) => height || '50px'};
   display: flex;
   align-items: center;
   justify-content: flex-end;
   border-top: solid 1px ${({theme}) => theme.gray300};
 `;
 
-const Footer = ({isPagination, paginationInfo, onPageClick}) => {
+const Footer = ({isPagination, paginationInfo, onPageClick, navButtonWidth, height}) => {
   if (isPagination) {
     return (
-      <Wrapper>
-        <Pagination paginationInfo={paginationInfo} onPageClick={onPageClick} />
+      <Wrapper
+        height={height}
+      >
+        <Pagination
+          paginationInfo={paginationInfo}
+          onPageClick={onPageClick}
+          navButtonWidth={navButtonWidth}
+        />
       </Wrapper>
     );
   }
@@ -28,6 +34,16 @@ const Footer = ({isPagination, paginationInfo, onPageClick}) => {
 Footer.propTypes = {
   isPagination: PropTypes.bool,
   paginationInfo: PropTypes.object,
-  onPageClick: PropTypes.func
+  onPageClick: PropTypes.func,
+  navButtonWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+};
+
+Footer.defaultProps = {
+  isPagination: false,
+  paginationInfo: null,
+  onPageClick: () => {},
+  navButtonWidth: null,
+  height: null
 };
 export default Footer;

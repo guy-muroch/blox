@@ -8,6 +8,7 @@ import OrganizationService from 'backend/services/organization/organization.serv
 
 import { setModalDisplay } from '../Dashboard/actions';
 import { MODAL_TYPES } from '../Dashboard/constants';
+import analytics from 'backend/analytics';
 
 export function* startLoadingEventLogs() {
   try {
@@ -22,6 +23,7 @@ export function* startLoadingEventLogs() {
 function* onLoadingEventLogsSuccess(response: Record<string, any>) {
   const activeValidators = normalizedActiveValidators(response);
   if (activeValidators.length > 0) {
+    analytics.track('validator-activated');
     yield put(actions.showActiveValidatorsPopup(activeValidators));
     yield put(setModalDisplay({show: true, type: MODAL_TYPES.ACTIVE_VALIDATOR, text: ''}));
   }

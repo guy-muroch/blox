@@ -1,22 +1,22 @@
-import Connection from '../../common/store-manager/connection';
-import KeyVaultSsh from '../../common/communication-manager/key-vault-ssh';
-import VersionService from '../version/version.service';
+import config from '../../common/config';
+import { Log } from '../../common/logger/logger';
 import WalletService from '../wallet/wallet.service';
-import KeyVaultApi from '../../common/communication-manager/key-vault-api';
+import VersionService from '../version/version.service';
+import { Catch, CatchClass, Step } from '../../decorators';
+import Connection from '../../common/store-manager/connection';
+import { isVersionHigherOrEqual } from '../../../utils/service';
 import BloxApi from '../../common/communication-manager/blox-api';
 import { METHOD } from '../../common/communication-manager/constants';
-import { Catch, CatchClass, Step } from '../../decorators';
-import config from '../../common/config';
-import { isVersionHigherOrEqual } from '../../../utils/service';
-import { Log } from '../../common/logger/logger';
+import KeyVaultSsh from '../../common/communication-manager/key-vault-ssh';
+import KeyVaultApi from '../../common/communication-manager/key-vault-api';
 
-function sleep(msec) {
+function sleep(milliseconds) {
   return new Promise(resolve => {
-    setTimeout(resolve, msec);
+    setTimeout(resolve, milliseconds);
   });
 }
 
-@CatchClass<KeyVaultService>()
+// @CatchClass<KeyVaultService>()
 export default class KeyVaultService {
   private readonly keyVaultSsh: KeyVaultSsh;
   private readonly keyVaultApi: KeyVaultApi;
@@ -34,7 +34,7 @@ export default class KeyVaultService {
     this.walletService = new WalletService(this.storePrefix);
     this.bloxApi = new BloxApi();
     this.bloxApi.init();
-    this.logger = new Log();
+    this.logger = new Log('key-vault');
   }
 
   async updateStorage(payload: any) {
@@ -158,7 +158,7 @@ export default class KeyVaultService {
     const keyVaultVersion = await this.versionService.getLatestKeyVaultVersion();
     const envKey = (Connection.db(this.storePrefix).get('env') || 'production');
     const dockerHubImage = `bloxstaking/key-vault${envKey === 'production' ? '' : '-rc'}:${keyVaultVersion}`;
-
+    this.logger.info(`Going to run docker based on ${dockerHubImage} keyvault image`);
     const dockerCMD = 'docker start key_vault 2>/dev/null || ' +
       `docker pull  ${dockerHubImage} && docker run -d --restart unless-stopped --cap-add=IPC_LOCK --name=key_vault ` +
       '-v $(pwd)/data:/data ' +

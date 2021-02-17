@@ -1,16 +1,16 @@
-import electron from 'electron';
-import archiver from 'archiver';
 import fs from 'fs';
 import path from 'path';
+import electron from 'electron';
+import archiver from 'archiver';
 import { configure, getLogger, Logger } from 'log4js';
 
 export class Log {
   private readonly logger: Logger;
   private readonly userDataPath: string;
 
-  constructor() {
+  constructor(scope = '') {
     this.userDataPath = (electron.app || electron.remote.app).getPath('userData');
-    this.logger = getLogger();
+    this.logger = getLogger(scope);
     configure({
       'appenders': {
         'console': {

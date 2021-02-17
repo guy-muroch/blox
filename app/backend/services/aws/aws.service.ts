@@ -1,12 +1,12 @@
 import net from 'net';
-import Connection from '../../common/store-manager/connection';
 import * as AWS from 'aws-sdk';
-import { Catch, CatchClass, Step } from '../../decorators';
-import config from '../../common/config';
 import { v4 as uuidv4 } from 'uuid';
-import VersionService from '../version/version.service';
+import config from '../../common/config';
 import UserService from '../users/users.service';
 import { Log } from '../../common/logger/logger';
+import VersionService from '../version/version.service';
+import { Catch, CatchClass, Step } from '../../decorators';
+import Connection from '../../common/store-manager/connection';
 
 // TODO import from .env
 const defaultAwsOptions = {
@@ -24,7 +24,7 @@ export default class AwsService {
   private logger: Log;
 
   constructor(prefix: string = '') {
-    this.logger = new Log();
+    this.logger = new Log('aws');
     this.storePrefix = prefix;
     if (!this.ec2 && Connection.db(this.storePrefix).exists('credentials')) {
       this.setAWSCredentials();
@@ -162,7 +162,7 @@ export default class AwsService {
     if (Connection.db(this.storePrefix).exists('instanceId')) return;
 
     const data = await this.ec2.runInstances({
-      ImageId: 'ami-0d3caf10672b8e870', // ubuntu 16.04LTS for us-west-1
+      ImageId: 'ami-0d3caf10672b8e870', // Amazon Linux. for us-west-1
       InstanceType: 't2.micro',
       SecurityGroupIds: [Connection.db(this.storePrefix).get('securityGroupId')],
       KeyName: `${this.keyName}-${Connection.db(this.storePrefix).get('uuid')}`,

@@ -1,5 +1,5 @@
-import { Log } from '../logger/logger';
 import Store from './store';
+import { Log } from '../logger/logger';
 import { Catch, Step } from '../../decorators';
 
 const instances = {};
@@ -15,7 +15,7 @@ export default class Connection {
   }
 
   static db(prefix: string = ''): Store {
-    const logger = new Log();
+    const logger = new Log('store');
     const name = `${Connection.userId}${prefix}`;
     if (!instances[name]) {
       const error = new Error('There is no active store connection');
@@ -45,7 +45,7 @@ export default class Connection {
       fields?: any
     }
   }): void {
-    const logger = new Log();
+    const logger = new Log('store');
     const items = Connection.db(payload.fromPrefix).all();
     const { preClean, postClean } = payload;
     if (preClean) {

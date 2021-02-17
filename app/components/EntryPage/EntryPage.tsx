@@ -1,55 +1,35 @@
-import React, {useEffect} from 'react';
-import {connect} from 'react-redux';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {Switch, Route} from 'react-router-dom';
-import styled from 'styled-components';
+import { Switch, Route } from 'react-router-dom';
 
-import { Loader } from 'common/components';
-import Dashboard from '../Dashboard';
-import SettingsPage from '../SettingsPage';
-import Header from '../common/Header';
-
-import { loadWallet } from '../Wizard/actions';
-import * as wizardSelectors from '../Wizard/selectors';
 import wizardSaga from '../Wizard/saga';
-
-import { keyvaultLoadLatestVersion } from '../KeyVaultManagement/actions';
-import * as keyvaultSelectors from '../KeyVaultManagement/selectors';
+import RootRoute from './routes/RootRoute';
+import { Loader } from 'common/components';
+import { loadWallet } from '../Wizard/actions';
+import SettingsRoute from './routes/SettingsRoute';
 import walletSaga from '../KeyVaultManagement/saga';
-
+import { MODAL_TYPES } from '../Dashboard/constants';
+import * as wizardSelectors from '../Wizard/selectors';
+import { useInjectSaga } from '../../utils/injectSaga';
 import useAccounts from 'components/Accounts/useAccounts';
 import useVersions from 'components/Versions/useVersions';
 import useEventLogs from 'components/EventLogs/useEventLogs';
-import useProcessRunner from 'components/ProcessRunner/useProcessRunner';
-
 import * as actionsFromDashboard from '../Dashboard/actions';
-import { MODAL_TYPES } from '../Dashboard/constants';
-
-import { useInjectSaga } from '../../utils/injectSaga';
 import Connection from 'backend/common/store-manager/connection';
+import * as keyvaultSelectors from '../KeyVaultManagement/selectors';
+import useProcessRunner from 'components/ProcessRunner/useProcessRunner';
+import { keyvaultLoadLatestVersion } from '../KeyVaultManagement/actions';
 
 const wizardKey = 'wizard';
 const walletKey = 'keyvaultManagement';
 
-const Wrapper = styled.div`
-  width: 100%;
-  min-height:100%;
-  padding-top: 70px;
-  background-color: #f7fcff;
-`;
-
-const Content = styled.div`
-  width: 100%;
-  max-width: 1360px;
-  margin: auto;
-  display: flex;
-`;
-
 const EntryPage = (props: Props) => {
   const {
-    callLoadWallet, loadWalletLatestVersion, walletStatus,
-    isLoadingWallet, walletErorr, keyvaultCurrentVersion,
-    keyvaultLatestVersion, isLoadingKeyvault, keyvaultError, dashboardActions,
+    callLoadWallet, loadWalletLatestVersion, walletStatus, walletVersion,
+    isLoadingWallet, walletError, keyvaultCurrentVersion,
+    keyvaultLatestVersion, isLoadingKeyvault, keyvaultError,
+    dashboardActions, isFinishedWizard, wizardWallet, isOpenedWizard
   } = props;
 
   const { setModalDisplay } = dashboardActions;
@@ -65,12 +45,12 @@ const EntryPage = (props: Props) => {
   useEffect(() => {
     const inForgotPasswordProcess = Connection.db().get('inForgotPasswordProcess');
     if (inForgotPasswordProcess) {
-      setModalDisplay({show: true, type: MODAL_TYPES.FORGOT_PASSWORD});
+      setModalDisplay({ show: true, type: MODAL_TYPES.FORGOT_PASSWORD });
     }
   }, []);
 
   useEffect(() => {
-    const didntLoadWallet = !walletStatus && !isLoadingWallet && !walletErorr;
+    const didntLoadWallet = !walletStatus && !isLoadingWallet && !walletError;
     const didntLoadKeyvaultVersion = !keyvaultLatestVersion && !isLoadingKeyvault && !keyvaultError;
 
     if (processData || error) {
@@ -95,33 +75,48 @@ const EntryPage = (props: Props) => {
     eventLogs,
     isLoadingEventLogs,
     isLoadingBloxLiveVersion,
-    bloxLiveNeedsUpdate
+    bloxLiveNeedsUpdate,
+    walletVersion: String(walletVersion).replace('v', '')
   };
 
   if (isLoadingWallet || isLoadingAccounts || !keyvaultLatestVersion || isLoadingEventLogs || isLoadingBloxLiveVersion) {
     return <Loader />;
   }
+
+  // Regarding the flow - the user will always reach the Empty Dashboard
+  // when they have a wallet but no validators
+  const haveWallet = wizardWallet && wizardWallet.status !== 'notExist';
+  const haveAccounts = Boolean(accounts?.length);
+  const showDashboard = (!haveAccounts && haveWallet && !isOpenedWizard) || isFinishedWizard;
+  const showWizard = !showDashboard;
+
   return (
-    <Wrapper>
-      <Header withMenu />
-      <Content>
-        <Switch>
-          <Route exact path="/"
-            render={(renderProps) => (<Dashboard {...renderProps} {...otherProps} />)}
+    <Switch>
+      <Route exact path="/"
+        render={(renderProps) => (
+          <RootRoute
+            showDashboard={showDashboard}
+            showWizard={showWizard}
+            renderProps={{ ...renderProps, ...otherProps }}
           />
-          <Route path="/settings"
-            render={(renderProps) => (<SettingsPage withMenu {...renderProps} {...otherProps} />)}
+        )}
+      />
+      <Route path="/settings"
+        render={(renderProps) => (
+          <SettingsRoute
+            renderProps={{ ...renderProps, ...otherProps }}
           />
-        </Switch>
-      </Content>
-    </Wrapper>
+        )}
+      />
+    </Switch>
   );
 };
 
 type Props = {
   walletStatus: string;
+  walletVersion: string;
   isLoadingWallet: boolean;
-  walletErorr: string;
+  walletError: string;
   callLoadWallet: () => void;
   loadWalletLatestVersion: () => void;
 
@@ -134,17 +129,25 @@ type Props = {
   isLoadingBloxLiveVersion: boolean;
 
   dashboardActions: Record<string, any>;
+  isFinishedWizard: boolean;
+  isOpenedWizard: boolean;
+  wizardWallet: any;
 };
 
 const mapStateToProps = (state: State) => ({
   walletStatus: wizardSelectors.getWalletStatus(state),
+  walletVersion: wizardSelectors.getWalletVersion(state),
   isLoadingWallet: wizardSelectors.getIsLoading(state),
-  walletErorr: wizardSelectors.getWalletError(state),
+  walletError: wizardSelectors.getWalletError(state),
 
   keyvaultCurrentVersion: wizardSelectors.getWalletVersion(state),
   keyvaultLatestVersion: keyvaultSelectors.getLatestVersion(state),
   isLoadingKeyvault: keyvaultSelectors.getIsLoading(state),
   keyvaultError: keyvaultSelectors.getError(state),
+
+  isFinishedWizard: wizardSelectors.getWizardFinishedStatus(state),
+  isOpenedWizard: wizardSelectors.getWizardOpenedStatus(state),
+  wizardWallet: wizardSelectors.getWallet(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

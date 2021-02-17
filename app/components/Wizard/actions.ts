@@ -66,6 +66,11 @@ export const setFinishedWizard = (isFinished: boolean) => ({
   payload: isFinished,
 });
 
+export const setOpenedWizard = (isOpened: boolean) => ({
+  type: actionTypes.SET_OPENED_WIZARD,
+  payload: isOpened,
+});
+
 export const clearWizardData = () => ({
   type: actionTypes.CLEAR_DATA,
 });

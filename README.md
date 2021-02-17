@@ -70,6 +70,16 @@ yarn build
 yarn dev
 ```
 
+#### Different dev modes
+
+##### Zoom the app
+
+```shell
+zoom=-1 yarn dev
+```
+
+See [Zoom Levels](https://github.com/electron/electron/blob/master/docs/api/web-frame.md#webframesetzoomlevellevel)
+
 ### Create packages
 
 BloxStaking desktop app can run on MacOs and Windows. You can create a package from your development enviroment. 

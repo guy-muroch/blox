@@ -1,31 +1,32 @@
 import { eventChannel, END } from 'redux-saga';
 import { call, put, take, takeLatest, select } from 'redux-saga/effects';
-import { PROCESS_SUBSCRIBE } from './actionTypes';
 import * as actions from './actions';
-import { processInstantiator, Listener } from './service';
 import { getNetwork } from '../Wizard/selectors';
+import { PROCESS_SUBSCRIBE } from './actionTypes';
 import { Log } from '../../backend/common/logger/logger';
+import { processInstantiator, Listener } from './service';
 
 function* startProcess(action) {
   const logger = new Log();
   const { payload } = action;
-  const { name, credentials } = payload;
-  const network = yield select(getNetwork);
-  const process = processInstantiator(name, { credentials, network });
+  const { name, params } = payload;
+  const network = params?.network || (yield select(getNetwork));
+  const processPayload = { ...payload, ...(params || {}), network };
+  delete processPayload.params;
+  const process = processInstantiator(name, processPayload);
   const channel = yield call(createChannel, process);
   let isActive = false;
   let data;
   try {
     while (true) {
       const result = yield take(channel);
-      const { payload: { isActive: isActiveFromStep, step, state, data: stepData, error }, subject } = result;
+      const { payload: { isActive: isActiveFromStep, step, state, data: stepData, error }} = result;
       if (isActiveFromStep) {
         isActive = isActiveFromStep;
       }
       if (stepData) {
         data = stepData;
       }
-      // logger.info('result', result);
       step?.name && logger.info(`${step?.num}/${step?.numOf} - ${step?.name}`);
       let message = step?.name;
       let currentStep = 0;
@@ -46,6 +47,7 @@ function* startProcess(action) {
       yield put(actions.processObserve(observePayload));
     }
   } catch (e) {
+    console.error('Running process error:', e);
     yield put(actions.processFailure(e));
     channel.close();
   } finally {

@@ -5,7 +5,7 @@ export const generateDepositDataInfo = (depositData) => {
       label: 'depositTo',
       value: depositTo,
       title: 'To Address',
-      moreInfo: 'This where your deposit transactions should be sent in order to run your validator and start staking.',
+      moreInfo: 'This is where your deposit transactions should be sent in order to run your validator and start staking.',
     },
     {
       label: 'txData',

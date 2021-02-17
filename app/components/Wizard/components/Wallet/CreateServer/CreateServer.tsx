@@ -1,19 +1,17 @@
 import React from 'react';
 import { shell } from 'electron';
 import styled from 'styled-components';
-
-import { ProcessLoader, Button, PasswordInput, InfoWithTooltip } from 'common/components';
-import { Title, Paragraph, ErrorMessage } from '../../common';
-
-import useCreateServer from 'common/hooks/useCreateServer';
 import Guide from '../Guide';
+import useCreateServer from 'common/hooks/useCreateServer';
+import { Title, Paragraph, ErrorMessage } from '../../common';
+import { ProcessLoader, Button, PasswordInput, InfoWithTooltip } from 'common/components';
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  font-family: Avenir;
+  font-family: Avenir, serif;
   font-size: 16px;
   font-weight: 500;
 `;
@@ -32,11 +30,6 @@ const ProgressWrapper = styled.div`
   margin-top:20px;
 `;
 
-const GuideButton = styled.span`
-  color:${({theme}) => theme.primary900};
-  cursor:pointer;
-`;
-
 const ExternalLink = styled.span`
   color:${({theme}) => theme.primary900};
   cursor:pointer;
@@ -53,11 +46,10 @@ const moreInfo = `
 
 const CreateServer = (props: Props) => {
   const { page, setPage } = props;
-  const [showGuide, setGuideDisplay] = React.useState(true);
 
   const onSuccess = () => setPage(page + 1);
 
-  const { isLoading, error, processMessage, loaderPrecentage, accessKeyId, setAccessKeyId,
+  const { isLoading, error, processMessage, loaderPercentage, accessKeyId, setAccessKeyId,
           secretAccessKey, setSecretAccessKey, onStartProcessClick, isPasswordInputDisabled, isButtonDisabled
         } = useCreateServer({onSuccess});
 
@@ -73,8 +65,7 @@ const CreateServer = (props: Props) => {
         <ExternalLink onClick={() => shell.openExternal('https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/')}>
           AWS account is verified
         </ExternalLink> before creating the keys. <br />
-        To create a suitable server and access tokens follow this&nbsp;
-        <GuideButton onClick={() => setGuideDisplay(true)}>step-by-step guide</GuideButton>.
+        <b>Follow the guide on the right to create a server and access tokens.</b>
       </Paragraph>
       <PasswordInputsWrapper>
         <PasswordInput name={'accessKeyId'} title={'Access Key ID'} autoFocus
@@ -87,7 +78,7 @@ const CreateServer = (props: Props) => {
       <Button isDisabled={isButtonDisabled} onClick={() => onStartProcessClick('install')}>Continue</Button>
       {isLoading && processMessage && !error && (
         <ProgressWrapper>
-          <ProcessLoader text={processMessage} precentage={loaderPrecentage} />
+          <ProcessLoader text={processMessage} precentage={loaderPercentage} />
         </ProgressWrapper>
       )}
       {error && (
@@ -95,7 +86,7 @@ const CreateServer = (props: Props) => {
           {error}, please try again.
         </ErrorMessage>
       )}
-      {showGuide && <Guide onClose={() => setGuideDisplay(false)} />}
+      <Guide />
     </Wrapper>
   );
 };

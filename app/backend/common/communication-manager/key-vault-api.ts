@@ -1,18 +1,17 @@
 import Http from './http';
-import Connection from '../store-manager/connection';
-import KeyVaultSsh from './key-vault-ssh';
-import { isVersionHigherOrEqual } from '../../../utils/service';
-import { Log } from '../logger/logger';
 import config from '../config';
+import { Log } from '../logger/logger';
+import KeyVaultSsh from './key-vault-ssh';
+import Connection from '../store-manager/connection';
+import { isVersionHigherOrEqual } from '../../../utils/service';
 
 export default class KeyVaultApi extends Http {
   private storePrefix: string;
   private readonly keyVaultSsh: KeyVaultSsh;
-  private logger: Log;
 
   constructor(prefix: string = '') {
     super();
-    this.logger = new Log();
+    this.logger = new Log('key-vault-api');
     this.storePrefix = prefix;
     this.keyVaultSsh = new KeyVaultSsh(prefix);
   }

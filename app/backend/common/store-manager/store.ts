@@ -3,8 +3,9 @@ import * as crypto from 'crypto';
 import ElectronStore from 'electron-store';
 import BaseStore from './base-store';
 import { Log } from '../logger/logger';
-import { Catch } from '../../decorators';
 import { Migrate } from '../../migrate';
+import { Catch } from '../../decorators';
+
 export default class Store {
   private storage: ElectronStore;
   private baseStore: BaseStore;
@@ -24,7 +25,7 @@ export default class Store {
     } else {
       this.prefix = prefix;
     }
-    this.logger = new Log();
+    this.logger = new Log('store');
   }
 
   init(userId: string, authToken: string): void {
@@ -117,7 +118,9 @@ export default class Store {
   }
 
   logout(): void {
-    this.baseStore.clear();
+    this.baseStore.delete('currentUserId');
+    this.baseStore.delete('authToken');
+    // this.baseStore.clear();
     // this.cryptoKey = undefined;
     // Object.keys(Store.instances).forEach(prefix => Store.close(prefix));
   }

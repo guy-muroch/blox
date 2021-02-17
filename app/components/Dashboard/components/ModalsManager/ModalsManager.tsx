@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { KeyVaultReactivation, KeyVaultUpdate, DepositInfoModal, AccountRecovery } from '../../..';
-import { PasswordModal } from '../../../KeyVaultModals';
+import { PasswordModal, FailureModal, ThankYouModal } from '../../../KeyVaultModals';
 import ActiveValidatorModal from '../../../ActiveValidatorModal';
 
 import * as actionsFromDashboard from '../../actions';
@@ -11,15 +11,18 @@ import * as actionsFromAccounts from '../../../Accounts/actions';
 import * as actionsFromUser from '../../../User/actions';
 import * as selectors from '../../selectors';
 import { getActiveValidators } from '../../../EventLogs/selectors';
+import useDashboardData from '../../useDashboardData';
 
 import { MODAL_TYPES } from '../../constants';
+import imageImportFailed from '../../../Wizard/assets/img-import-failed.svg';
 
 const ModalsManager = (props: Props) => {
   const { dashboardActions, wizardActions, accountsActions, userActions, showModal, modalType, onSuccess, activeValidators } = props;
-  const { clearModalDisplayData } = dashboardActions;
+  const { clearModalDisplayData, setModalDisplay } = dashboardActions;
   const { loadWallet, setFinishedWizard } = wizardActions;
   const { loadAccounts } = accountsActions;
   const { loadUserInfo } = userActions;
+  const { loadDashboardData } = useDashboardData();
 
   const onPasswordSuccess = () => {
     clearModalDisplayData();
@@ -29,14 +32,16 @@ const ModalsManager = (props: Props) => {
   const onKeyvaultProcessSuccess = async () => {
     await loadWallet();
     await clearModalDisplayData();
+    await loadDashboardData();
   };
 
-  const onAccountRecoverySuccess = () => {
+  const onAccountRecoverySuccess = async () => {
     setFinishedWizard(true);
     loadUserInfo();
     loadWallet();
     loadAccounts();
     clearModalDisplayData();
+    await loadDashboardData();
   };
 
   if (showModal) {
@@ -56,6 +61,28 @@ const ModalsManager = (props: Props) => {
       case MODAL_TYPES.DEVICE_SWITCH:
       case MODAL_TYPES.FORGOT_PASSWORD:
         return <AccountRecovery onSuccess={() => onAccountRecoverySuccess()} onClose={() => clearModalDisplayData()} type={modalType} />;
+      case MODAL_TYPES.VALIDATORS_IMPORT_FAILED:
+        return (
+          <FailureModal
+            title="Failed to Import"
+            subtitle="Please contact our support to help with the import."
+            customImage={imageImportFailed}
+            onClick={() => {
+              setModalDisplay({ show: true, type: MODAL_TYPES.VALIDATORS_IMPORT_FAILED_THANKS });
+            }}
+          />
+        );
+      case MODAL_TYPES.VALIDATORS_IMPORT_FAILED_THANKS:
+        return (
+          <ThankYouModal
+            onClose={async () => {
+              setFinishedWizard(true);
+              await loadDashboardData();
+              clearModalDisplayData();
+            }}
+            customImage={imageImportFailed}
+          />
+        );
       default:
         return null;
     }

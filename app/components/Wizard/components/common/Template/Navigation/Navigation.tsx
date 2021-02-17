@@ -16,11 +16,15 @@ const Separator = styled.div`
   width: 100%;
   height: 1px;
   background-color: ${({ theme }) => theme.gray80015};
-  margin: 24px 0px;
+  margin: 24px 0;
 `;
 
 const Navigation = (props: Props) => {
   const { page, step, addAdditionalAccount } = props;
+
+  console.log('TEST PAGE ----', page)
+  console.log('TEST STEP ----', step)
+
   return (
     <Wrapper>
       {!addAdditionalAccount && (
@@ -29,20 +33,31 @@ const Navigation = (props: Props) => {
           {(step === 1 && page !== 4) && (
             <>
               <SubMenuItem text="Select Cloud Provider" page={page} number={1} />
-              <SubMenuItem text="Create Server" page={page} number={2} />
-              <SubMenuItem text="Save Passphrase" page={page} number={3} />
+              <SubMenuItem text="Create KeyVault" page={page} number={2} />
             </>
           )}
           <Separator />
         </>
       )}
 
-      <MenuItem text="Validator Creation" hideNumber={addAdditionalAccount} number={2} step={step} page={page} finalPage={8} />
-      {((step === 2 && page !== 8) || page === 4) && (
+      <MenuItem text="Validator Setup" hideNumber={addAdditionalAccount} number={2} step={step} page={page} finalPage={10} />
+      {(step === 2 || page === 4) && (
         <>
-          <SubMenuItem text="Select Staking Network" page={page} number={5} />
-          <SubMenuItem text="Generate Keys" page={page} number={6} />
-          <SubMenuItem text="Staking Deposit" page={page} number={7} />
+          <SubMenuItem text="Import/Create Seed" page={page} number={4} />
+        </>
+      )}
+      {(step === 2 && page > 4 && page < 10) && (
+        <>
+          <SubMenuItem text="Generate Seed" page={page} number={5} />
+          <SubMenuItem text="Select Staking Network" page={page} number={6} />
+          <SubMenuItem text="Generate Keys" page={page} number={7} />
+          <SubMenuItem text="Staking Deposit" page={page} number={8} />
+        </>
+      )}
+      {(step === 2 && page >= 10) && (
+        <>
+          <SubMenuItem text="Import Seed" page={page} number={10} />
+          <SubMenuItem text="Validator Selection" page={page} number={11} />
         </>
       )}
     </Wrapper>

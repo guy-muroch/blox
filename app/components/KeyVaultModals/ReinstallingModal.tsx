@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import { ProcessLoader, ModalTemplate } from 'common/components';
-import { Title, Description, SmallText, Wrapper } from 'common/components/ModalTemplate/components';
-
 import useProcessRunner from 'components/ProcessRunner/useProcessRunner';
+import { Title, Description, SmallText, Wrapper } from 'common/components/ModalTemplate/components';
 
 const ReinstallingModal = (props: Props) => {
   const { isLoading, processMessage, isDone, isServerActive, processName,
-    startProcess, clearProcessState, loaderPrecentage } = useProcessRunner();
+    startProcess, clearProcessState, loaderPercentage } = useProcessRunner();
   const { title, description, move1StepForward, move2StepsForward, onClose, image } = props;
 
   useEffect(() => {
@@ -15,7 +14,7 @@ const ReinstallingModal = (props: Props) => {
       isServerActive ? move1StepForward() : move2StepsForward();
     }
     if (!isDone && !isLoading && !processMessage && !processName) {
-      startProcess('reinstall', 'Checking KeyVault configuration...', null);
+      startProcess('reinstall', 'Checking KeyVault configuration...');
     }
   }, [isLoading, isDone, processMessage]);
 
@@ -24,7 +23,7 @@ const ReinstallingModal = (props: Props) => {
       <Title>{title}</Title>
       <Wrapper>
         {description && <Description>{description}</Description>}
-        <ProcessLoader text={processMessage} precentage={loaderPrecentage} />
+        <ProcessLoader text={processMessage} precentage={loaderPercentage} />
       </Wrapper>
       <SmallText withWarning />
     </ModalTemplate>

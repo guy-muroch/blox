@@ -1,8 +1,8 @@
+import { Log } from '../common/logger/logger';
 import { Subject } from './subject.interface';
 import { Observer } from './observer.interface';
 import { Catch, catchDecoratorStore } from '../decorators';
 import BaseStore from '../common/store-manager/base-store';
-import { Log } from '../common/logger/logger';
 
 export default class ProcessClass implements Subject {
   readonly actions: Array<any>;
@@ -14,9 +14,13 @@ export default class ProcessClass implements Subject {
   state: string;
   error: Error;
   action: any;
+  processName: string;
 
-  constructor() {
-    this.logger = new Log();
+  constructor(name = null) {
+    this.logger = new Log('process');
+    if (name) {
+      this.processName = name;
+    }
   }
   /**
    * @type {Observer[]} List of subscribers. In real life, the list of
@@ -67,6 +71,7 @@ export default class ProcessClass implements Subject {
   };
 
   private async processActions(actions) {
+    this.processName && this.logger.info(`${this.processName} started`);
     this.error = null;
     // eslint-disable-next-line no-restricted-syntax
     for (const [index, action] of actions.entries()) {
@@ -82,25 +87,32 @@ export default class ProcessClass implements Subject {
       if (action.params) {
         extra = { ...extra, ...action.params };
       }
-      // eslint-disable-next-line no-await-in-loop
-      const result = await action.instance[action.method].bind(action.instance)(extra);
-      if (this.error) {
-        this.logger.error(this.error.message, this.error);
-        throw this.error;
+      if (action.hook) {
+        // eslint-disable-next-line no-await-in-loop
+        await action.hook(extra);
+      } else {
+        // eslint-disable-next-line no-await-in-loop
+        const result = await action.instance[action.method].bind(action.instance)(extra);
+        if (this.error) {
+          this.logger.error(`${this.processName} failed`);
+          this.logger.error(this.error.message, this.error);
+          throw this.error;
+        }
+        const { name } = result.step;
+        catchDecoratorStore.setHandler(null);
+        delete result.step;
+        this.notify({
+          step: {
+            name,
+            num: this.step,
+            numOf: actions.length
+          },
+          state: this.state,
+          ...result
+        });
       }
-      const { name } = result.step;
-      catchDecoratorStore.setHandler(null);
-      delete result.step;
-      this.notify({
-        step: {
-          name,
-          num: this.step,
-          numOf: actions.length
-        },
-        state: this.state,
-        ...result
-      });
     }
+    this.processName && this.logger.info(`${this.processName} done`);
   }
 
   @Catch({
@@ -115,10 +127,10 @@ export default class ProcessClass implements Subject {
       await this.processActions(this.actions);
     } catch (e) {
       error = e;
-      this.logger.warn('-----MAIN PROCESS FAILED-----');
+      this.logger.error('-----MAIN PROCESS FAILED-----', error);
       baseStore.set('proccessRun', proccessRun + 1);
-      this.logger.debug('maxRunBeforeFallback:', this.maxRunBeforeFallback, 'run:', baseStore.get('proccessRun'));
       const skipFallback = this.maxRunBeforeFallback && this.maxRunBeforeFallback > baseStore.get('proccessRun');
+      this.logger.debug(`skipFallback: ${skipFallback}, maxRunBeforeFallback: ${this.maxRunBeforeFallback} run: ${baseStore.get('proccessRun')}`);
       if (!skipFallback) {
         baseStore.delete('proccessRun');
         await this.fallBack();
@@ -132,9 +144,9 @@ export default class ProcessClass implements Subject {
     this.state = 'fallback';
     this.logger.warn('-----FALLBACK RUN-----');
     try {
-      const { actions = null} = this.fallbackActions.find(item => item.method === this.action.method) || this.fallbackActions.find(item => item.postActions);
-      if (!actions) return;
-      await this.processActions(actions);
+      const step = this.fallbackActions.find(item => item.method === this.action.method) || this.fallbackActions.find(item => item.postActions);
+      if (!step?.actions) return;
+      await this.processActions(step.actions);
     } catch (error) {
       this.logger.error('-----FALLBACK FAILED-----', error);
     }

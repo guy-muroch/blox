@@ -1,35 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-
-import { useInjectSaga } from 'utils/injectSaga';
-
-import * as actionsFromDashboard from '../../../Dashboard/actions';
-import { MODAL_TYPES } from '../../../Dashboard/constants';
-
-import * as wizardActions from '../../actions';
-import * as wizardSelectors from '../../selectors';
+import { bindActionCreators } from 'redux';
 import saga from '../../saga';
-import usePasswordHandler from '../../../PasswordHandler/usePasswordHandler';
-
+import ButtonWithIcon from './ButtonWithIcon';
+import * as wizardActions from '../../actions';
+import { useInjectSaga } from 'utils/injectSaga';
+import * as wizardSelectors from '../../selectors';
+import { InfoWithTooltip } from 'common/components';
+import config from '../../../../backend/common/config';
+import * as userSelectors from '../../../User/selectors';
+import { MODAL_TYPES } from '../../../Dashboard/constants';
 import * as accountSelectors from '../../../Accounts/selectors';
 import { allAccountsDeposited } from '../../../Accounts/service';
-
-import * as userSelectors from '../../../User/selectors';
-
-import { InfoWithTooltip } from 'common/components';
-import ButtonWithIcon from './ButtonWithIcon';
-
 import Connection from 'backend/common/store-manager/connection';
+import * as actionsFromDashboard from '../../../Dashboard/actions';
+import usePasswordHandler from '../../../PasswordHandler/usePasswordHandler';
 
-import bgImage from 'assets/images/bg_staking.jpg';
-import keyVaultImg from 'components/Wizard/assets/img-key-vault.svg';
-import mainNetImg from 'components/Wizard/assets/img-validator-main-net.svg';
+import keyVaultImg from '../../assets/img-key-vault.svg';
+import mainNetImg from '../../assets/img-validator-main-net.svg';
+import bgImage from '../../../../../app/assets/images/bg_staking.jpg';
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
+  min-height:100%;
   display: flex;
 `;
 
@@ -51,7 +46,7 @@ const Left = styled.div`
 const Right = styled.div`
   width: 55vw;
   height: 100%;
-  padding: 100px 11vw 0px 11vw;
+  padding: 100px 11vw 0 11vw;
 `;
 
 const IntroText = styled.div`
@@ -91,11 +86,11 @@ const WelcomePage = (props: Props) => {
 
     if (hasWallet) {
       if (!storedUuid && !userInfo.uuid && accounts?.length > 0) {
-        setModalDisplay({ show: true, type: MODAL_TYPES.DEVICE_SWITCH});
+        setModalDisplay({ show: true, type: MODAL_TYPES.DEVICE_SWITCH });
         return;
       }
       if (userInfo.uuid && ((!isPrimaryDevice && accounts?.length > 0) || isInRecoveryProcess)) {
-        setModalDisplay({ show: true, type: MODAL_TYPES.DEVICE_SWITCH});
+        setModalDisplay({ show: true, type: MODAL_TYPES.DEVICE_SWITCH });
         return;
       }
       if (hasSeed) {
@@ -120,7 +115,9 @@ const WelcomePage = (props: Props) => {
     }
   }, [isLoading]);
 
-  const onStep1Click = () => !showStep2 && setPage(1);
+  const onStep1Click = () => {
+    !showStep2 && setPage(config.PAGES.WALLET.SELECT_CLOUD_PROVIDER);
+  };
 
   const onStep2Click = () => {
     if (wallet.status === 'offline') {
@@ -132,16 +129,23 @@ const WelcomePage = (props: Props) => {
     }
   };
 
-  const redirectToPassPhrasePage = () => setPage(3);
+  const redirectToPassPhrasePage = () => {
+    setPage(config.PAGES.WALLET.IMPORT_OR_GENERATE_SEED);
+  };
 
   const redirectToCreateAccount = () => {
-    setStep(step + 1);
-    setPage(5);
+    if (!accounts?.length) {
+      setStep(config.STEPS.VALIDATOR_SETUP);
+      setPage(config.PAGES.WALLET.IMPORT_OR_GENERATE_SEED);
+    } else {
+      setStep(step + 1);
+      setPage(config.PAGES.VALIDATOR.SELECT_NETWORK);
+    }
   };
 
   const redirectToDepositPage = () => {
     setStep(step + 1);
-    setPage(7);
+    setPage(config.PAGES.VALIDATOR.STAKING_DEPOSIT);
   };
 
   return (

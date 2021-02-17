@@ -1,9 +1,9 @@
-import Connection from '../store-manager/connection';
 import NodeSSH from 'node-ssh';
 import { Readable } from 'stream';
 import { v4 as uuidv4 } from 'uuid';
-import { Log } from '../logger/logger';
 import config from '../config';
+import { Log } from '../logger/logger';
+import Connection from '../store-manager/connection';
 
 const userName = 'ec2-user';
 
@@ -13,7 +13,7 @@ export default class KeyVaultSsh {
 
   constructor(prefix: string = '') {
     this.storePrefix = prefix;
-    this.logger = new Log();
+    this.logger = new Log('key-vault-ssh');
   }
 
   async getConnection(customPort?: string): Promise<NodeSSH> {

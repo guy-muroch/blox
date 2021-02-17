@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Wallet, Validators } from './components';
-import { summarizeAccounts, normalizeAccountsData, normalizeEventLogs } from './service';
 import EventLogs from './components/EventLogs';
+import { Wallet, Validators } from './components';
 import { DiscordButton } from 'common/components';
+import { summarizeAccounts, normalizeAccountsData, normalizeEventLogs } from './service';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -16,13 +16,21 @@ const Wrapper = styled.div`
 `;
 
 const Dashboard = (props) => {
-  const { walletStatus, accounts, eventLogs, walletNeedsUpdate, bloxLiveNeedsUpdate } = props;
-  const accountsSummary = accounts && summarizeAccounts(accounts);
+  const { walletStatus, accounts, eventLogs,
+    walletVersion, walletNeedsUpdate, bloxLiveNeedsUpdate } = props;
+  const accountsSummary = (accounts && accounts.length) ? summarizeAccounts(accounts) : null;
   const normalizedAccounts = accounts && normalizeAccountsData(accounts);
   const normalizedEventLogs = eventLogs && normalizeEventLogs(eventLogs);
+
   return (
     <Wrapper>
-      <Wallet isActive={walletStatus === 'active'} isNeedUpdate={bloxLiveNeedsUpdate} walletNeedsUpdate={walletNeedsUpdate} summary={accountsSummary} />
+      <Wallet
+        isActive={walletStatus === 'active'}
+        version={walletVersion}
+        isNeedUpdate={bloxLiveNeedsUpdate}
+        walletNeedsUpdate={walletNeedsUpdate}
+        summary={accountsSummary}
+      />
       <Validators accounts={normalizedAccounts} />
       <EventLogs events={normalizedEventLogs} />
       <DiscordButton />
@@ -33,6 +41,7 @@ const Dashboard = (props) => {
 Dashboard.propTypes = {
   walletNeedsUpdate: PropTypes.bool,
   walletStatus: PropTypes.string,
+  walletVersion: PropTypes.string,
   accounts: PropTypes.array,
   eventLogs: PropTypes.array,
   bloxLiveNeedsUpdate: PropTypes.bool,

@@ -9,10 +9,11 @@
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 
+import log from 'electron-log';
 import { app, BrowserWindow } from 'electron';
 import { autoUpdater } from 'electron-updater';
-import log from 'electron-log';
 import MenuBuilder from './menu';
+import BaseStore from './backend/common/store-manager/base-store';
 
 export default class AppUpdater {
   constructor() {
@@ -63,7 +64,13 @@ const createWindow = async (downloadsDir) => {
   });
 
   mainWindow.setMinimumSize(width, height);
-  // mainWindow.webContents.openDevTools();
+
+  // Dev Tools
+  const baseStore: BaseStore = new BaseStore();
+  const openDevTools = process.env.NODE_ENV === 'development'
+    || process.env.DEBUG_PROD === 'true'
+    || baseStore.get('dev:console');
+  openDevTools && mainWindow.webContents.openDevTools();
 
   mainWindow.loadURL(`file://${__dirname}/app.html?dwldir=${downloadsDir}`);
 

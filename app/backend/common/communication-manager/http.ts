@@ -1,15 +1,15 @@
 import axios from 'axios';
-import axiosRetry from 'axios-retry';
-import { Catch } from '../../decorators';
 import config from '../config';
+import axiosRetry from 'axios-retry';
 import { Log } from '../logger/logger';
+import { Catch } from '../../decorators';
 export default class Http {
   baseUrl?: string;
   protected instance: any;
-  private logger: Log;
+  protected logger: Log;
 
   constructor() {
-    this.logger = new Log();
+    this.logger = new Log('http');
     this.instance = axios.create();
     axiosRetry(this.instance, {
       retries: +config.env.HTTP_RETRIES,
@@ -30,7 +30,18 @@ export default class Http {
       });
       return fullResponse ? response : response.data;
     } catch (error) {
-      this.logger.error(url, error);
+      error.config = {
+        url: error.config.url,
+        method: error.config.method,
+        baseURL: error.config.baseURL
+      };
+      error.config = {
+        url: error.config.url,
+        method: error.config.method,
+        baseURL: error.config.baseURL
+      };
+      delete error.response.config;
+      this.logger.error(error);
       throw error;
     }
   }

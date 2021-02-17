@@ -1,12 +1,12 @@
-import BloxApi from '../../common/communication-manager/blox-api';
-import { METHOD } from '../../common/communication-manager/constants';
-import Connection from '../../common/store-manager/connection';
-import KeyVaultSsh from '../../common/communication-manager/key-vault-ssh';
-import { Catch, CatchClass, Step } from '../../decorators';
 import { Log } from '../../common/logger/logger';
+import { Catch, CatchClass, Step } from '../../decorators';
+import Connection from '../../common/store-manager/connection';
+import BloxApi from '../../common/communication-manager/blox-api';
 import KeyManagerService from '../key-manager/key-manager.service';
+import { METHOD } from '../../common/communication-manager/constants';
+import KeyVaultSsh from '../../common/communication-manager/key-vault-ssh';
 
-@CatchClass<WalletService>()
+// @CatchClass<WalletService>()
 export default class WalletService {
   private readonly keyVaultSsh: KeyVaultSsh;
   private readonly keyManagerService: KeyManagerService;
@@ -60,18 +60,15 @@ export default class WalletService {
     name: 'Remove blox wallet'
   })
   async removeBloxWallet(): Promise<void> {
-    try {
-      const ssh = await this.keyVaultSsh.getConnection();
-      const command = this.keyVaultSsh.buildCurlCommand({
-        authToken: Connection.db(this.storePrefix).get('authToken'),
-        method: METHOD.DELETE,
-        route: `${this.bloxApi.baseUrl}/organizations`
-      });
-      await ssh.execCommand(command, {});
-    } catch (err) {
-      this.logger.error('ssh error - retrying directly', err);
-      await this.delete();
-    }
+    const ssh = await this.keyVaultSsh.getConnection();
+    const command = this.keyVaultSsh.buildCurlCommand({
+      authToken: Connection.db(this.storePrefix).get('authToken'),
+      method: METHOD.DELETE,
+      route: `${this.bloxApi.baseUrl}/organizations`
+    });
+    this.logger.debug(command);
+    const { stdout, stderr } = await ssh.execCommand(command, {});
+    if (stderr || +stdout !== 200) throw Error(`${stderr || stdout}. Remove blox wallet failed`);
   }
 
   @Step({
@@ -83,19 +80,16 @@ export default class WalletService {
       accessToken: Connection.db(this.storePrefix).get('vaultSignerToken'),
       version: Connection.db().get('keyVaultVersion')
     };
-    try {
-      const ssh = await this.keyVaultSsh.getConnection();
-      const command = this.keyVaultSsh.buildCurlCommand({
-        authToken: Connection.db(this.storePrefix).get('authToken'),
-        method: !isNew ? METHOD.PATCH : METHOD.POST,
-        data: payload,
-        route: `${this.bloxApi.baseUrl}/wallets/sync`
-      });
-      await ssh.execCommand(command, {});
-      Connection.db(this.storePrefix).delete('vaultSignerToken');
-    } catch (err) {
-      this.logger.error('ssh error - retrying directly', err);
-      await this.sync(payload);
-    }
+    const ssh = await this.keyVaultSsh.getConnection();
+    const command = this.keyVaultSsh.buildCurlCommand({
+      authToken: Connection.db(this.storePrefix).get('authToken'),
+      method: !isNew ? METHOD.PATCH : METHOD.POST,
+      data: payload,
+      route: `${this.bloxApi.baseUrl}/wallets/sync`
+    });
+    this.logger.debug(command);
+    const { stdout, stderr } = await ssh.execCommand(command, {});
+    if (stderr || +stdout !== 200) throw Error(`${stdout || stderr}. Sync kv with blox failed`);
+    Connection.db(this.storePrefix).delete('vaultSignerToken');
   }
 }

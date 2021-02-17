@@ -1,11 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
-import AccountService from '../services/account/account.service';
-import AwsService from '../services/aws/aws.service';
-import WalletService from '../services/wallet/wallet.service';
-import KeyVaultService from '../services/key-vault/key-vault.service';
-import UsersService from '../services/users/users.service';
+import analytics from '../analytics';
 import ProcessClass from './process.class';
+import AwsService from '../services/aws/aws.service';
+import UsersService from '../services/users/users.service';
 import Connection from '../common/store-manager/connection';
+import WalletService from '../services/wallet/wallet.service';
+import AccountService from '../services/account/account.service';
+import KeyVaultService from '../services/key-vault/key-vault.service';
 
 export default class RecoveryProcess extends ProcessClass {
   private readonly accountService: AccountService;
@@ -17,7 +18,7 @@ export default class RecoveryProcess extends ProcessClass {
   public readonly fallbackActions: Array<any>;
 
   constructor({ accessKeyId, secretAccessKey, isNew = true }) {
-    super();
+    super('Recovery');
     this.accountService = new AccountService();
     this.awsService = new AwsService();
     this.keyVaultService = new KeyVaultService();
@@ -41,10 +42,15 @@ export default class RecoveryProcess extends ProcessClass {
       { instance: this.keyVaultService, method: 'installDockerScope' },
       { instance: this.keyVaultService, method: 'runDockerContainer' },
       { instance: this.keyVaultService, method: 'getKeyVaultRootToken' },
+      { instance: this.keyVaultService, method: 'updateVaultMountsStorage' },
       { instance: this.walletService, method: 'syncVaultWithBlox', params: { isNew } },
       { instance: this.keyVaultService, method: 'getKeyVaultStatus' },
-      { instance: this.keyVaultService, method: 'updateVaultMountsStorage' },
       { instance: this.awsService, method: 'truncateOldKvResources' },
+      {
+        hook: async () => {
+          await analytics.track('recovery-completed');
+        }
+      }
     ];
 
     this.fallbackActions = [
@@ -63,6 +69,13 @@ export default class RecoveryProcess extends ProcessClass {
             method: 'remove',
             params: {
               prefix: ''
+            }
+          },
+          {
+            hook: async () => {
+              await analytics.track('error-occurred', {
+                reason: 'recovery-failed'
+              });
             }
           }
         ]
