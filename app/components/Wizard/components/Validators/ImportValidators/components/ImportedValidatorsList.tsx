@@ -108,9 +108,10 @@ const ImportedValidatorsList = ({ show, validators, onDone, dashboardActions }: 
         startProcess(
           'createAccount',
           'Creating account..',
-          null,
-          getNetworkForImport(),
-          validators.length - 1
+          {
+            network: getNetworkForImport(),
+            indexToRestore: validators.length - 1
+          }
         );
         const processMessageString = `Importing validator${validators.length === 1 ? '' : 's'}`;
         setProcessMessage(processMessageString);

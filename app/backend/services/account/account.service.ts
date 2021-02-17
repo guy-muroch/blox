@@ -116,7 +116,7 @@ export default class AccountService {
   async createBloxAccounts({ indexToRestore }: { indexToRestore?: number }): Promise<any> {
     const network = Connection.db(this.storePrefix).get('network');
     const lastNetworkIndex = +Connection.db(this.storePrefix).get(`index.${network}`);
-    const index: number = indexToRestore ?? (lastNetworkIndex + 1 || 0);
+    const index: number = indexToRestore ?? (lastNetworkIndex + 1);
     const accumulate = indexToRestore != null;
 
     // Get cumulative accounts list or one account
@@ -155,7 +155,8 @@ export default class AccountService {
   })
   async createAccount({ indexToRestore }: { indexToRestore?: number }): Promise<void> {
     const network = Connection.db(this.storePrefix).get('network');
-    const index: number = indexToRestore ?? await this.getNextIndex(network);
+    const nextIndex = await this.getNextIndex(network);
+    const index: number = indexToRestore ?? nextIndex;
     // 1. get public-keys to create
     const accounts = await this.keyManagerService.getAccount(Connection.db(this.storePrefix).get('seed'), index, network, true);
     const accountsHash = Object.assign({}, ...accounts.map(account => ({ [account.validationPubKey]: account })));

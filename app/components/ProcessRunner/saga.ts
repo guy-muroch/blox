@@ -9,9 +9,11 @@ import { processInstantiator, Listener } from './service';
 function* startProcess(action) {
   const logger = new Log();
   const { payload } = action;
-  const { name } = payload;
-  const network = payload.network || (yield select(getNetwork));
-  const process = processInstantiator(name, { ...payload, network });
+  const { name, params } = payload;
+  const network = params?.network || (yield select(getNetwork));
+  const processPayload = { ...payload, ...(params || {}), network };
+  delete processPayload.params;
+  const process = processInstantiator(name, processPayload);
   const channel = yield call(createChannel, process);
   let isActive = false;
   let data;

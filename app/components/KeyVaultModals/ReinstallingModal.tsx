@@ -14,7 +14,7 @@ const ReinstallingModal = (props: Props) => {
       isServerActive ? move1StepForward() : move2StepsForward();
     }
     if (!isDone && !isLoading && !processMessage && !processName) {
-      startProcess('reinstall', 'Checking KeyVault configuration...', null);
+      startProcess('reinstall', 'Checking KeyVault configuration...');
     }
   }, [isLoading, isDone, processMessage]);
 

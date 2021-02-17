@@ -65,9 +65,17 @@ const Header = ({columns, selectedSorting, sortType, onSortClick, height}) => {
 Header.propTypes = {
   columns: PropTypes.array,
   selectedSorting: PropTypes.string,
-  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number, undefined]),
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   sortType: PropTypes.string,
   onSortClick: PropTypes.func,
+};
+
+Header.defaultProps = {
+  columns: [],
+  selectedSorting: '',
+  height: null,
+  sortType: 'disabled',
+  onSortClick: () => {}
 };
 
 export default Header;

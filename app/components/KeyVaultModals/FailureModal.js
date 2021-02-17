@@ -28,10 +28,18 @@ const FailureModal = ({ title, subtitle, onClick, onClose, customImage }) => {
 
 FailureModal.propTypes = {
   title: PropTypes.string,
-  subtitle: PropTypes.oneOfType([PropTypes.string, undefined]),
+  subtitle: PropTypes.string,
   onClick: PropTypes.func,
   onClose: PropTypes.func,
-  customImage: PropTypes.oneOfType([PropTypes.any, undefined])
+  customImage: PropTypes.any
+};
+
+FailureModal.defaultProps = {
+  title: '',
+  subtitle: '',
+  onClick: () => {},
+  onClose: () => {},
+  customImage: null
 };
 
 export default FailureModal;

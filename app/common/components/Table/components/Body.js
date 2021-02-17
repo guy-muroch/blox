@@ -66,7 +66,14 @@ Body.propTypes = {
   data: PropTypes.array,
   columns: PropTypes.array,
   totalCount: PropTypes.number,
-  rowMinHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number, undefined])
+  rowMinHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+};
+
+Body.defaultProps = {
+  data: [],
+  columns: [],
+  totalCount: 0,
+  rowMinHeight: undefined
 };
 
 export default Body;

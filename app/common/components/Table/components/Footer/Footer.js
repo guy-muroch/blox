@@ -35,7 +35,15 @@ Footer.propTypes = {
   isPagination: PropTypes.bool,
   paginationInfo: PropTypes.object,
   onPageClick: PropTypes.func,
-  navButtonWidth: PropTypes.oneOfType([PropTypes.string, undefined]),
-  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number, undefined])
+  navButtonWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+};
+
+Footer.defaultProps = {
+  isPagination: false,
+  paginationInfo: null,
+  onPageClick: () => {},
+  navButtonWidth: null,
+  height: null
 };
 export default Footer;

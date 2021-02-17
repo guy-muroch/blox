@@ -26,7 +26,7 @@ const CreateValidator = (props: Props) => {
         clearProcessState();
       }
       if (!isLoading) {
-        startProcess('createAccount', 'Generating Validator Keys...', null);
+        startProcess('createAccount', 'Generating Validator Keys...');
       }
     };
     checkIfPasswordIsNeeded(onSuccess);
