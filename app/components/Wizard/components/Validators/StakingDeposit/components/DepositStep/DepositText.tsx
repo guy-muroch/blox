@@ -43,7 +43,7 @@ const DepositText = (props: Props) => {
         />
       </CopyToClipboard>
       <TextInfo> ). Network gas fees will apply. </TextInfo>
-      <Link style={{ color: theme.primary600 }} onClick={() => openExternalLink('documents/eth2/#pp-toc__heading-anchor-7')}>Learn more</Link>
+      <Link style={{ color: theme.primary600 }} onClick={() => openExternalLink('documents/eth2/#eth2-roadmap')}>Learn more</Link>
     </TextInfo>
   );
 };
