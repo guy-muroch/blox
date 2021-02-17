@@ -155,8 +155,7 @@ export default class AccountService {
   })
   async createAccount({ indexToRestore }: { indexToRestore?: number }): Promise<void> {
     const network = Connection.db(this.storePrefix).get('network');
-    const nextIndex = await this.getNextIndex(network);
-    const index: number = indexToRestore ?? nextIndex;
+    const index: number = indexToRestore ?? await this.getNextIndex(network);
     // 1. get public-keys to create
     const accounts = await this.keyManagerService.getAccount(Connection.db(this.storePrefix).get('seed'), index, network, true);
     const accountsHash = Object.assign({}, ...accounts.map(account => ({ [account.validationPubKey]: account })));
