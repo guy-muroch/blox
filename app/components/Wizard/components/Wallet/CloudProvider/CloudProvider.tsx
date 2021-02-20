@@ -12,7 +12,7 @@ const Wrapper = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  font-family: Avenir;
+  font-family: Avenir, serif;
   font-size: 16px;
   font-weight: 500;
 `;
@@ -41,7 +41,7 @@ const CloudProvider = (props: Props) => {
         must be installed on our available cloud providers. <br />
         This ensures your private keys are secured and available for a safe and <br />
         reliable staking experience.&nbsp;
-        <Link onClick={() => openExternalLink('docs-guides/#pp-toc__heading-anchor-1')}>
+        <Link onClick={() => openExternalLink('knowledge-base/guides/cloud/why-do-i-need-a-cloud-account/')}>
           Why does Blox need access to my server?
         </Link>
       </Paragraph>
