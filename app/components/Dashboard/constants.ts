@@ -16,6 +16,8 @@ export const MODAL_TYPES: Record<string, any> = {
   PASSWORD: 'password',
   REACTIVATION: 'reactivation',
   UPDATE: 'update',
+  REACTIVATE_KEYVAULT_REQUEST: 'keyvault/reactivate/request',
+  UPDATE_KEYVAULT_REQUEST: 'keyvault/update/request',
   DEPOSIT_INFO: 'depositInfo',
   ACTIVE_VALIDATOR: 'activeValidator',
   DEVICE_SWITCH: 'deviceSwitch',
