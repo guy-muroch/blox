@@ -97,7 +97,7 @@ const AddValidatorButtonWrapper = (props: AddValidatorButtonWrapperProps) => {
    * Root function of calling import/create validator logic
    */
   const onAddValidatorClick = async () => {
-    if (1 || walletNeedsUpdate) {
+    if (walletNeedsUpdate) {
       return showPasswordProtectedDialog(updateKeyVaultDialogActivator);
     }
 
