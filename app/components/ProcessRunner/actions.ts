@@ -13,7 +13,7 @@ export type ProcessParams = {
 export const processSubscribe = (name: string, defaultMessage: string, params?: ProcessParams) => {
   return {
     type: actionTypes.PROCESS_SUBSCRIBE,
-    payload: { name, defaultMessage, ...(params || {}) },
+    payload: { name, defaultMessage, params: {...(params || {})}},
   };
 };
 
