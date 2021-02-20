@@ -10,7 +10,7 @@ function* startProcess(action) {
   const logger = new Log();
   const { payload } = action;
   const { name, params } = payload;
-  const network = params?.network || (yield select(getNetwork));
+  const network = params?.network ?? (yield select(getNetwork));
   const processPayload = { ...payload, ...(params || {}), network };
   delete processPayload.params;
   const process = processInstantiator(name, processPayload);
