@@ -55,7 +55,7 @@ const GenerateKeys = (props: Props) => {
           <br />
           {NETWORKS[network].name} validator. These keys will be generated securely using KeyVault.{' '}
           <br />
-          <Link onClick={() => openExternalLink('docs-guides/#pp-toc__heading-anchor-4')}>What is a validator key?</Link>
+          <Link onClick={() => openExternalLink('knowledge-base/guides/validator/what-are-eth2-keys/#validator-key')}>What is a validator key?</Link>
         </Paragraph>
 
         {showCheckbox && (
