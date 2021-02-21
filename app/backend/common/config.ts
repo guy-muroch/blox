@@ -25,6 +25,9 @@ export default class Config {
       HTTP_RETRY_DELAY: 1000,
       PYRMONT_NETWORK: 'pyrmont',
       MAINNET_NETWORK: 'mainnet',
+      TESTNET: {
+        GOERLI_NETWORK: 'goerli'
+      },
       SSL_SUPPORTED_TAG: 'v0.1.25',
       HIGHEST_ATTESTATION_SUPPORTED_TAG: 'v0.3.2',
       DEFAULT_SSH_PORT: 22,
