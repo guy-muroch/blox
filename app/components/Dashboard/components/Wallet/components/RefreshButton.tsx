@@ -24,7 +24,7 @@ const Text = styled.span`
 const RefreshButton = () => {
   const { loadDashboardData } = useDashboardData();
   return (
-    <Wrapper onClick={() => loadDashboardData()}>
+    <Wrapper onClick={() => loadDashboardData(true)}>
       <Icon name={'refresh'} fontSize={'13px'} color={'primary900'} />
       <Text>Refresh Data</Text>
     </Wrapper>
