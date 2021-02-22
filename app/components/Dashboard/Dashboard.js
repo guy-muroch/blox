@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import EventLogs from './components/EventLogs';
 import { Wallet, Validators } from './components';
 import { DiscordButton } from 'common/components';
+import TestNetToggle from './components/Wallet/components/TestNetToggle';
+import config from '../../backend/common/config';
 import { summarizeAccounts, normalizeAccountsData, normalizeEventLogs } from './service';
 
 const Wrapper = styled.div`
@@ -21,6 +23,7 @@ const Dashboard = (props) => {
   const accountsSummary = (accounts && accounts.length) ? summarizeAccounts(accounts) : null;
   const normalizedAccounts = accounts && normalizeAccountsData(accounts);
   const normalizedEventLogs = eventLogs && normalizeEventLogs(eventLogs);
+  const havingNotMainNetAccounts = normalizedAccounts && normalizedAccounts.filter((account) => account.network !== config.env.MAINNET_NETWORK);
 
   return (
     <Wrapper>
@@ -31,6 +34,7 @@ const Dashboard = (props) => {
         walletNeedsUpdate={walletNeedsUpdate}
         summary={accountsSummary}
       />
+      {havingNotMainNetAccounts && <TestNetToggle />}
       <Validators accounts={normalizedAccounts} />
       <EventLogs events={normalizedEventLogs} />
       <DiscordButton />
