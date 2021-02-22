@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { NETWORKS } from '../../constants';
 import { InfoWithTooltip } from 'common/components';
-import * as wizardSelectors from '../../../../selectors';
 import * as actionsFromWizard from '../../../../actions';
 import useDashboardData from '../../../../../Dashboard/useDashboardData';
 import { Title, SubTitle, Paragraph, BigButton, SuccessIcon } from '../../../common';
@@ -82,10 +81,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   wizardActions: bindActionCreators(actionsFromWizard, dispatch)
 });
 
-const mapStateToProps = (state: State) => ({
-  depositData: wizardSelectors.getDepositData(state)
-});
-
 type Props = {
   onClick: () => void;
   validatorData: Record<string, any>;
@@ -93,7 +88,6 @@ type Props = {
   depositData: Record<string, any>;
 };
 
-type State = Record<string, any>;
 type Dispatch = (arg0: { type: string }) => any;
 
-export default connect(mapStateToProps, mapDispatchToProps)(KeysGenerated);
+export default connect(null, mapDispatchToProps)(KeysGenerated);

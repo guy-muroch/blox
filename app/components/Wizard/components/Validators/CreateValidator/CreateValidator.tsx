@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getNetwork } from '../../../selectors';
 import { loadDepositData } from '../../../actions';
+import * as wizardSelectors from '../../../selectors';
 import { GenerateKeys, KeysGenerated } from './components';
 import { setDepositNeeded } from '../../../../Accounts/actions';
 import useProcessRunner from 'components/ProcessRunner/useProcessRunner';
@@ -10,7 +11,7 @@ import usePasswordHandler from '../../../../PasswordHandler/usePasswordHandler';
 const CreateValidator = (props: Props) => {
   const { isLoading, isDone, processData, error, startProcess, clearProcessState } = useProcessRunner();
   const { checkIfPasswordIsNeeded } = usePasswordHandler();
-  const { page, setPage, callLoadDepositData, callSetDepositNeeded, selectedNetwork } = props;
+  const { page, setPage, callLoadDepositData, callSetDepositNeeded, selectedNetwork, depositData } = props;
   const account = processData && processData.length ? processData[0] : processData;
 
   useEffect(() => {
@@ -41,8 +42,8 @@ const CreateValidator = (props: Props) => {
 
   return (
     <>
-      {account && !error ? (
-        <KeysGenerated onClick={onContinueClick} validatorData={account} />
+      {account && !error && depositData ? (
+        <KeysGenerated depositData={depositData} onClick={onContinueClick} validatorData={account} />
       ) : (
         <GenerateKeys network={selectedNetwork} onClick={onGenerateKeysClick} isLoading={isLoading} error={error} />
       )}
@@ -51,7 +52,8 @@ const CreateValidator = (props: Props) => {
 };
 
 const mapStateToProps = (state: State) => ({
-  selectedNetwork: getNetwork(state)
+  selectedNetwork: getNetwork(state),
+  depositData: wizardSelectors.getDepositData(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -69,6 +71,7 @@ type Props = {
   callLoadDepositData: (publicKey: string, accountIndex: number, network: string) => void;
   callSetDepositNeeded: (payload: DepositNeededPayload) => void;
   selectedNetwork: string;
+  depositData: any;
 };
 
 type DepositNeededPayload = {
