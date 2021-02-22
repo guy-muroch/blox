@@ -57,11 +57,11 @@ export const summarizeAccounts = (accounts) => {
 
   const totalDeposited = initialBalance * activeAccounts.length;
 
-  let balance = 0.0;
-  activeAccounts.map((activeAccount) => {
-    balance += parseFloat(activeAccount.currentBalance);
-    return balance;
-  });
+  const balance = activeAccounts.reduce((aggregate, activeAccount) => {
+      return aggregate + parseFloat(activeAccount.currentBalance);
+    },
+    0.0);
+
   const summary = {
     balance,
     sinceStart: balance - totalDeposited,
