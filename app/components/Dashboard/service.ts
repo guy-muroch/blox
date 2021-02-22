@@ -1,6 +1,7 @@
 import moment from 'moment';
+import config from '../../backend/common/config';
 
-const initialBalance = 32.00; // TODO 32 hard coded. need to be a initial balance prop.
+const initialBalance = config.env.ETH_INITIAL_BALANCE;
 
 const handleChange = (currentBalance) => {
   if (currentBalance && initialBalance) {
@@ -42,24 +43,31 @@ export const summarizeAccounts = (accounts) => {
   const initialObject = {
     balance: 0.0,
     sinceStart: 0.0,
-    change: 0.0,
     totalChange: 0.0,
   };
-  const summary = accounts.reduce((accumulator, value, index) => {
-    const { effectiveBalance, currentBalance } = value;
-    if (Number.isNaN(parseFloat(effectiveBalance)) || Number.isNaN(parseFloat(currentBalance))) {
-      return accumulator;
-    }
-    const difference = parseFloat(currentBalance) - initialBalance;
-    const percentage = (difference / initialBalance) * 100;
-    const totalChange = accumulator.totalChange + percentage;
-    return {
-      balance: accumulator.balance + parseFloat(currentBalance),
-      sinceStart: accumulator.sinceStart + (parseFloat(currentBalance) - initialBalance),
-      change: index + 1 === accounts.length ? totalChange / accounts.length : 0,
-      totalChange,
-    };
-  }, initialObject);
+
+  const activeAccounts = accounts.filter((account) => {
+    const { effectiveBalance, currentBalance } = account;
+    return !(Number.isNaN(parseFloat(effectiveBalance)) || Number.isNaN(parseFloat(currentBalance)));
+  });
+
+  if (!activeAccounts.length) {
+    return initialObject;
+  }
+
+  const totalDeposited = initialBalance * activeAccounts.length;
+
+  let balance = 0.0;
+  activeAccounts.map((activeAccount) => {
+    balance += parseFloat(activeAccount.currentBalance);
+    return balance;
+  });
+  const summary = {
+    balance,
+    sinceStart: balance - totalDeposited,
+    totalChange: ((balance - totalDeposited) / totalDeposited) * 100.0
+  };
+
   return fixNumOfDigits(summary);
 };
 
