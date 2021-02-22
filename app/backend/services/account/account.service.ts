@@ -284,7 +284,8 @@ export default class AccountService {
       accountIndex: index,
       publicKey,
       depositTo: depositContractAddress,
-      coin
+      coin,
+      withdrawalCredentials
     };
   }
 
