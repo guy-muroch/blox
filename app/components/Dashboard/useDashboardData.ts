@@ -27,8 +27,8 @@ const useDashboardData = () => {
 
   const dispatch = useDispatch();
 
-  const loadDashboardData = async () => {
-    await saveLastConnection();
+  const loadDashboardData = async (saveConnectionTime: boolean = false) => {
+    saveConnectionTime && await saveLastConnection();
     await dispatch(loadWallet());
     await dispatch(loadAccounts());
     await dispatch(keyvaultLoadLatestVersion());
