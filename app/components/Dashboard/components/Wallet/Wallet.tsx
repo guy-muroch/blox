@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import UpdateBanner from './components/UpdateBanner';
-import { Boxes, StatusBar, RefreshButton } from './components';
+import UpdateBanner from '~app/components/Dashboard/components/Wallet/components/UpdateBanner';
+import { Boxes, StatusBar, RefreshButton } from '~app/components/Dashboard/components/Wallet/components';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -35,6 +35,7 @@ const Wallet = (props) => {
 Wallet.propTypes = {
   isActive: PropTypes.bool,
   isNeedUpdate: PropTypes.bool,
+  walletNeedsUpdate: PropTypes.bool,
   summary: PropTypes.object,
   version: PropTypes.string
 };

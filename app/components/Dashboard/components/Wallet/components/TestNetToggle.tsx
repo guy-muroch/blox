@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { Switch, withStyles } from '@material-ui/core';
-import * as actionsFromDashboard from '../../../actions';
-import BaseStore from '../../../../../backend/common/store-manager/base-store';
+import BaseStore from '~app/backend/common/store-manager/base-store';
+import * as actionsFromDashboard from '~app/components/Dashboard/actions';
 
 const TestNetToggleWrapper = styled.div`
   text-align: right;
