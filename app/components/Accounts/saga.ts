@@ -75,11 +75,11 @@ export default function* accountsActions() {
 const getProvider = (accountNetwork) => {
   let networkType;
   switch (accountNetwork) {
-    case 'mainnet':
-      networkType = 'mainnet';
+    case config.env.MAINNET_NETWORK:
+      networkType = config.env.MAINNET_NETWORK;
       break;
-    case 'pyrmont':
-      networkType = 'goerli';
+    case config.env.PYRMONT_NETWORK:
+      networkType = config.env.TESTNET.GOERLI_NETWORK;
       break;
   }
   return `https://${networkType}.infura.io/v3/${config.env.INFURA_API_KEY}`;

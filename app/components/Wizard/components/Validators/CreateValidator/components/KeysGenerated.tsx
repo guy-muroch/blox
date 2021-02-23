@@ -8,8 +8,6 @@ import * as actionsFromWizard from '../../../../actions';
 import useDashboardData from '../../../../../Dashboard/useDashboardData';
 import { Title, SubTitle, Paragraph, BigButton, SuccessIcon } from '../../../common';
 
-const Wrapper = styled.div``;
-
 const KeyWrapper = styled.div`
   width: 546px;
   border-radius: 8px;
@@ -31,11 +29,9 @@ const SmallText = styled.div`
 
 let publicKeyTooltip = 'The public (signing) key is used for signing the validator’s on-chain duties,';
 publicKeyTooltip += 'including proposing blocks and attesting to others. The validator public key must be online for signing 24/7.';
-let withdrawalKeyTooltip = 'The withdrawal public key is used to incorporate data into an Ethereum staking deposit,';
-withdrawalKeyTooltip += 'which will later be used for identifying the entity that is allowed to withdraw Ether using the Withdrawal Private Key.';
 
 const KeysGenerated = (props: Props) => {
-  const { onClick, validatorData, wizardActions } = props;
+  const { onClick, validatorData, wizardActions, depositData } = props;
   const { setFinishedWizard, clearWizardData } = wizardActions;
   const { loadDashboardData } = useDashboardData();
 
@@ -46,7 +42,7 @@ const KeysGenerated = (props: Props) => {
   };
 
   return (
-    <Wrapper>
+    <>
       <SuccessIcon />
       <Title color="accent2400">Your Keys Were Created!</Title>
       <Paragraph>
@@ -59,10 +55,9 @@ const KeysGenerated = (props: Props) => {
       </SubTitle>
       <KeyWrapper>{validatorData.publicKey}</KeyWrapper>
       <SubTitle>
-        Withdrawal Key
-        <InfoWithTooltip title={withdrawalKeyTooltip} placement="top" />
+        Withdrawal Credentials
       </SubTitle>
-      <KeyWrapper>{validatorData.withdrawalKey}</KeyWrapper>
+      <KeyWrapper>{depositData.withdrawalCredentials}</KeyWrapper>
       <SmallText>
         You can later export your validator keys.
       </SmallText>
@@ -78,7 +73,7 @@ const KeysGenerated = (props: Props) => {
           Continue to Dashboard
         </BigButton>
       )}
-    </Wrapper>
+    </>
   );
 };
 
@@ -90,6 +85,7 @@ type Props = {
   onClick: () => void;
   validatorData: Record<string, any>;
   wizardActions: Record<string, any>;
+  depositData: Record<string, any>;
 };
 
 type Dispatch = (arg0: { type: string }) => any;
