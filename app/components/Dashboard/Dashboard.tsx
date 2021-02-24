@@ -7,7 +7,7 @@ import * as dashboardSelectors from './selectors';
 import { DiscordButton } from '~app/common/components';
 import EventLogs from '~app/components/Dashboard/components/EventLogs';
 import { Wallet, Validators } from '~app/components/Dashboard/components';
-import TestNetToggle from '~app/components/Dashboard/components/Wallet/components/TestNetToggle';
+import NetworkSwitcher from './components/NetworkSwitcher/NetworkSwitcher';
 import {
   summarizeAccounts,
   normalizeAccountsData,
@@ -27,7 +27,7 @@ const Wrapper = styled.div`
 const Dashboard = (props) => {
   const { walletStatus, accounts, eventLogs,
     walletVersion, walletNeedsUpdate, bloxLiveNeedsUpdate, isTestNetHidden } = props;
-  const showTestNetToggle = accountsHaveMoreThanOneNetwork(accounts);
+  const showNetworkSwitcher = accountsHaveMoreThanOneNetwork(accounts);
   const [filteredAccounts, setFilteredAccounts] = React.useState([]);
   const [accountsSummary, setAccountsSummary] = React.useState(null);
   const [normalizedAccounts, setNormalizedAccounts] = React.useState(null);
@@ -37,7 +37,7 @@ const Dashboard = (props) => {
   React.useEffect(() => {
     if (accounts?.length) {
       setFilteredAccounts(accounts.filter((account) => {
-        if (!showTestNetToggle) {
+        if (!showNetworkSwitcher) {
           return true;
         }
         if (isTestNetHidden) {
@@ -48,7 +48,7 @@ const Dashboard = (props) => {
     } else {
       setFilteredAccounts([]);
     }
-  }, [accounts, isTestNetHidden, showTestNetToggle]);
+  }, [accounts, isTestNetHidden, showNetworkSwitcher]);
 
   // Filtered accounts after "network switch" effect
   React.useEffect(() => {
@@ -80,7 +80,7 @@ const Dashboard = (props) => {
         summary={accountsSummary}
       />
 
-      {showTestNetToggle && <TestNetToggle />}
+      {showNetworkSwitcher && <NetworkSwitcher />}
 
       <Validators
         accounts={normalizedAccounts}
