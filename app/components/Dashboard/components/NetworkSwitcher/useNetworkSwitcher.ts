@@ -5,7 +5,7 @@ import { setTestNetHiddenFlag as setTestNetHiddenFlagAction } from '~app/compone
 
 const useNetworkSwitcher = () => {
   const dispatch = useDispatch();
-  const testNetConfigKey = config.FLAGS.TESTNET_HIDDEN;
+  const testNetConfigKey = config.FLAGS.DASHBOARD.TESTNET_HIDDEN;
   const baseStore = new BaseStore();
 
   const setTestNetHiddenFlag = (isHidden: boolean) => {

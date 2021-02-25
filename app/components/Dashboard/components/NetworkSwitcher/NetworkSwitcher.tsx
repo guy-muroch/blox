@@ -53,7 +53,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const testNetConfigKey = config.FLAGS.TESTNET_HIDDEN;
+const testNetConfigKey = config.FLAGS.DASHBOARD.TESTNET_HIDDEN;
 const baseStore = new BaseStore();
 
 const NetworkSwitcher = () => {
