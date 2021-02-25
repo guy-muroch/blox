@@ -7,7 +7,6 @@ import * as dashboardSelectors from './selectors';
 import { DiscordButton } from '~app/common/components';
 import EventLogs from '~app/components/Dashboard/components/EventLogs';
 import { Wallet, Validators } from '~app/components/Dashboard/components';
-import NetworkSwitcher from './components/NetworkSwitcher/NetworkSwitcher';
 import {
   summarizeAccounts,
   normalizeAccountsData,
@@ -78,9 +77,8 @@ const Dashboard = (props) => {
         isNeedUpdate={bloxLiveNeedsUpdate}
         walletNeedsUpdate={walletNeedsUpdate}
         summary={accountsSummary}
+        showNetworkSwitcher={showNetworkSwitcher}
       />
-
-      {showNetworkSwitcher && <NetworkSwitcher />}
 
       <Validators
         accounts={normalizedAccounts}
