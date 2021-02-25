@@ -22,7 +22,7 @@
     "package-mac": "yarn build && electron-builder build --mac",
     "package-linux": "yarn build && electron-builder build --linux",
     "package-win": "yarn build && electron-builder build --win --x64 --publish always",
-    "postinstall": "node -r @babel/register internals/scripts/CheckNativeDep.js && electron-builder install-app-deps && yarn build-dll && opencollective-postinstall",
+    "postinstall": "link-module-alias && node -r @babel/register internals/scripts/CheckNativeDep.js && electron-builder install-app-deps && yarn build-dll && opencollective-postinstall",
     "preinstall": "node ./internals/scripts/CheckYarn.js",
     "prestart": "yarn build",
     "start": "cross-env NODE_ENV=production electron ./app/main.prod.js",
@@ -330,7 +330,8 @@
     "uuid": "^8.3.0",
     "windows-release": "^4.0.0",
     "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.0"
+    "winston-daily-rotate-file": "^4.5.0",
+    "link-module-alias": "^1.2.0"
   },
   "devEngines": {
     "node": ">=7.x",
@@ -354,5 +355,11 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  }
+  },
+  "_moduleAliases": {
+    "~app"      : "./app"
+  },
+  "depsCheckExceptions": [
+    "link-module-alias"
+  ]
 }
