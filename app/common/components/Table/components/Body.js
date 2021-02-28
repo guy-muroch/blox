@@ -53,7 +53,7 @@ const Body = ({ data, columns, totalCount, rowMinHeight }) => (
           >
             {columns.map((column, index) => (
               <Cell key={index} justifyContent={column.justifyContent}>
-                {column.valueRender(item[column.key], totalCount)}
+                {column.valueRender(item[column.key], totalCount, item)}
               </Cell>
             ))}
           </Row>

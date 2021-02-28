@@ -53,18 +53,6 @@ export const lastDateFormat = (utcDate) => {
   return moment(utcDate).format('MMM DD, YYYY');
 };
 
-export const generateLocaleStringConfig = (number) => {
-  const minimumFractionDigits = 2;
-  let maximumFractionDigits = 9;
-  if (number >= 10) {
-    maximumFractionDigits = 5;
-  }
-  return ({
-    minimumFractionDigits,
-    maximumFractionDigits
-  });
-};
-
 export const getOsVersion = () => {
   const type = os.type();
   const release = os.release();

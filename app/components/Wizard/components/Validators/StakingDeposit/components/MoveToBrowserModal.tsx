@@ -1,14 +1,11 @@
-import {CustomModal} from "../../../../../../common/components";
-import React from "react";
-import styled from "styled-components";
-import {BigButton} from "../../../common";
-import {Icon} from 'common/components';
+import React from 'react';
+import styled from 'styled-components';
+import { CustomModal } from '~app/common/components';
+import { BigButton } from '~app/components/Wizard/components/common';
 
 const InnerWrapper = styled.div`
   width:100%;
   height:100%;
-  // display: flex;
-  // align-items: center;
   justify-content:center;
 `;
 
@@ -26,7 +23,7 @@ const Info = styled.div`
   font-weight: 500;
   line-height: 1.67;
   margin-top: 24px;
-  padding: 0px 40px 0px 40px;
+  padding: 0 40px 0 40px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -34,20 +31,6 @@ const ButtonWrapper = styled.div`
   margin-top:45px;
   display:flex;
   justify-content:center;
-`;
-
-const BottomWrapper = styled.div`
-  width:100%;
-  display:flex;
-  justify-content:center;
-  margin-top: 36px
-`;
-
-const AuditText = styled.div`
-  margin-left: 8px;
-  font-size: 12px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.gray400};
 `;
 
 const MoveToBrowserModal = (props: Props) => {
@@ -69,13 +52,11 @@ const MoveToBrowserModal = (props: Props) => {
         <ButtonWrapper>
           <BigButton style={{'width': '320px'}} onClick={() => {
             onMoveToBrowser(moveToBrowser);
-            setMovedToBrowser(false);
+            setTimeout(() => {
+              setMovedToBrowser(false);
+            }, 1000);
           }}>{moveToBrowser ? moveToBrowserBtn : waitingBtn}</BigButton>
         </ButtonWrapper>
-        {/*<BottomWrapper>
-          <Icon name={'verified-user'} fontSize={'16px'} color={'gray400'}/>
-          <AuditText>Security Audited By</AuditText>
-        </BottomWrapper>*/}
       </InnerWrapper>
     </CustomModal>
   );

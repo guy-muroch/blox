@@ -16,42 +16,42 @@ const getNumberColor = (number: number) => {
 const trimWholeNumber = (floatingNumber: number) => {
   if (Number.isNaN(floatingNumber)) { return 'N/A'; }
   const number = floatingNumber > 0 ? Math.floor(floatingNumber) : Math.ceil(floatingNumber);
-  const formattedNumber = number.toLocaleString();
-  return formattedNumber;
+  return number.toLocaleString();
 };
 
-export const trimDecimalNumber = (floatingNumber: number, isPrecentage: boolean) => {
+export const trimDecimalNumber = (floatingNumber: number, isPercents: boolean) => {
   if (Number.isNaN(floatingNumber)) { return 'N/A'; }
   let toFixed = 5;
-  if (floatingNumber >= 10 || isPrecentage) { toFixed = 2; }
+  if (floatingNumber >= 10 || isPercents) { toFixed = 2; }
 
   const trimmedDecimal = (floatingNumber % 1).toFixed(toFixed).substring(2);
   return floatingNumber >= 0 ? `.${trimmedDecimal}` : trimmedDecimal;
 };
+
 export const getBoxes = (isActive: boolean, summary: Record<string, any>) => {
   return [
     {
       name: 'totalBalance',
       width: '290px',
-      color: !summary ? 'gray600' : 'gray800',
-      bigText: !summary ? 'N/A' : trimWholeNumber(summary.balance),
-      medText: !summary ? '' : `${trimDecimalNumber(summary.balance, false)}`,
+      color: !summary?.balance ? 'gray600' : 'gray800',
+      bigText: !summary?.balance ? 'N/A' : trimWholeNumber(summary.balance),
+      medText: !summary?.balance ? '' : `${trimDecimalNumber(summary.balance, false)}`,
       tinyText: 'Total Balance',
     },
     {
       name: 'sinceStart',
       width: '260px',
-      color: !summary ? 'gray600' : getNumberColor(summary.sinceStart),
-      bigText: !summary ? 'N/A' : trimWholeNumber(summary.sinceStart),
-      medText: !summary ? '' : `${trimDecimalNumber(summary.sinceStart, false)}`,
+      color: !summary?.balance ? 'gray600' : getNumberColor(summary.sinceStart),
+      bigText: !summary?.balance ? 'N/A' : trimWholeNumber(summary.sinceStart),
+      medText: !summary?.balance ? '' : `${trimDecimalNumber(summary.sinceStart, false)}`,
       tinyText: 'Since Start',
     },
     {
       name: 'change',
       width: '220px',
-      color: !summary ? 'gray600' : getNumberColor(summary.totalChange),
-      bigText: !summary ? 'N/A' : trimWholeNumber(summary.totalChange),
-      medText: !summary ? '' : `${trimDecimalNumber(summary.totalChange, true)}`,
+      color: !summary?.balance ? 'gray600' : getNumberColor(summary.totalChange),
+      bigText: !summary?.balance ? 'N/A' : trimWholeNumber(summary.totalChange),
+      medText: !summary?.balance ? '' : `${trimDecimalNumber(summary.totalChange, true)}`,
       tinyText: 'Change',
     },
     {
