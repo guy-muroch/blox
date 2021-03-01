@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import config from '~app/backend/common/config';
-import * as dashboardSelectors from './selectors';
 import { Loader, DiscordButton } from '~app/common/components';
 import EventLogs from '~app/components/Dashboard/components/EventLogs';
+import * as dashboardSelectors from '~app/components/Dashboard/selectors';
 import { Wallet, Validators } from '~app/components/Dashboard/components';
 import {
   summarizeAccounts,
@@ -84,10 +84,7 @@ const Dashboard = (props) => {
         showNetworkSwitcher={showNetworkSwitcher}
       />
 
-      <Validators
-        accounts={normalizedAccounts}
-        walletNeedsUpdate={walletNeedsUpdate}
-      />
+      <Validators accounts={normalizedAccounts} />
 
       <EventLogs events={normalizedEventLogs} />
 

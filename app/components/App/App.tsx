@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
-import LoggedIn from '../LoggedIn';
-import userSaga from '../User/saga';
-import NotLoggedIn from '../NotLoggedIn';
-import loginSaga from '../CallbackPage/saga';
-import { deepLink, initApp } from './service';
-import { Loader } from '../../common/components';
-import { Log } from 'backend/common/logger/logger';
-import { useInjectSaga } from '../../utils/injectSaga';
-import * as loginActions from '../CallbackPage/actions';
-import GlobalStyle from '../../common/styles/global-styles';
-import { getIsLoggedIn, getIsLoading } from '../CallbackPage/selectors';
-
-// analytics tools
-import analytics from '../../backend/analytics';
-import { getOsVersion } from 'utils/service';
-import { version } from 'package.json';
-import { v4 as uuidv4 } from 'uuid';
-import BaseStore from '../../backend/common/store-manager/base-store';
+import { version } from '~app/package.json';
+import analytics from '~app/backend/analytics';
+import LoggedIn from '~app/components/LoggedIn';
+import { Loader } from '~app/common/components';
+import userSaga from '~app/components/User/saga';
+import { getOsVersion } from '~app/utils/service';
+import { useInjectSaga } from '~app/utils/injectSaga';
+import NotLoggedIn from '~app/components/NotLoggedIn';
+import { Log } from '~app/backend/common/logger/logger';
+import loginSaga from '~app/components/CallbackPage/saga';
+import GlobalStyle from '~app/common/styles/global-styles';
+import { deepLink, initApp } from '~app/components/App/service';
+import * as loginActions from '~app/components/CallbackPage/actions';
+import BaseStore from '~app/backend/common/store-manager/base-store';
+import { getIsLoggedIn, getIsLoading } from '~app/components/CallbackPage/selectors';
 
 const AppWrapper = styled.div`
   margin: 0 auto;
@@ -82,7 +80,7 @@ const App = (props: Props) => {
   }, [didInitApp, isLoggedIn, isLoading]);
 
   if (!didInitApp || isLoading) {
-    return <Loader />;
+    return <Loader withHeader />;
   }
 
   return (

@@ -43,7 +43,7 @@ const Title = styled.h1`
   margin-bottom: 20px;
 `;
 
-const Validators = ({ accounts, walletNeedsUpdate, isTestNetHidden }) => {
+const Validators = ({ accounts, isTestNetHidden }) => {
   const PAGE_SIZE = 10;
   const [pagedAccounts, setPagedAccounts] = React.useState([]);
   const [paginationInfo, setPaginationInfo] = React.useState(null);
@@ -88,10 +88,7 @@ const Validators = ({ accounts, walletNeedsUpdate, isTestNetHidden }) => {
       <Wrapper>
         <Title>Validators</Title>
         <NoValidatorsText>There are no validators to show at the moment</NoValidatorsText>
-        <AddValidatorButtonWrapper
-          style={addValidatorButtonWrapperStyle}
-          walletNeedsUpdate={walletNeedsUpdate}
-        >
+        <AddValidatorButtonWrapper style={addValidatorButtonWrapperStyle}>
           <AddValidatorButton>Add Validator</AddValidatorButton>
         </AddValidatorButtonWrapper>
       </Wrapper>
@@ -118,7 +115,6 @@ const Validators = ({ accounts, walletNeedsUpdate, isTestNetHidden }) => {
 
 Validators.propTypes = {
   accounts: PropTypes.array,
-  walletNeedsUpdate: PropTypes.bool,
   isTestNetHidden: PropTypes.bool
 };
 
