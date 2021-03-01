@@ -51,7 +51,7 @@ const KeysGenerated = (props: Props) => {
   return (
     <>
       <SuccessIcon />
-      <Title color="accent2400">Your Keys Were Created!</Title>
+      <Title color="accent2400" style={{ marginTop: 30 }}>Your Keys Were Created!</Title>
       <Paragraph>
         Your new {NETWORKS[validatorData.network].name} validator keys were created and are now secured inside <br />
         your KeyVault. Validator will be visible on Etherscan only after deposit.
