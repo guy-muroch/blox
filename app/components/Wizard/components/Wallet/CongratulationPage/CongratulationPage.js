@@ -20,7 +20,7 @@ const CongratulationPage = (props) => {
       <Confetti />
       <Wrapper>
         <SuccessIcon />
-        <Title color="accent2400">KeyVault created successfully!</Title>
+        <Title color="accent2400" style={{ marginTop: 30 }}>KeyVault created successfully!</Title>
         <Paragraph>
           Your private keys have been secured in your vault. <br />
           Now, let’s create your validator.

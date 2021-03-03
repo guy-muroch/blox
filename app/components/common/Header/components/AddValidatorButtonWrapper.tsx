@@ -2,24 +2,26 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { MODAL_TYPES } from '~app/components/Dashboard/constants';
-import { getWalletStatus } from '~app/components/Wizard/selectors';
 import * as actionsFromWizard from '~app/components/Wizard/actions';
 import Connection from '~app/backend/common/store-manager/connection';
 import * as actionsFromAccounts from '~app/components/Accounts/actions';
 import * as actionsFromDashboard from '~app/components/Dashboard/actions';
+import { getLatestVersion } from '~app/components/KeyVaultManagement/selectors';
 import usePasswordHandler from '~app/components/PasswordHandler/usePasswordHandler';
+import { getWalletStatus, getWalletVersion } from '~app/components/Wizard/selectors';
 
 /**
  * Wrapper for any element, so that element would call complex
  * create/import validator flow
  */
 const AddValidatorButtonWrapper = (props: AddValidatorButtonWrapperProps) => {
-  const { dashboardActions, accountsActions, wizardActions,
-    walletNeedsUpdate, walletStatus, children, style } = props;
+  const { dashboardActions, accountsActions, wizardActions, walletStatus,
+    keyvaultCurrentVersion, keyvaultLatestVersion, children, style } = props;
   const { setModalDisplay, clearModalDisplayData } = dashboardActions;
   const { setAddAnotherAccount } = accountsActions;
   const { setFinishedWizard, setOpenedWizard } = wizardActions;
   const { checkIfPasswordIsNeeded } = usePasswordHandler();
+  const walletNeedsUpdate = keyvaultCurrentVersion !== keyvaultLatestVersion;
 
   /**
    * Open create/import validator wizard
@@ -133,7 +135,8 @@ interface AddValidatorButtonWrapperProps {
   wizardActions: Record<string, any>;
   accountsActions: Record<string, any>;
   dashboardActions: Record<string, any>;
-  walletNeedsUpdate: boolean;
+  keyvaultCurrentVersion: string;
+  keyvaultLatestVersion: string;
 }
 
 const mapDispatchToProps = (dispatch) => ({
@@ -143,7 +146,9 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapStateToProps = (state) => ({
-  walletStatus: getWalletStatus(state)
+  walletStatus: getWalletStatus(state),
+  keyvaultCurrentVersion: getWalletVersion(state),
+  keyvaultLatestVersion: getLatestVersion(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddValidatorButtonWrapper);

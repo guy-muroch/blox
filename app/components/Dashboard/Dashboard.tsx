@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import config from '~app/backend/common/config';
-import * as dashboardSelectors from './selectors';
-import { DiscordButton } from '~app/common/components';
+import { Loader, DiscordButton } from '~app/common/components';
 import EventLogs from '~app/components/Dashboard/components/EventLogs';
+import * as dashboardSelectors from '~app/components/Dashboard/selectors';
 import { Wallet, Validators } from '~app/components/Dashboard/components';
 import {
   summarizeAccounts,
@@ -27,7 +27,7 @@ const Dashboard = (props) => {
   const { walletStatus, accounts, eventLogs,
     walletVersion, walletNeedsUpdate, bloxLiveNeedsUpdate, isTestNetHidden } = props;
   const showNetworkSwitcher = accountsHaveMoreThanOneNetwork(accounts);
-  const [filteredAccounts, setFilteredAccounts] = React.useState([]);
+  const [filteredAccounts, setFilteredAccounts] = React.useState(null);
   const [accountsSummary, setAccountsSummary] = React.useState(null);
   const [normalizedAccounts, setNormalizedAccounts] = React.useState(null);
   const [normalizedEventLogs, setNormalizedEventLogs] = React.useState(null);
@@ -45,7 +45,7 @@ const Dashboard = (props) => {
         return account.network === config.env.PYRMONT_NETWORK;
       }));
     } else {
-      setFilteredAccounts([]);
+      setFilteredAccounts(null);
     }
   }, [accounts, isTestNetHidden, showNetworkSwitcher]);
 
@@ -69,6 +69,10 @@ const Dashboard = (props) => {
     }
   }, [eventLogs]);
 
+  if (filteredAccounts?.length && !accountsSummary) {
+    return <Loader />;
+  }
+
   return (
     <Wrapper>
       <Wallet
@@ -80,10 +84,7 @@ const Dashboard = (props) => {
         showNetworkSwitcher={showNetworkSwitcher}
       />
 
-      <Validators
-        accounts={normalizedAccounts}
-        walletNeedsUpdate={walletNeedsUpdate}
-      />
+      <Validators accounts={normalizedAccounts} />
 
       <EventLogs events={normalizedEventLogs} />
 
