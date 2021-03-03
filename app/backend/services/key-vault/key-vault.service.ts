@@ -237,6 +237,8 @@ export default class KeyVaultService {
       this.logger.error(errorCleanCMD);
       throw new Error(`Failed to run clean command: ${errorCleanCMD}`);
     }
+
+    Connection.db(this.storePrefix).set('keyVaultVersion', keyVaultVersion);
   }
 
   @Step({
@@ -309,6 +311,7 @@ export default class KeyVaultService {
     // check if the key vault is alive
     try {
       await this.getVersion();
+      return { isActive: true };
     } catch (e) {
       if (retries === 0) {
         throw e;
