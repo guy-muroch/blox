@@ -185,6 +185,50 @@ export default class KeyVaultService {
   }
 
   @Step({
+    name: 'Upgrading KeyVault plugin...'
+  })
+  async upgradePlugin(): Promise<void> {
+    const keyVaultVersion = await this.versionService.getLatestKeyVaultVersion();
+    const envKey = (Connection.db(this.storePrefix).get('env') || 'production');
+    const dockerHubImage = `bloxstaking/key-vault${envKey === 'production' ? '' : '-rc'}:${keyVaultVersion}`;
+    this.logger.info(`Going to run docker based on ${dockerHubImage} keyvault image`);
+    const dockerCMD =
+      `docker pull ${dockerHubImage} && docker run -d --name=upgrade_key_vault ${dockerHubImage} && ` +
+      'docker cp upgrade_key_vault:/vault/plugins/ethsign ./ &&' +
+      'docker cp ethsign key_vault:/vault/plugins/';
+    const vaultCMD =
+      'docker exec key_vault bash -c ' +
+      '"vault plugin register -tls-skip-verify -sha256=$(sha256sum ethsign | cut -d\' \' -f1) secret ethsign &&' +
+      'vault plugin reload -tls-skip-verify -plugin ethsign"';
+    const cleanCMD =
+      'docker rm -f upgrade_key_vault && docker image prune -f -a && rm ethsign';
+
+    // 1. ssh connect to the instance
+    const ssh = await this.keyVaultSsh.getConnection();
+
+    // 2. exec docker command
+    const { stderr: errorDockerCMD } = await ssh.execCommand(dockerCMD);
+    if (errorDockerCMD) {
+      this.logger.error(errorDockerCMD);
+      throw new Error(`Failed to run docker command: ${errorDockerCMD}`);
+    }
+
+    // 3. exec vault command
+    const { stderr: errorVaultCMD } = await ssh.execCommand(vaultCMD);
+    if (errorVaultCMD) {
+      this.logger.error(errorVaultCMD);
+      throw new Error(`Failed to run vault command: ${errorVaultCMD}`);
+    }
+
+    // 4. exec clean command
+    const { stderr: errorCleanCMD } = await ssh.execCommand(cleanCMD);
+    if (errorCleanCMD) {
+      this.logger.error(errorCleanCMD);
+      throw new Error(`Failed to run clean command: ${errorCleanCMD}`);
+    }
+  }
+
+  @Step({
     name: 'Updating server storage...'
   })
   async updateVaultStorage(): Promise<void> {
