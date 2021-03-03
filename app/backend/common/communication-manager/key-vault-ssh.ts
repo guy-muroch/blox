@@ -27,7 +27,8 @@ export default class KeyVaultSsh {
       host: Connection.db(this.storePrefix).get('publicIp'),
       port,
       username: 'ec2-user',
-      privateKey: keyPair.privateKey
+      privateKey: keyPair.privateKey,
+      readyTimeout: 60000
     });
     return ssh;
   }
