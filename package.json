@@ -79,7 +79,8 @@
       "target": [
         "nsis",
         "msi"
-      ]
+      ],
+      "publisherName": "Blox Staking"
     },
     "afterSign": "electron-builder-notarize",
     "mac": {
@@ -97,7 +98,8 @@
         "rpm",
         "AppImage"
       ],
-      "category": "Finance"
+      "category": "Finance",
+      "mimeTypes": ["x-scheme-handler/blox-live"]
     },
     "directories": {
       "buildResources": "resources",

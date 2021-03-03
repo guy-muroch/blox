@@ -9,6 +9,7 @@
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 
+import path from 'path';
 import log from 'electron-log';
 import { app, BrowserWindow } from 'electron';
 import { autoUpdater } from 'electron-updater';
@@ -61,6 +62,7 @@ const createWindow = async (downloadsDir) => {
       nodeIntegration: true,
       enableRemoteModule: true,
     },
+    icon: path.join(__dirname, 'icon.png')
   });
 
   mainWindow.setMinimumSize(width, height);
