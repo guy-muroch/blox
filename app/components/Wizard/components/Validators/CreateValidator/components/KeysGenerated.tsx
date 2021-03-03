@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {connect} from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
-import { NETWORKS } from '../../constants';
-import { InfoWithTooltip } from 'common/components';
-import * as actionsFromWizard from '../../../../actions';
-import useDashboardData from '../../../../../Dashboard/useDashboardData';
-import { Title, SubTitle, Paragraph, BigButton, SuccessIcon } from '../../../common';
-
-const Wrapper = styled.div``;
+import config from '~app/backend/common/config';
+import { InfoWithTooltip } from '~app/common/components';
+import * as actionsFromWizard from '~app/components/Wizard/actions';
+import useDashboardData from '~app/components/Dashboard/useDashboardData';
+import { NETWORKS } from '~app/components/Wizard/components/Validators/constants';
+import useNetworkSwitcher from '~app/components/Dashboard/components/NetworkSwitcher/useNetworkSwitcher';
+import { Title, SubTitle, Paragraph, BigButton, SuccessIcon } from '~app/components/Wizard/components/common';
 
 const KeyWrapper = styled.div`
   width: 546px;
@@ -31,13 +31,12 @@ const SmallText = styled.div`
 
 let publicKeyTooltip = 'The public (signing) key is used for signing the validator’s on-chain duties,';
 publicKeyTooltip += 'including proposing blocks and attesting to others. The validator public key must be online for signing 24/7.';
-let withdrawalKeyTooltip = 'The withdrawal public key is used to incorporate data into an Ethereum staking deposit,';
-withdrawalKeyTooltip += 'which will later be used for identifying the entity that is allowed to withdraw Ether using the Withdrawal Private Key.';
 
 const KeysGenerated = (props: Props) => {
-  const { onClick, validatorData, wizardActions } = props;
+  const { onClick, validatorData, wizardActions, depositData } = props;
   const { setFinishedWizard, clearWizardData } = wizardActions;
   const { loadDashboardData } = useDashboardData();
+  const { setTestNetHiddenFlag } = useNetworkSwitcher();
 
   const onGoToDashboardClick = async () => {
     await clearWizardData();
@@ -45,10 +44,14 @@ const KeysGenerated = (props: Props) => {
     await loadDashboardData();
   };
 
+  useEffect(() => {
+    setTestNetHiddenFlag(validatorData.network !== config.env.PYRMONT_NETWORK);
+  });
+
   return (
-    <Wrapper>
+    <>
       <SuccessIcon />
-      <Title color="accent2400">Your Keys Were Created!</Title>
+      <Title color="accent2400" style={{ marginTop: 30 }}>Your Keys Were Created!</Title>
       <Paragraph>
         Your new {NETWORKS[validatorData.network].name} validator keys were created and are now secured inside <br />
         your KeyVault. Validator will be visible on Etherscan only after deposit.
@@ -59,10 +62,9 @@ const KeysGenerated = (props: Props) => {
       </SubTitle>
       <KeyWrapper>{validatorData.publicKey}</KeyWrapper>
       <SubTitle>
-        Withdrawal Key
-        <InfoWithTooltip title={withdrawalKeyTooltip} placement="top" />
+        Withdrawal Credentials
       </SubTitle>
-      <KeyWrapper>{validatorData.withdrawalKey}</KeyWrapper>
+      <KeyWrapper>{depositData.withdrawalCredentials}</KeyWrapper>
       <SmallText>
         You can later export your validator keys.
       </SmallText>
@@ -78,7 +80,7 @@ const KeysGenerated = (props: Props) => {
           Continue to Dashboard
         </BigButton>
       )}
-    </Wrapper>
+    </>
   );
 };
 
@@ -90,6 +92,7 @@ type Props = {
   onClick: () => void;
   validatorData: Record<string, any>;
   wizardActions: Record<string, any>;
+  depositData: Record<string, any>;
 };
 
 type Dispatch = (arg0: { type: string }) => any;

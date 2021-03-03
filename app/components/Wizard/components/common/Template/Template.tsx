@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Icon } from 'common/components';
-import Navigation from './Navigation';
-import { contentAnimation } from '..';
-import * as actionsFromWizard from '../../../actions';
-import { getWizardFinishedStatus } from '../../../selectors';
-import * as actionsFromAccounts from '../../../../Accounts/actions';
-import { getAddAnotherAccount } from '../../../../Accounts/selectors';
-import useDashboardData from '../../../../Dashboard/useDashboardData';
+import * as actionsFromWizard from '~app/components/Wizard/actions';
+import * as actionsFromAccounts from '~app/components/Accounts/actions';
+import { getAddAnotherAccount } from '~app/components/Accounts/selectors';
+import useDashboardData from '~app/components/Dashboard/useDashboardData';
+import { getWizardFinishedStatus } from '~app/components/Wizard/selectors';
+import { contentAnimation } from '~app/components/Wizard/components/common';
+import Navigation from '~app/components/Wizard/components/common/Template/Navigation';
 
 const Wrapper = styled.div`
   width: 100%;

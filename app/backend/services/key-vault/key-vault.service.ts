@@ -77,11 +77,22 @@ export default class KeyVaultService {
   }
 
   async getVersion() {
-    return await this.keyVaultApi.requestThruSsh({
+    const mainnetVersion = await this.keyVaultApi.requestThruSsh({
+      method: METHOD.GET,
+      path: `ethereum/${config.env.MAINNET_NETWORK}/version`,
+      isNetworkRequired: false
+    });
+    const pyrmontVersion = await this.keyVaultApi.requestThruSsh({
       method: METHOD.GET,
       path: `ethereum/${config.env.PYRMONT_NETWORK}/version`,
       isNetworkRequired: false
     });
+    const result = {
+      mainnetVersion,
+      pyrmontVersion
+    };
+    this.logger.trace('KV server healthcheck', result);
+    return result;
   }
 
   async getSlashingStorage() {
@@ -261,7 +272,6 @@ export default class KeyVaultService {
 
   @Step({
     name: 'Import key-vault data...',
-    requiredConfig: ['publicIp', 'vaultRootToken']
   })
   async importKeyVaultData(): Promise<any> {
     const supportedNetworks = [config.env.PYRMONT_NETWORK, config.env.MAINNET_NETWORK];
@@ -279,7 +289,6 @@ export default class KeyVaultService {
 
   @Step({
     name: 'Import slashing protection data...',
-    requiredConfig: ['publicIp', 'vaultRootToken']
   })
   async importSlashingData(): Promise<any> {
     const keyVaultVersion = Connection.db(this.storePrefix).get('keyVaultVersion');
@@ -295,21 +304,18 @@ export default class KeyVaultService {
 
   @Step({
     name: 'Validating KeyVault final configuration...',
-    requiredConfig: ['publicIp', 'vaultRootToken']
   })
-  async getKeyVaultStatus() {
+  async getKeyVaultStatus(retries = 2) {
     // check if the key vault is alive
-    await new Promise((resolve) => setTimeout(resolve, 5000));
     try {
       await this.getVersion();
-      const { status } = await this.walletService.health();
-      if (status !== 'active') {
-        throw new Error('wallet health check: status is not active');
-      }
-      return { isActive: true };
     } catch (e) {
-      this.logger.error('Sync keyvault healthcheck failed', e);
-      return { isActive: false };
+      if (retries === 0) {
+        throw e;
+      }
+      this.logger.error('Sync keyvault server healthcheck failed', e);
+      await new Promise((resolve) => setTimeout(resolve, 3000)); // hard delay for 2sec
+      return await this.getKeyVaultStatus(retries - 1);
     }
   }
 

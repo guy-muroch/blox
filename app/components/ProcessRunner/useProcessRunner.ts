@@ -4,7 +4,7 @@ import saga from './saga';
 import * as selectors from './selectors';
 import { useInjectSaga } from 'utils/injectSaga';
 import { precentageCalculator } from 'utils/service';
-import { processSubscribe, processClearState } from './actions';
+import { processSubscribe, processClearState, ProcessParams } from './actions';
 
 const {
   getName, getMessage, getIsLoading, getIsDone, getIsServerActive,
@@ -31,8 +31,8 @@ const useProcessRunner = () => {
   };
   const loaderPercentage = precentageCalculator(steps.currentStep, steps.overallSteps);
 
-  const startProcess: StartProcess = async (name, defaultMessage, credentials, network?: string, indexToRestore?: number) => {
-    await dispatch(processSubscribe(name, defaultMessage, credentials, network, indexToRestore));
+  const startProcess: StartProcess = async (name, defaultMessage, params?: ProcessParams) => {
+    await dispatch(processSubscribe(name, defaultMessage, params));
   };
 
   const clearProcessState: ClearProcess = () => dispatch(processClearState());
@@ -54,8 +54,7 @@ type Props = {
   processData: Record<string, any>;
   error: string;
 };
-
-type StartProcess = (name: string, defaultMessage: string, credentials: Record<string, any> | null, network?: string, indexToRestore?: number) => void;
+type StartProcess = (name: string, defaultMessage: string, params?: ProcessParams) => void;
 type ClearProcess = () => void;
 
 export default useProcessRunner;

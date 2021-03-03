@@ -53,7 +53,7 @@ const Body = ({ data, columns, totalCount, rowMinHeight }) => (
           >
             {columns.map((column, index) => (
               <Cell key={index} justifyContent={column.justifyContent}>
-                {column.valueRender(item[column.key], totalCount)}
+                {column.valueRender(item[column.key], totalCount, item)}
               </Cell>
             ))}
           </Row>
@@ -66,7 +66,14 @@ Body.propTypes = {
   data: PropTypes.array,
   columns: PropTypes.array,
   totalCount: PropTypes.number,
-  rowMinHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number, undefined])
+  rowMinHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+};
+
+Body.defaultProps = {
+  data: [],
+  columns: [],
+  totalCount: 0,
+  rowMinHeight: undefined
 };
 
 export default Body;

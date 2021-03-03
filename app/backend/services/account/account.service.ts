@@ -116,7 +116,7 @@ export default class AccountService {
   async createBloxAccounts({ indexToRestore }: { indexToRestore?: number }): Promise<any> {
     const network = Connection.db(this.storePrefix).get('network');
     const lastNetworkIndex = +Connection.db(this.storePrefix).get(`index.${network}`);
-    const index: number = indexToRestore ?? (lastNetworkIndex + 1 || 0);
+    const index: number = indexToRestore ?? (lastNetworkIndex + 1);
     const accumulate = indexToRestore != null;
 
     // Get cumulative accounts list or one account
@@ -284,7 +284,8 @@ export default class AccountService {
       accountIndex: index,
       publicKey,
       depositTo: depositContractAddress,
-      coin
+      coin,
+      withdrawalCredentials
     };
   }
 

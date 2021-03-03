@@ -25,6 +25,9 @@ export default class Config {
       HTTP_RETRY_DELAY: 1000,
       PYRMONT_NETWORK: 'pyrmont',
       MAINNET_NETWORK: 'mainnet',
+      TESTNET: {
+        GOERLI_NETWORK: 'goerli'
+      },
       SSL_SUPPORTED_TAG: 'v0.1.25',
       HIGHEST_ATTESTATION_SUPPORTED_TAG: 'v0.3.2',
       DEFAULT_SSH_PORT: 22,
@@ -32,6 +35,7 @@ export default class Config {
       BEACONCHA_URL: 'https://beaconcha.in/api/v1',
       PYRMONT_BEACONCHA_URL: 'https://pyrmont.beaconcha.in/api/v1',
       INFURA_API_KEY: 'ad49ce6ad5d64c2685f4b2ba86512c76',
+      ETH_INITIAL_BALANCE: 32.00,
 
       // Application pages constants in one central place, environment-independent
       APP_PAGES: {
@@ -58,6 +62,14 @@ export default class Config {
         WIZARD: {
           KEY_VAULT_SETUP: 1,
           VALIDATOR_SETUP: 2,
+        }
+      },
+      FLAGS: {
+        DASHBOARD: {
+          TESTNET_HIDDEN: 'dashboard:testNet:isHidden',
+        },
+        FEATURES: {
+          IMPORT_NETWORK: 'feature:import:network'
         }
       }
     }
@@ -103,5 +115,9 @@ export default class Config {
 
   static get STEPS(): any {
     return this.env.APP_STEPS;
+  }
+
+  static get FLAGS(): any {
+    return this.env.FLAGS;
   }
 }

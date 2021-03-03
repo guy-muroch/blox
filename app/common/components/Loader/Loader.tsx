@@ -1,18 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 import { LinearProgress } from '@material-ui/core';
-import Spinner from '../Spinner';
+import Header from '~app/components/common/Header';
+import Spinner from '~app/common/components/Spinner';
 
 const Wrapper = styled.div`
   width:100%;
   height:100%;
   position:fixed;
-  top:0px;
-  left:0px;
+  top: 0;
+  left: 0;
   background-color:rgba(0,0,0,0.1);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const SpinnerWrapper = styled.div`
@@ -35,7 +36,7 @@ const StyledLinearProgress = styled((props) => (
     width: 100%;
     height: 8px;
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
     background-color: ${(props) => props.theme.gray200};
     .MuiLinearProgress-barColorPrimary {
       background-color: ${(props) => props.theme.primary900};
@@ -43,15 +44,39 @@ const StyledLinearProgress = styled((props) => (
   }
 `;
 
-const Loader = (props) => {
+const Loader = (props: LoaderProps) => {
+  const { withSpinner, withHeader, withHeaderMenu, withHeaderProfileMenu } = props;
   return (
     <Wrapper>
-      <SpinnerWrapper>
-        <Spinner />
-      </SpinnerWrapper>
+      { withHeader && (
+        <Header
+          withMenu={withHeaderMenu}
+          isDashboard={false}
+          hideProfileMenu={!withHeaderProfileMenu}
+        />
+      )}
+      { withSpinner && (
+        <SpinnerWrapper>
+          <Spinner />
+        </SpinnerWrapper>
+      )}
       <StyledLinearProgress {...props} />
     </Wrapper>
   );
+};
+
+Loader.defaultProps = {
+  withSpinner: false,
+  withHeader: true,
+  withHeaderMenu: false,
+  withHeaderProfileMenu: false
+};
+
+type LoaderProps = {
+  withSpinner: boolean;
+  withHeader: boolean;
+  withHeaderMenu: boolean;
+  withHeaderProfileMenu: boolean;
 };
 
 export default Loader;

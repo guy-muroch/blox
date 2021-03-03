@@ -23,7 +23,7 @@ const Change = ({ change }) => {
   return (
     <Wrapper color={color}>
       {change !== null ?
-        (<EtherNumber value={Number(change)} fontSize={'14px'} color={color} />)
+        (<EtherNumber value={change} fontSize={'14px'} color={color} />)
         : 'N/A'
       }
 

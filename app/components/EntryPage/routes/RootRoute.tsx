@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import Wizard from '../../Wizard';
-import Dashboard from '../../Dashboard';
-import Content from './wrappers/Content';
-import Header from '../../common/Header';
+import Wizard from '~app/components/Wizard';
+import Dashboard from '~app/components/Dashboard';
+import Header from '~app/components/common/Header';
+import Content from '~app/components/EntryPage/routes/wrappers/Content';
 
 const DashboardWrapper = styled.div`
   width: 100%;

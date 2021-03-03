@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { ClickAwayListener } from '@material-ui/core';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import HeaderLink from './HeaderLink';
-import { ProfileMenu } from './components';
-import { logout } from '../../CallbackPage/actions';
-import { getUserData } from '../../CallbackPage/selectors';
-import { getWizardFinishedStatus } from '../../Wizard/selectors';
-import AddValidatorButtonWrapper from './components/AddValidatorButtonWrapper';
+import { logout } from '~app/components/CallbackPage/actions';
+import HeaderLink from '~app/components/common/Header/HeaderLink';
+import { getUserData } from '~app/components/CallbackPage/selectors';
+import { ProfileMenu } from '~app/components/common/Header/components';
+import { getWizardFinishedStatus } from '~app/components/Wizard/selectors';
+import AddValidatorButtonWrapper from '~app/components/common/Header/components/AddValidatorButtonWrapper';
 
 import imageSrc from 'assets/images/staking-logo.svg';
 
@@ -74,7 +74,7 @@ const AddValidatorButton = styled.button`
 `;
 
 const Header = (props: Props) => {
-  const { withMenu, profile, logoutUser, location, isDashboard } = props;
+  const { withMenu, profile, logoutUser, location, isDashboard, hideProfileMenu } = props;
   const [isProfileMenuOpen, toggleProfileMenuOpenDisplay] = useState(false);
   const showAddValidatorButton = location.pathname === '/' && isDashboard;
   const hideTopNav = true;
@@ -98,7 +98,7 @@ const Header = (props: Props) => {
             <AddValidatorButton>Add Validator</AddValidatorButton>
           </AddValidatorButtonWrapper>
         )}
-        {profile && (
+        {!hideProfileMenu && profile && (
           <ClickAwayListener onClickAway={handleProfileClickAway}>
             <ProfileMenu
               profile={profile}
@@ -118,7 +118,12 @@ interface Props extends RouteComponentProps {
   profile: Record<string, any>;
   logoutUser: () => void;
   isDashboard: boolean;
+  hideProfileMenu?: boolean;
 }
+
+Header.defaultProps = {
+  hideProfileMenu: false
+};
 
 const mapStateToProps = (state) => ({
   profile: getUserData(state),

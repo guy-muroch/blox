@@ -16,7 +16,7 @@ const ReinstallingModal = (props: Props) => {
     }
     if (!isDone && !isLoading && !processMessage && !processName) {
       const name = Connection.db().exists('upgradeRatherReinstall') ? 'upgrade' : 'reinstall';
-      startProcess(name, 'Checking KeyVault configuration...', null);
+      startProcess(name, 'Checking KeyVault configuration...');
     }
   }, [isLoading, isDone, processMessage]);
 

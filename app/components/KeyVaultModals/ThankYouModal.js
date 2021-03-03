@@ -22,7 +22,13 @@ const ThankYouModal = ({ onClose, type, customImage }) => {
 ThankYouModal.propTypes = {
   onClose: PropTypes.func,
   type: PropTypes.string,
-  customImage: PropTypes.oneOfType([PropTypes.any, undefined])
+  customImage: PropTypes.any
+};
+
+ThankYouModal.defaultProps = {
+  onClose: () => {},
+  type: null,
+  customImage: null
 };
 
 export default ThankYouModal;
