@@ -6,16 +6,8 @@ const formattedBalance = (balance: number | string | null): string | null => {
   if (!balance) {
     return null;
   }
-
-  const balanceStr = String(balance);
-  const balanceParts = balanceStr.split('.');
-  const floatValue = parseFloat(balanceStr);
-  let fractionDigits = 9;
-
-  if (balanceParts?.length === 2 && balanceParts[1].length >= 10) {
-    fractionDigits = 5;
-  }
-
+  const floatValue = parseFloat(String(balance));
+  const fractionDigits = floatValue >= 10.0 ? 5 : 9;
   return floatValue.toFixed(fractionDigits);
 };
 
