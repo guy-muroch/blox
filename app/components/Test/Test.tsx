@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Connection from '../../backend/common/store-manager/connection';
 import InstallProcess from '../../backend/proccess-manager/install.process';
 import ReinstallProcess from '../../backend/proccess-manager/reinstall.process';
+import UpgradeProcess from '../../backend/proccess-manager/upgrade.process';
 import UninstallProcess from '../../backend/proccess-manager/uninstall.process';
 import RebootProcess from '../../backend/proccess-manager/reboot.process';
 import { Observer } from '../../backend/proccess-manager/observer.interface';
@@ -186,6 +187,21 @@ const Test = () => {
       <p/>
       <div>
         <h2>Other</h2>
+        <button
+          onClick={async () => {
+            const listener = new Listener(setProcessStatus);
+            const upgradeProcess = new UpgradeProcess();
+            upgradeProcess.subscribe(listener);
+            try {
+              await upgradeProcess.run();
+            } catch (e) {
+              setProcessStatus(e);
+            }
+            console.log('+ Congratulations. Upgrade plugin is done!');
+          }}
+        >
+          Upgrade
+        </button>
         <button
           onClick={async () => {
             const listener = new Listener(setProcessStatus);

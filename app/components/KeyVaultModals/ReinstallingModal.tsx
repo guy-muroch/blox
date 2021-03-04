@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { ProcessLoader, ModalTemplate } from 'common/components';
 import useProcessRunner from 'components/ProcessRunner/useProcessRunner';
 import { Title, Description, SmallText, Wrapper } from 'common/components/ModalTemplate/components';
+import Connection from 'backend/common/store-manager/connection';
 
 const ReinstallingModal = (props: Props) => {
   const { isLoading, processMessage, isDone, isServerActive, processName,
@@ -14,7 +15,8 @@ const ReinstallingModal = (props: Props) => {
       isServerActive ? move1StepForward() : move2StepsForward();
     }
     if (!isDone && !isLoading && !processMessage && !processName) {
-      startProcess('reinstall', 'Checking KeyVault configuration...');
+      const name = Connection.db().exists('upgradeRatherReinstall') ? 'upgrade' : 'reinstall';
+      startProcess(name, 'Checking KeyVault configuration...');
     }
   }, [isLoading, isDone, processMessage]);
 
