@@ -162,11 +162,13 @@ export default class KeyVaultService {
   })
   async runDockerContainer(): Promise<void> {
     const containerId = await this.getContainerId();
+    console.log('containerId', containerId);
     if (containerId) {
       return;
     }
 
     const keyVaultVersion = await this.versionService.getLatestKeyVaultVersion();
+    console.log('keyVaultVersion', keyVaultVersion);
     const envKey = (Connection.db(this.storePrefix).get('env') || 'production');
     const dockerHubImage = `bloxstaking/key-vault${envKey === 'production' ? '' : '-rc'}:${keyVaultVersion}`;
     this.logger.info(`Going to run docker based on ${dockerHubImage} keyvault image`);
@@ -178,13 +180,15 @@ export default class KeyVaultService {
       `-e VAULT_EXTERNAL_ADDRESS='${Connection.db(this.storePrefix).get('publicIp')}' ` +
       '-e UNSEAL=true ' +
       `-e VAULT_CLIENT_TIMEOUT='30s' '${dockerHubImage}'`;
-
+    console.log('dockerCMD', dockerCMD);
     const ssh = await this.keyVaultSsh.getConnection();
-    const { stderr: error } = await ssh.execCommand(
+    console.log('ssh', ssh);
+    const { stdout, stderr: error } = await ssh.execCommand(
       dockerCMD,
       {}
     );
-
+    console.log('stdout', stdout);
+    console.log('stderr', error);
     Connection.db(this.storePrefix).set('keyVaultVersion', keyVaultVersion);
 
     await sleep(12000);
@@ -193,6 +197,7 @@ export default class KeyVaultService {
       this.logger.error(error);
       throw new Error(`Failed to run Key Vault docker container: ${error}`);
     }
+    console.log('completed setup docker');
   }
 
   @Step({
