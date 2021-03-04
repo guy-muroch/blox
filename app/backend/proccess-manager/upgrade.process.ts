@@ -16,6 +16,7 @@ export default class UpgradeProcess extends ProcessClass {
       { instance: this.awsService, method: 'setAWSCredentials' },
       { instance: this.keyVaultService, method: 'upgradePlugin' },
       { instance: this.keyVaultService, method: 'getKeyVaultStatus' },
+      { instance: this.awsService, method: 'updatePluginTag' },
       {
         hook: async () => {
           await analytics.track('kv-upgraded');

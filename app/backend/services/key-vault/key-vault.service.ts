@@ -238,7 +238,7 @@ export default class KeyVaultService {
       throw new Error(`Failed to run clean command: ${errorCleanCMD}`);
     }
 
-    Connection.db(this.storePrefix).set('keyVaultVersion', keyVaultVersion);
+    Connection.db(this.storePrefix).set('keyVaultPluginVersion', keyVaultVersion);
   }
 
   @Step({

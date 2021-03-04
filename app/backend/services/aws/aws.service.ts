@@ -195,6 +195,22 @@ export default class AwsService {
   }
 
   @Step({
+    name: 'Update KeyVault plugin tag...'
+  })
+  async updatePluginTag() {
+    const instanceId = Connection.db(this.storePrefix).get('instanceId');
+    const keyVaultPluginVersion = Connection.db(this.storePrefix).get('keyVaultPluginVersion');
+
+    const tagsOptions: AWS.EC2.Types.CreateTagsRequest = {
+      Resources: [instanceId],
+      Tags: [
+        { Key: 'kv-plugin-version', Value: `${keyVaultPluginVersion}` },
+      ]
+    };
+    await this.ec2.createTags(tagsOptions).promise();
+  }
+
+  @Step({
     name: 'Delete all EC2 items'
   })
   async uninstallItems() {
