@@ -3,6 +3,7 @@ import InstallProcess from '../../backend/proccess-manager/install.process';
 import RecoveryProcess from '../../backend/proccess-manager/recovery.process';
 import RebootProcess from '../../backend/proccess-manager/reboot.process';
 import ReinstallProcess from '../../backend/proccess-manager/reinstall.process';
+import UpgradeProcess from '../../backend/proccess-manager/upgrade.process';
 import AccountCreateProcess from '../../backend/proccess-manager/account-create.process';
 
 import { Observer } from '../../backend/proccess-manager/observer.interface';
@@ -22,6 +23,9 @@ export const processInstantiator = (processName: string, payload: Record<string,
   }
   if (processName === PROCESSES.REINSTALL) {
     return new ReinstallProcess();
+  }
+  if (processName === PROCESSES.UPGRADE) {
+    return new UpgradeProcess();
   }
   if (processName === PROCESSES.CREATE_ACCOUNT && payload.network) {
     return new AccountCreateProcess(payload.network, payload.indexToRestore);
