@@ -118,8 +118,12 @@ export default class KeyVaultService {
   }
 
   async getContainerId() {
+    console.log('getcontainerid');
     const ssh = await this.keyVaultSsh.getConnection();
+    console.log('getcontainerid ssh', ssh);
+
     const { stdout: containerId, stderr: error } = await ssh.execCommand('docker ps -aq -f "status=running" -f "name=key_vault"', {});
+    console.log('getcontainerid containerId', containerId, error);
     if (error) {
       throw new Error('Could not reach Docker Container');
     }
