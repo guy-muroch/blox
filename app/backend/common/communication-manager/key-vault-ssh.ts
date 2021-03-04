@@ -6,7 +6,7 @@ import { Log } from '../logger/logger';
 import Connection from '../store-manager/connection';
 
 const userName = 'ec2-user';
-
+let sshClient: NodeSSH;
 export default class KeyVaultSsh {
   private storePrefix: string;
   private logger: Log;
@@ -16,21 +16,25 @@ export default class KeyVaultSsh {
     this.logger = new Log('key-vault-ssh');
   }
 
-  async getConnection(customPort?: string): Promise<NodeSSH> {
-    const ssh = new NodeSSH();
-    const keyPair: any = Connection.db(this.storePrefix).get('keyPair');
-    const port = customPort || Connection.db(this.storePrefix).get('port') || config.env.port;
-    this.logger.trace('> keyPair', keyPair);
-    this.logger.trace('> publicIp', Connection.db(this.storePrefix).get('publicIp'));
-    this.logger.trace('> port', port);
-    await ssh.connect({
-      host: Connection.db(this.storePrefix).get('publicIp'),
-      port,
-      username: 'ec2-user',
-      privateKey: keyPair.privateKey,
-      readyTimeout: 60000
-    });
-    return ssh;
+  async getConnection(payload: any = {}): Promise<NodeSSH> {
+    const { customPort, force } = payload;
+    if (!sshClient) {
+      sshClient = new NodeSSH();
+    }
+    if (force || !sshClient.isConnected()) {
+      const keyPair: any = Connection.db(this.storePrefix).get('keyPair');
+      const port = customPort || Connection.db(this.storePrefix).get('port') || config.env.port;
+      await sshClient.connect({
+        host: Connection.db(this.storePrefix).get('publicIp'),
+        port,
+        username: 'ec2-user',
+        privateKey: keyPair.privateKey
+      });
+      this.logger.trace('> keyPair', keyPair);
+      this.logger.trace('> publicIp', Connection.db(this.storePrefix).get('publicIp'));
+      this.logger.trace('> port', port);
+    }
+    return sshClient;
   }
 
   buildCurlCommand(data: any, returnBodyResponse?: boolean): string {

@@ -119,7 +119,7 @@ export default class KeyVaultService {
 
   async getContainerId() {
     console.log('getcontainerid');
-    const ssh = await this.keyVaultSsh.getConnection();
+    const ssh = await this.keyVaultSsh.getConnection({ force: true });
     console.log('getcontainerid ssh', ssh);
 
     const { stdout: containerId, stderr: error } = await ssh.execCommand('docker ps -aq -f "status=running" -f "name=key_vault"', {});
@@ -342,10 +342,10 @@ export default class KeyVaultService {
       return;
     }
     try {
-      await this.keyVaultSsh.getConnection(config.env.TARGET_SSH_PORT);
+      await this.keyVaultSsh.getConnection({ customPort: config.env.TARGET_SSH_PORT });
     } catch (e) {
       const ssh = await this.keyVaultSsh.getConnection();
-      const { stderr: error } = await ssh.execCommand(`sudo sed -i '1iPort ${config.env.TARGET_SSH_PORT}\\nLoginGraceTime 30s' /etc/ssh/sshd_config && sudo service sshd restart`, {});
+      const { stderr: error } = await ssh.execCommand(`sudo sed -i '1iPort ${config.env.TARGET_SSH_PORT}\\nLoginGraceTime 30s\\nUseDNS no' /etc/ssh/sshd_config && sudo service sshd restart`, {});
       if (error) {
         this.logger.error(error);
         throw new Error('Could not setup sshd configuration');

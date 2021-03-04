@@ -117,7 +117,11 @@ export default class AwsService {
     }
 
     const vpcList = await this.ec2.describeVpcs().promise();
-    const vpc = vpcList?.Vpcs![0].VpcId;
+    if (!vpcList || !Array.isArray(vpcList.Vpcs)) {
+      this.logger.error('wrong vpcList', vpcList);
+      throw new Error('get Vpcs failed');
+    }
+    const vpc = vpcList.Vpcs[0].VpcId;
     const uuid = uuidv4();
     const securityData = await this.ec2
       .createSecurityGroup({
