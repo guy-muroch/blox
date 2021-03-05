@@ -98,7 +98,7 @@ const WelcomePage = (props: Props) => {
           redirectToCreateAccount();
           return;
         }
-        if (!allAccountsDeposited(accounts)) {
+        if (accounts && !allAccountsDeposited(accounts)) {
           if (isDepositNeeded) {
             redirectToDepositPage();
             return;

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { notification } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { version } from '~app/package.json';
 import analytics from '~app/backend/analytics';
 import LoggedIn from '~app/components/LoggedIn';
@@ -12,31 +14,72 @@ import { getOsVersion } from '~app/utils/service';
 import { useInjectSaga } from '~app/utils/injectSaga';
 import NotLoggedIn from '~app/components/NotLoggedIn';
 import { Log } from '~app/backend/common/logger/logger';
+import NotFoundPage from '~app/components/NotFoundPage';
 import loginSaga from '~app/components/CallbackPage/saga';
 import GlobalStyle from '~app/common/styles/global-styles';
 import { deepLink, initApp } from '~app/components/App/service';
+import Http from '~app/backend/common/communication-manager/http';
 import * as loginActions from '~app/components/CallbackPage/actions';
 import BaseStore from '~app/backend/common/store-manager/base-store';
 import { getIsLoggedIn, getIsLoading } from '~app/components/CallbackPage/selectors';
+
+const loginKey = 'login';
+const userKey = 'user';
+const baseStore: BaseStore = new BaseStore();
+const logger: Log = new Log();
+const http: Http = new Http();
+const logoutNotification = {
+  key: ''
+};
+
+type AppRouterProps = {
+  isLoggedIn: boolean;
+};
+
+const AppRouter = ({ isLoggedIn }: AppRouterProps) => {
+  return (
+    <Switch>
+      <Route exact path="/" render={() => {
+        const redirectUrl = isLoggedIn ? '/logged-in' : '/login';
+        if (isLoggedIn && logoutNotification.key) {
+          notification.close(logoutNotification.key);
+          logoutNotification.key = '';
+        }
+        return <Redirect to={redirectUrl} />;
+      }} />
+      <Route path="/logged-in" component={LoggedIn} />
+      <Route path="/login" component={NotLoggedIn} />
+      <Route path="" component={NotFoundPage} />
+    </Switch>
+  );
+};
 
 const AppWrapper = styled.div`
   margin: 0 auto;
   height: 100%;
 `;
 
-const loginKey = 'login';
-const userKey = 'user';
-
-const App = (props: Props) => {
+const App = (props: AppProps) => {
   const [didInitApp, setAppInitialised] = useState(false);
   useInjectSaga({key: userKey, saga: userSaga, mode: ''});
   useInjectSaga({key: loginKey, saga: loginSaga, mode: ''});
-  const {isLoggedIn, isLoading, actions} = props;
-  const {setSession, loginFailure} = actions;
-  const logger = new Log();
+  const { isLoggedIn, isLoading, actions } = props;
+  const { setSession, loginFailure } = actions;
+
+  const unauthorizedListener = () => {
+    actions.logout();
+    if (!logoutNotification.key) {
+      logoutNotification.key = 'logged-out';
+      notification.error({
+        message: 'You are logged out',
+        description: 'Please login again',
+        duration: 0,
+        key: logoutNotification.key
+      });
+    }
+  };
 
   const init = async () => {
-    const baseStore: BaseStore = new BaseStore();
     let firstTime = false;
     if (!baseStore.get('appUuid')) {
       firstTime = true;
@@ -67,15 +110,24 @@ const App = (props: Props) => {
     await initApp();
   };
 
+  const unauthorizedSubscribe = () => {
+    http.events.removeListener(Http.EVENTS.UNAUTHORIZED, unauthorizedListener);
+    http.events.once(Http.EVENTS.UNAUTHORIZED, unauthorizedListener);
+  };
+
   useEffect(() => {
     if (!didInitApp) {
-      init();
-      deepLink((obj) => {
-          if ('token_id' in obj) {
-            setSession(obj.token_id);
-          }
-        },
-        loginFailure);
+      init().then(() => {
+        deepLink(
+          (obj) => {
+            if ('token_id' in obj) {
+              setSession(obj.token_id);
+            }
+          },
+          loginFailure
+        );
+        unauthorizedSubscribe();
+      });
     }
   }, [didInitApp, isLoggedIn, isLoading]);
 
@@ -85,16 +137,15 @@ const App = (props: Props) => {
 
   return (
     <AppWrapper>
-      {isLoggedIn ? <LoggedIn /> : <NotLoggedIn />}
+      <AppRouter isLoggedIn={isLoggedIn} />
       <GlobalStyle />
     </AppWrapper>
   );
 };
 
-type Props = {
+type AppProps = {
   isLoggedIn: boolean;
   isLoading: boolean;
-  isTokensExist: () => void;
   actions: Record<string, any>;
 };
 

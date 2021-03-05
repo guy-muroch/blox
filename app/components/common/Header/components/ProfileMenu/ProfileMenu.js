@@ -84,7 +84,7 @@ const ProfileMenu = forwardRef(
             <Separator />
             {canViewTestPage() && (
               <MenuItem>
-                <Link to={'/test'} style={{marginLeft: '16px'}}>Test page</Link>
+                <Link to={'/logged-in/test'} style={{marginLeft: '16px'}}>Test page</Link>
               </MenuItem>
             )}
             <MenuItem>

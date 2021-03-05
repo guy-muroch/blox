@@ -76,7 +76,7 @@ const AddValidatorButton = styled.button`
 const Header = (props: Props) => {
   const { withMenu, profile, logoutUser, location, isDashboard, hideProfileMenu } = props;
   const [isProfileMenuOpen, toggleProfileMenuOpenDisplay] = useState(false);
-  const showAddValidatorButton = location.pathname === '/' && isDashboard;
+  const showAddValidatorButton = location.pathname === '/logged-in' && isDashboard;
   const hideTopNav = true;
 
   const handleProfileClickAway = () => {

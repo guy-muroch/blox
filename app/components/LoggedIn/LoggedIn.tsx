@@ -2,14 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
-  Switch, Route, Redirect, withRouter,
-  RouteComponentProps, RouteProps
+  Switch, Route, withRouter,
+  RouteComponentProps, useRouteMatch
 } from 'react-router-dom';
 import TestPage from '../Test';
-import LoginPage from '../Login';
 import EntryPage from '../EntryPage';
-import Settings from '../SettingsPage';
-import NotFoundPage from '../NotFoundPage';
 import { onWindowClose } from 'common/service';
 import { Loader } from '../../common/components';
 import { useInjectSaga } from '../../utils/injectSaga';
@@ -73,10 +70,10 @@ const LoggedIn = (props: Props) => {
     callLoadAccounts, callConnectToWebSockets, isWebsocketLoading,
     websocket, webSocketError, userInfo, userInfoError, isLoadingUserInfo, userActions
   } = props;
-
   const { loadUserInfo } = userActions;
 
   const [isFinishLoadingAll, toggleFinishLoadingAll] = useState(false);
+  const { path } = useRouteMatch();
 
   useEffect(() => {
     callLoadWallet();
@@ -117,19 +114,11 @@ const LoggedIn = (props: Props) => {
     return <EntryPage {...rootPageProps} {...props} />;
   };
 
-  const SettingsPage = (routeProps: RouteProps) => {
-    return <Settings {...routeProps} withMenu />;
-  };
-
   return (
     <>
       <Switch>
-        <Route exact path="/" render={RootPage} />
-        <Route path="/login" component={LoginPage} />
-        <Route path="/test" component={TestPage} />
-        <Route path="/settings/:path" render={SettingsPage} />
-        <Redirect from="/settings" to="/settings/general" />
-        <Route path="" component={NotFoundPage} />
+        <Route path={`${path}`} component={RootPage} />
+        <Route path={`${path}/test`} component={TestPage} />
       </Switch>
       <ModalsManager />
     </>

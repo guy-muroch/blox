@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import * as actionTypes from './actionTypes';
 
 export const loadAccounts = () => ({ type: actionTypes.LOAD_ACCOUNTS });
@@ -9,7 +10,7 @@ export const loadAccountsSuccess = (accounts: Record<string, any>) => ({
 
 export const loadAccountsFailure = (error: Record<string, any>) => ({
   type: actionTypes.LOAD_ACCOUNTS_FAILURE,
-  payload: { ...error }
+  payload: !_.isEmpty(error) ? { ...error } : null
 });
 
 export const setDepositNeeded = (payload: DepositNeededPayload) => ({

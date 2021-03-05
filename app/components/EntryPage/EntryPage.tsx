@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import { Loader } from '~app/common/components';
 import wizardSaga from '~app/components/Wizard/saga';
 import { useInjectSaga } from '~app/utils/injectSaga';
@@ -40,6 +40,7 @@ const EntryPage = (props: Props) => {
   const { bloxLiveNeedsUpdate, isLoadingBloxLiveVersion } = useVersions();
   const { eventLogs, isLoadingEventLogs } = useEventLogs();
   const { processData, error, clearProcessState } = useProcessRunner();
+  const { path } = useRouteMatch();
 
   useEffect(() => {
     const inForgotPasswordProcess = Connection.db().get('inForgotPasswordProcess');
@@ -91,7 +92,7 @@ const EntryPage = (props: Props) => {
 
   return (
     <Switch>
-      <Route exact path="/"
+      <Route exact path={`${path}`}
         render={(renderProps) => (
           <RootRoute
             showDashboard={showDashboard}
@@ -100,7 +101,7 @@ const EntryPage = (props: Props) => {
           />
         )}
       />
-      <Route path="/settings"
+      <Route path={`${path}/settings`}
         render={(renderProps) => (
           <SettingsRoute
             renderProps={{ ...renderProps, ...otherProps }}

@@ -16,7 +16,7 @@ export function* startLoadingEventLogs() {
     const response = yield call([organizationService, 'getEventLogs']);
     yield call(onLoadingEventLogsSuccess, response);
   } catch (error) {
-    yield error && call(onLoadingEventLogsFailure, error);
+    yield error && call(onLoadingEventLogsFailure, error, !error.response?.data);
   }
 }
 
@@ -34,9 +34,11 @@ function* onLoadingEventLogsSuccess(response: Record<string, any>) {
   yield put(actions.loadEventLogsSuccess(response));
 }
 
-function* onLoadingEventLogsFailure(error: Record<string, any>) {
-  notification.error({ message: 'Error', description: error.message });
-  yield put(actions.loadEventLogsFailure(error.response.data));
+function* onLoadingEventLogsFailure(error: Record<string, any>, silent: boolean = false) {
+  if (!silent) {
+    notification.error({message: 'Error', description: error.message});
+  }
+  yield put(actions.loadEventLogsFailure(error.response?.data || error));
 }
 
 export default function* organizationActions() {
