@@ -1,15 +1,21 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import { notification } from 'antd';
-
-import { LOGIN_INIT, LOGIN_SET_SESSION, LOGOUT } from './actionTypes';
-import { setIdToken, loginSuccess, loginFailure } from './actions';
-import Auth from '../Auth';
-import { saveLastConnection } from 'common/service';
-import { updateUserInfo } from 'components/User/actions';
-
-import { version } from 'package.json';
-import { getOsVersion } from 'utils/service';
+import Auth from '~app/components/Auth';
+import { version } from '~app/package.json';
+import { getOsVersion } from '~app/utils/service';
+import { saveLastConnection } from '~app/common/service';
+import { updateUserInfo } from '~app/components/User/actions';
+import {
+  LOGIN_INIT,
+  LOGIN_SET_SESSION,
+  LOGOUT
+} from '~app/components/Login/components/CallbackPage/actionTypes';
+import {
+  setIdToken,
+  loginSuccess,
+  loginFailure
+} from '~app/components/Login/components/CallbackPage/actions';
 
 const auth = new Auth();
 

@@ -1,4 +1,4 @@
-import BaseStore from './store-manager/base-store';
+import BaseStore from '~app/backend/common/store-manager/base-store';
 
 export default class Config {
   private static instance: Config;
@@ -36,6 +36,7 @@ export default class Config {
       PYRMONT_BEACONCHA_URL: 'https://pyrmont.beaconcha.in/api/v1',
       INFURA_API_KEY: 'ad49ce6ad5d64c2685f4b2ba86512c76',
       ETH_INITIAL_BALANCE: 32.00,
+      UNAUTHORIZED_CHECK_INTERVAL: 10 * 60 * 1000,
 
       // Application pages constants in one central place, environment-independent
       APP_PAGES: {

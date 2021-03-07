@@ -1,6 +1,6 @@
 import produce from 'immer';
-import * as actionTypes from './actionTypes';
-import { LOGOUT } from '../CallbackPage/actionTypes';
+import * as actionTypes from '~app/components/Accounts/actionTypes';
+import { LOGOUT } from '~app/components/Login/components/CallbackPage/actionTypes';
 
 const initialState = {
   isLoading: false,
@@ -13,11 +13,6 @@ const initialState = {
     accountIndex: -1,
     network: '',
   }
-  // depositNeeded: false,
-  // depositTo: '',
-  // depositToIndex: -1,
-  // depositToNetwork: '',
-
 };
 
 /* eslint-disable default-case, no-param-reassign */

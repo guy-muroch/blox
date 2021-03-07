@@ -1,18 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { ModalTemplate, Button, PasswordInput, Spinner } from 'common/components';
-import { Title, Description } from 'common/components/ModalTemplate/components';
-
-import useCreateServer from 'common/hooks/useCreateServer';
-import * as actionsFromKeyvault from '../../KeyVaultManagement/actions';
-import * as keyvaultSelectors from '../../KeyVaultManagement/selectors';
-import Connection from 'backend/common/store-manager/connection';
-
-import { MODAL_TYPES } from '../../Dashboard/constants';
-
-import image from 'assets/images/img-recovery.svg';
+import { bindActionCreators } from 'redux';
+import useCreateServer from '~app/common/hooks/useCreateServer';
+import { MODAL_TYPES } from '~app/components/Dashboard/constants';
+import Connection from '~app/backend/common/store-manager/connection';
+import * as actionsFromKeyvault from '~app/components/KeyVaultManagement/actions';
+import * as keyvaultSelectors from '~app/components/KeyVaultManagement/selectors';
+import { Title, Description } from '~app/common/components/ModalTemplate/components';
+import { ModalTemplate, Button, PasswordInput, Spinner } from '~app/common/components';
+import image from '~app/assets/images/img-recovery.svg';
 
 const StepIndicator = styled.div`
   font-size: 12px;

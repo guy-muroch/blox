@@ -1,6 +1,6 @@
 import produce from 'immer';
-import * as actionTypes from './actionTypes';
-import { LOGOUT } from '../CallbackPage/actionTypes';
+import * as actionTypes from '~app/components/EventLogs/actionTypes';
+import { LOGOUT } from '~app/components/Login/components/CallbackPage/actionTypes';
 
 export const initialState: State = {
   data: null,

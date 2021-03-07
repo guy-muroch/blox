@@ -1,8 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
 import Lottie from 'lottie-web-react';
-
-import animationData from 'assets/animations/confetti.json';
+import styled from 'styled-components';
+import animationData from '~app/assets/animations/confetti.json';
 
 const Wrapper = styled.div`
   position: fixed;

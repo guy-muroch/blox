@@ -1,15 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Text from './Text';
-import Image from './Image';
-import Video from './Video';
-import SubTitle from './SubTitle';
-
-import image2 from '../assets/aws-guide-02.svg';
-import image3 from '../assets/aws-guide-03.svg';
-import image4 from '../assets/aws-guide-04.svg';
-import image5 from '../assets/aws-guide-05.svg';
-import image6 from '../assets/aws-guide-06.svg';
+import Text from '~app/components/Wizard/components/Wallet/Guide/components/Text';
+import Image from '~app/components/Wizard/components/Wallet/Guide/components/Image';
+import Video from '~app/components/Wizard/components/Wallet/Guide/components/Video';
+import SubTitle from '~app/components/Wizard/components/Wallet/Guide/components/SubTitle';
+import image2 from '~app/components/Wizard/components/Wallet/Guide/assets/aws-guide-02.svg';
+import image3 from '~app/components/Wizard/components/Wallet/Guide/assets/aws-guide-03.svg';
+import image4 from '~app/components/Wizard/components/Wallet/Guide/assets/aws-guide-04.svg';
+import image5 from '~app/components/Wizard/components/Wallet/Guide/assets/aws-guide-05.svg';
+import image6 from '~app/components/Wizard/components/Wallet/Guide/assets/aws-guide-06.svg';
 
 const youtubeLink = 'https://www.youtube.com/embed/iF6WW0Rp8FI';
 

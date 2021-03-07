@@ -1,15 +1,16 @@
 import Web3 from 'web3';
-import config from '../../common/config';
-import { Catch, Step } from '../../decorators';
-import { Log } from '../../common/logger/logger';
-import { hexDecode } from '../../../utils/service';
-import WalletService from '../wallet/wallet.service';
-import KeyVaultService from '../key-vault/key-vault.service';
-import Connection from '../../common/store-manager/connection';
-import BloxApi from '../../common/communication-manager/blox-api';
-import KeyManagerService from '../key-manager/key-manager.service';
-import { METHOD } from '../../common/communication-manager/constants';
-import BeaconchaApi from '../../common/communication-manager/beaconcha-api';
+import { hexDecode } from '~app/utils/service';
+import config from '~app/backend/common/config';
+import { Catch, Step } from '~app/backend/decorators';
+import { Log } from '~app/backend/common/logger/logger';
+import Connection from '~app/backend/common/store-manager/connection';
+import WalletService from '~app/backend/services/wallet/wallet.service';
+import BloxApi from '~app/backend/common/communication-manager/blox-api';
+import { METHOD } from '~app/backend/common/communication-manager/constants';
+import KeyVaultService from '~app/backend/services/key-vault/key-vault.service';
+import BeaconchaApi from '~app/backend/common/communication-manager/beaconcha-api';
+import KeyManagerService from '~app/backend/services/key-manager/key-manager.service';
+
 export default class AccountService {
   private readonly walletService: WalletService;
   private readonly keyVaultService: KeyVaultService;

@@ -1,21 +1,17 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-
-import { Title, Description } from 'common/components/ModalTemplate/components';
-import { PasswordInput, Button, ModalTemplate } from 'common/components';
-
-import * as actionsFromDashboard from '../Dashboard/actions';
-import { MODAL_TYPES } from '../Dashboard/constants';
-
-import * as actionsFromPassword from '../PasswordHandler/actions';
-import * as selectors from '../PasswordHandler/selectors';
-import saga from '../PasswordHandler/saga';
-import { useInjectSaga } from 'utils/injectSaga';
-
-import image from '../Wizard/assets/img-password.svg';
+import { useInjectSaga } from '~app/utils/injectSaga';
+import saga from '~app/components/PasswordHandler/saga';
+import { MODAL_TYPES } from '~app/components/Dashboard/constants';
+import * as selectors from '~app/components/PasswordHandler/selectors';
+import * as actionsFromDashboard from '~app/components/Dashboard/actions';
+import { PasswordInput, Button, ModalTemplate } from '~app/common/components';
+import * as actionsFromPassword from '~app/components/PasswordHandler/actions';
+import { Title, Description } from '~app/common/components/ModalTemplate/components';
+import image from '~app/components/Wizard/assets/img-password.svg';
 
 const key = 'password';
 

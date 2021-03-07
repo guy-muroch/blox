@@ -2,55 +2,50 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
-  Switch, Route, withRouter,
-  RouteComponentProps, useRouteMatch
-} from 'react-router-dom';
-import TestPage from '../Test';
-import EntryPage from '../EntryPage';
-import { onWindowClose } from 'common/service';
-import { Loader } from '../../common/components';
-import { useInjectSaga } from '../../utils/injectSaga';
-import { allAccountsDeposited } from '../Accounts/service';
+  Switch,
+  Route,
+  withRouter,
+  RouteComponentProps,
+  useRouteMatch } from 'react-router-dom';
+import TestPage from '~app/components/Test';
+import { Loader } from '~app/common/components';
+import userSaga from '~app/components/User/saga';
+import EntryPage from '~app/components/EntryPage';
+import { onWindowClose } from '~app/common/service';
+import wizardSaga from '~app/components/Wizard/saga';
+import { useInjectSaga } from '~app/utils/injectSaga';
+import accountsSaga from '~app/components/Accounts/saga';
+import webSocketSaga from '~app/components/WebSockets/saga';
+import { loadAccounts } from '~app/components/Accounts/actions';
+import * as actionsFromUser from '~app/components/User/actions';
+import * as userSelectors from '~app/components/User/selectors';
+import { ModalsManager } from '~app/components/Dashboard/components';
+import Connection from '~app/backend/common/store-manager/connection';
+import { allAccountsDeposited } from '~app/components/Accounts/service';
+import { connectToWebSockets } from '~app/components/WebSockets/actions';
+import { loadWallet, setFinishedWizard } from '~app/components/Wizard/actions';
 import {
-  isPrimaryDevice, inRecoveryProcess,
+  isPrimaryDevice,
+  inRecoveryProcess,
   inForgotPasswordProcess
-} from './service';
-
-// wallet
-import wizardSaga from '../Wizard/saga';
-import { loadWallet, setFinishedWizard } from '../Wizard/actions';
+} from '~app/components/LoggedIn/service';
 import {
   getWalletStatus,
   getIsLoading as getIsLoadingWallet,
   getWalletError,
-  getWizardFinishedStatus,
-} from '../Wizard/selectors';
-
-// accounts
-import accountsSaga from '../Accounts/saga';
-import { loadAccounts } from '../Accounts/actions';
+  getWizardFinishedStatus
+} from '~app/components/Wizard/selectors';
 import {
   getAccounts,
   getAccountsLoadingStatus,
   getAccountsError,
   getAddAnotherAccount
-} from '../Accounts/selectors';
-
-// websocket
-import webSocketSaga from '../WebSockets/saga';
-import { connectToWebSockets } from '../WebSockets/actions';
+} from '~app/components/Accounts/selectors';
 import {
   getIsConnected,
   getIsLoading as getIsLoadingWebsocket,
-  getError as getWebSocketError,
-} from '../WebSockets/selectors';
-
-// user
-import userSaga from '../User/saga';
-import * as actionsFromUser from '../User/actions';
-import * as userSelectors from '../User/selectors';
-import { ModalsManager } from 'components/Dashboard/components';
-import Connection from 'backend/common/store-manager/connection';
+  getError as getWebSocketError
+} from '~app/components/WebSockets/selectors';
 
 const wizardKey = 'wizard';
 const accountsKey = 'accounts';

@@ -1,6 +1,6 @@
 import produce from 'immer';
-import * as actionTypes from './actionTypes';
-import { LOGOUT } from '../CallbackPage/actionTypes';
+import * as actionTypes from '~app/components/ProcessRunner/actionTypes';
+import { LOGOUT } from '~app/components/Login/components/CallbackPage/actionTypes';
 
 const initialState = {
   name: '',

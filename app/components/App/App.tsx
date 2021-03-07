@@ -15,13 +15,13 @@ import { useInjectSaga } from '~app/utils/injectSaga';
 import NotLoggedIn from '~app/components/NotLoggedIn';
 import { Log } from '~app/backend/common/logger/logger';
 import NotFoundPage from '~app/components/NotFoundPage';
-import loginSaga from '~app/components/CallbackPage/saga';
 import GlobalStyle from '~app/common/styles/global-styles';
 import { deepLink, initApp } from '~app/components/App/service';
 import Http from '~app/backend/common/communication-manager/http';
-import * as loginActions from '~app/components/CallbackPage/actions';
 import BaseStore from '~app/backend/common/store-manager/base-store';
-import { getIsLoggedIn, getIsLoading } from '~app/components/CallbackPage/selectors';
+import loginSaga from '~app/components/Login/components/CallbackPage/saga';
+import * as loginActions from '~app/components/Login/components/CallbackPage/actions';
+import { getIsLoggedIn, getIsLoading } from '~app/components/Login/components/CallbackPage/selectors';
 
 const loginKey = 'login';
 const userKey = 'user';

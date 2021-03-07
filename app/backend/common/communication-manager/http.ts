@@ -1,10 +1,9 @@
 import EventEmitter from 'events';
-import axios, { AxiosError } from 'axios';
-import config from '../config';
 import axiosRetry from 'axios-retry';
-import { Log } from '../logger/logger';
-import { Catch } from '../../decorators';
-import Connection from '../store-manager/connection';
+import axios, { AxiosError } from 'axios';
+import { Catch } from '~app/backend/decorators';
+import config from '~app/backend/common/config';
+import { Log } from '~app/backend/common/logger/logger';
 
 export default class Http {
   baseUrl?: string;
@@ -12,13 +11,11 @@ export default class Http {
   protected logger: Log;
   private static eventEmitter: EventEmitter;
   public static EVENTS = {
-    UNAUTHORIZED: 'http/error/unauthorized',
-    AUTHORIZED: 'http/authorized'
+    UNAUTHORIZED: 'http/error/unauthorized'
   };
   private static STATUS = {
     UNAUTHORIZED: 401
   };
-  private static testHeaders: any;
 
   constructor() {
     this.logger = new Log('http');
@@ -27,36 +24,13 @@ export default class Http {
     Http.initEventEmitter();
     this.initRetryHandler();
     this.initUnauthorizedHandler();
-    // this.testLoginExpired();
   }
 
-  // @ts-ignore
-  private testLoginExpired() {
-    setTimeout(() => {
-      if (!Http.testHeaders) {
-        Http.testHeaders = {
-          'Authorization': `Bearer ${Connection.db().get('authToken')}-CORRUPTED!`
-        };
-        console.warn('❌ ❌ ❌ BEARER TOKEN IS EXPIRED NOW');
-        console.warn('❌ ❌ ❌ BEARER TOKEN IS EXPIRED NOW');
-        console.warn('❌ ❌ ❌ BEARER TOKEN IS EXPIRED NOW');
-      }
-    }, 30000);
-    setTimeout(() => {
-      if (Http.testHeaders?.Authorization) {
-        Http.testHeaders = {};
-        console.warn('✅ ✅ ✅ BEARER TOKEN NOW CLEANED UP');
-        console.warn('✅ ✅ ✅ BEARER TOKEN NOW CLEANED UP');
-        console.warn('✅ ✅ ✅ BEARER TOKEN NOW CLEANED UP');
-      }
-    }, 60000);
-  }
-
+  /**
+   * Emit event when unauthorized request happened
+   */
   private initUnauthorizedHandler() {
     this.instance.interceptors.response.use(response => {
-      if (this.instance.defaults.headers?.common?.Authorization?.indexOf('Bearer') !== -1) {
-        Http.eventEmitter.emit(Http.EVENTS.AUTHORIZED);
-      }
       return response;
     }, error => {
       if (error.response.status === Http.STATUS.UNAUTHORIZED) {
@@ -66,6 +40,9 @@ export default class Http {
     });
   }
 
+  /**
+   * Retry in all cases except unauthorized status
+   */
   private initRetryHandler() {
     axiosRetry(this.instance, {
       retries: +config.env.HTTP_RETRIES,
@@ -73,11 +50,14 @@ export default class Http {
         return retryCount * +config.env.HTTP_RETRY_DELAY;
       },
       retryCondition: (error: AxiosError): boolean => {
-        return error.response.status !== Http.STATUS.UNAUTHORIZED;
+        return error.response?.status !== Http.STATUS.UNAUTHORIZED;
       },
     });
   }
 
+  /**
+   * Used to emit unauthorized requests events
+   */
   private static initEventEmitter() {
     if (!Http.eventEmitter) {
       Http.eventEmitter = new EventEmitter();
@@ -98,16 +78,10 @@ export default class Http {
         headers: {
           ...this.instance.defaults.headers.common,
           ...headers,
-          ...Http.testHeaders
         }
       });
       return fullResponse ? response : response.data;
     } catch (error) {
-      error.config = {
-        url: error.config.url,
-        method: error.config.method,
-        baseURL: error.config.baseURL
-      };
       error.config = {
         url: error.config.url,
         method: error.config.method,

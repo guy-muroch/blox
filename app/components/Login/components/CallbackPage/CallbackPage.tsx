@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Loader } from '../../common/components';
-import * as loginActions from './actions';
-import { getIsLoggedIn } from './selectors';
-import saga from './saga';
-import { useInjectSaga } from '../../utils/injectSaga';
+import { Loader } from '~app/common/components';
+import { useInjectSaga } from '~app/utils/injectSaga';
+import saga from '~app/components/Login/components/CallbackPage/saga';
+import * as loginActions from '~app/components/Login/components/CallbackPage/actions';
+import { getIsLoggedIn } from '~app/components/Login/components/CallbackPage/selectors';
 
 const key = 'login';
 

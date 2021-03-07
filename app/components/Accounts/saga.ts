@@ -1,17 +1,16 @@
-import {call, put, take, takeLatest} from 'redux-saga/effects';
-import {notification} from 'antd';
 import Web3 from 'web3';
-
-import {LOAD_ACCOUNTS} from './actionTypes';
-import * as actions from './actions';
-import {updateAccountStatus} from '../Wizard/actions';
-import AccountService from '../../backend/services/account/account.service';
+import { notification } from 'antd';
+import { call, put, take, takeLatest } from 'redux-saga/effects';
+import config from '~app/backend/common/config';
+import * as actions from '~app/components/Accounts/actions';
+import { updateAccountStatus } from '~app/components/Wizard/actions';
+import { LOAD_ACCOUNTS } from '~app/components/Accounts/actionTypes';
+import AccountService from '~app/backend/services/account/account.service';
 import {
   UPDATE_ACCOUNT_STATUS,
   UPDATE_ACCOUNT_STATUS_FAILURE,
   UPDATE_ACCOUNT_STATUS_SUCCESS
-} from '../Wizard/actionTypes';
-import config from '../../backend/common/config';
+} from '~app/components/Wizard/actionTypes';
 
 function* onLoadingSuccess(response: Record<string, any>) {
   yield put(actions.loadAccountsSuccess(response));

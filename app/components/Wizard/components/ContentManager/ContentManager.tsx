@@ -1,16 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Template } from '../common';
-import WelcomePage from '../WelcomePage';
-import * as WalletPages from '../Wallet';
-import * as ValidatorPages from '../Validators';
-import config from '../../../../backend/common/config';
-import { getDepositToNetwork } from '../../../Accounts/selectors';
-
-import walletImage from 'components/Wizard/assets/img-key-vault.svg';
-import testnetValidatorImage from '../../assets/img-validator-test-net.svg';
-import mainnetValidatorImage from '../../assets/img-validator-main-net.svg';
+import config from '~app/backend/common/config';
+import { Template } from '~app/components/Wizard/components/common';
+import WelcomePage from '~app/components/Wizard/components/WelcomePage';
+import * as WalletPages from '~app/components/Wizard/components/Wallet';
+import { getDepositToNetwork } from '~app/components/Accounts/selectors';
+import * as ValidatorPages from '~app/components/Wizard/components/Validators';
+import walletImage from '~app/components/Wizard/assets/img-key-vault.svg';
+import testnetValidatorImage from '~app/components/Wizard/assets/img-validator-test-net.svg';
+import mainnetValidatorImage from '~app/components/Wizard/assets/img-validator-main-net.svg';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -20,67 +19,66 @@ const Wrapper = styled.div`
 const switcher = (props: Props) => {
   const { page, network } = props;
   const validatorImage = network === config.env.PYRMONT_NETWORK ? testnetValidatorImage : mainnetValidatorImage;
-  const PAGES = config.PAGES;
   let component;
   let bgImage = '';
 
   switch (page) {
-    case PAGES.WALLET.SELECT_CLOUD_PROVIDER:
+    case config.PAGES.WALLET.SELECT_CLOUD_PROVIDER:
       bgImage = walletImage;
       component = <WalletPages.CloudProvider {...props} />;
       break;
 
-    case PAGES.WALLET.CREATE_SERVER:
+    case config.PAGES.WALLET.CREATE_SERVER:
       bgImage = walletImage;
       component = <WalletPages.CreateServer {...props} />;
       break;
 
-    case PAGES.WALLET.CONGRATULATIONS:
+    case config.PAGES.WALLET.CONGRATULATIONS:
       bgImage = walletImage;
       component = <WalletPages.CongratulationPage {...props} />;
       break;
 
-    case PAGES.WALLET.IMPORT_OR_GENERATE_SEED:
+    case config.PAGES.WALLET.IMPORT_OR_GENERATE_SEED:
       bgImage = validatorImage;
       component = <WalletPages.ImportOrGenerateSeed {...props} />;
       break;
 
-    case PAGES.WALLET.ENTER_MNEMONIC:
+    case config.PAGES.WALLET.ENTER_MNEMONIC:
       bgImage = validatorImage;
       component = <WalletPages.Passphrase {...props} />;
       break;
 
-    case PAGES.VALIDATOR.SELECT_NETWORK:
+    case config.PAGES.VALIDATOR.SELECT_NETWORK:
       component = <ValidatorPages.SelectNetwork {...props} />;
       break;
 
-    case PAGES.VALIDATOR.CREATE_VALIDATOR:
+    case config.PAGES.VALIDATOR.CREATE_VALIDATOR:
       bgImage = validatorImage;
       component = <ValidatorPages.CreateValidator {...props} />;
       break;
 
-    case PAGES.VALIDATOR.STAKING_DEPOSIT:
+    case config.PAGES.VALIDATOR.STAKING_DEPOSIT:
       bgImage = validatorImage;
       component = <ValidatorPages.StakingDeposit {...props} />;
       break;
 
-    case PAGES.VALIDATOR.CONGRATULATIONS:
+    case config.PAGES.VALIDATOR.CONGRATULATIONS:
       bgImage = validatorImage;
       component = <ValidatorPages.CongratulationPage {...props} />;
       break;
 
-    case PAGES.WALLET.IMPORT_MNEMONIC:
+    case config.PAGES.WALLET.IMPORT_MNEMONIC:
       bgImage = validatorImage;
       component = <WalletPages.ImportPassphrase {...props} />;
       break;
 
-    case PAGES.WALLET.IMPORT_VALIDATORS:
+    case config.PAGES.WALLET.IMPORT_VALIDATORS:
       bgImage = validatorImage;
       component = <WalletPages.ImportValidators {...props} />;
       break;
   }
 
-  if (!component || page === PAGES.WELCOME.DEFAULT) {
+  if (!component || page === config.PAGES.WELCOME.DEFAULT) {
     return <WelcomePage {...props} />;
   }
 

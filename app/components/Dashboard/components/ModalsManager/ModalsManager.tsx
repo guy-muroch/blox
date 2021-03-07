@@ -1,19 +1,26 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as selectors from '../../selectors';
-import { MODAL_TYPES } from '../../constants';
-import * as actionsFromDashboard from '../../actions';
-import useDashboardData from '../../useDashboardData';
-import * as actionsFromUser from '../../../User/actions';
-import * as actionsFromWizard from '../../../Wizard/actions';
-import ActiveValidatorModal from '../../../ActiveValidatorModal';
-import * as actionsFromAccounts from '../../../Accounts/actions';
-import { getActiveValidators } from '../../../EventLogs/selectors';
-import { KeyVaultReactivation, KeyVaultUpdate, DepositInfoModal, AccountRecovery } from '../../..';
-import { PasswordModal, FailureModal, ThankYouModal, ConfirmationModal } from '../../../KeyVaultModals';
-
-import imageImportFailed from '../../../Wizard/assets/img-import-failed.svg';
+import * as actionsFromUser from '~app/components/User/actions';
+import * as selectors from '~app/components/Dashboard/selectors';
+import { MODAL_TYPES } from '~app/components/Dashboard/constants';
+import * as actionsFromWizard from '~app/components/Wizard/actions';
+import * as actionsFromAccounts from '~app/components/Accounts/actions';
+import ActiveValidatorModal from '~app/components/ActiveValidatorModal';
+import * as actionsFromDashboard from '~app/components/Dashboard/actions';
+import useDashboardData from '~app/components/Dashboard/useDashboardData';
+import { getActiveValidators } from '~app/components/EventLogs/selectors';
+import {
+  KeyVaultReactivation,
+  KeyVaultUpdate,
+  DepositInfoModal,
+  AccountRecovery } from '~app/components';
+import {
+  PasswordModal,
+  FailureModal,
+  ThankYouModal,
+  ConfirmationModal } from '~app/components/KeyVaultModals';
+import imageImportFailed from '~app/components/Wizard/assets/img-import-failed.svg';
 
 const ModalsManager = (props: Props) => {
   const { dashboardActions, wizardActions, accountsActions, userActions,

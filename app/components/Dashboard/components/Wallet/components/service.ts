@@ -1,5 +1,5 @@
-import keyVaultImage from '../../../../Wizard/assets/img-key-vault.svg';
-import keyVaultInactiveImage from '../../../../Wizard/assets/img-key-vault-inactive.svg';
+import keyVaultImage from '~app/components/Wizard/assets/img-key-vault.svg';
+import keyVaultInactiveImage from '~app/components/Wizard/assets/img-key-vault-inactive.svg';
 
 const getNumberColor = (number: number) => {
   if (!Number.isNaN(number)) {

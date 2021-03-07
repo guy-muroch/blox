@@ -3,14 +3,13 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { ClickAwayListener } from '@material-ui/core';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { logout } from '~app/components/CallbackPage/actions';
 import HeaderLink from '~app/components/common/Header/HeaderLink';
-import { getUserData } from '~app/components/CallbackPage/selectors';
 import { ProfileMenu } from '~app/components/common/Header/components';
 import { getWizardFinishedStatus } from '~app/components/Wizard/selectors';
+import { logout } from '~app/components/Login/components/CallbackPage/actions';
+import { getUserData } from '~app/components/Login/components/CallbackPage/selectors';
 import AddValidatorButtonWrapper from '~app/components/common/Header/components/AddValidatorButtonWrapper';
-
-import imageSrc from 'assets/images/staking-logo.svg';
+import imageSrc from '~app/assets/images/staking-logo.svg';
 
 const Wrapper = styled.div`
   width: 100%;

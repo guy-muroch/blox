@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, ModalTemplate } from 'common/components';
-import { Title, Description } from 'common/components/ModalTemplate/components';
-import { MODAL_TYPES } from '../Dashboard/constants';
-
-import image from '../Wizard/assets/img-key-vault-inactive.svg';
+import { Button, ModalTemplate } from '~app/common/components';
+import { MODAL_TYPES } from '~app/components/Dashboard/constants';
+import { Title, Description } from '~app/common/components/ModalTemplate/components';
+import image from '~app/components/Wizard/assets/img-key-vault-inactive.svg';
 
 const ThankYouModal = ({ onClose, type, customImage }) => {
   const showButton = (type !== MODAL_TYPES.DEVICE_SWITCH) && (type !== MODAL_TYPES.FORGOT_PASSWORD);

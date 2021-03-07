@@ -1,13 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import Tooltip from '../Tooltip';
-
-import imageSrc from 'assets/images/info.svg';
+import Tooltip from '~app/common/components/Tooltip';
+import imageSrc from '~app/assets/images/info.svg';
 
 const Image = styled.img`
   width: 13px;
   height: 13px;
-  margin: 0px 6px 2px 2px;
+  margin: 0 6px 2px 2px;
 `;
 
 const InfoWithTooltip = ({ title, placement }: Props) => (

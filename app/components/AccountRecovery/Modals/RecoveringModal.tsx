@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
-import { MODAL_TYPES } from '../../Dashboard/constants';
-import Connection from 'backend/common/store-manager/connection';
-import { ProcessLoader, ModalTemplate } from 'common/components';
-import useProcessRunner from 'components/ProcessRunner/useProcessRunner';
-
-import { Title, SmallText, Wrapper } from 'common/components/ModalTemplate/components';
-
-import image from 'assets/images/img-recovery.svg';
+import { MODAL_TYPES } from '~app/components/Dashboard/constants';
+import Connection from '~app/backend/common/store-manager/connection';
+import { ProcessLoader, ModalTemplate } from '~app/common/components';
+import useProcessRunner from '~app/components/ProcessRunner/useProcessRunner';
+import { Title, SmallText, Wrapper } from '~app/common/components/ModalTemplate/components';
+import image from '~app/assets/images/img-recovery.svg';
 
 const RecoveringModal = (props: Props) => {
   const { isLoading, processMessage, isDone, isServerActive, clearProcessState, loaderPercentage } = useProcessRunner();

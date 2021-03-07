@@ -1,19 +1,18 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import { History } from 'history';
-
-import login from './components/CallbackPage/reducer';
-import organization from './components/Organization/reducer';
-import wizard from './components/Wizard/reducer';
-import dashboard from './components/Dashboard/reducer';
-import websocket from './components/WebSockets/reducer';
-import accounts from './components/Accounts/reducer';
-import keyvaultManagement from './components/KeyVaultManagement/reducer';
-import processRunner from './components/ProcessRunner/reducer';
-import versions from './components/Versions/reducer';
-import eventLogs from './components/EventLogs/reducer';
-import password from './components/PasswordHandler/reducer';
-import user from './components/User/reducer';
+import user from '~app/components/User/reducer';
+import wizard from '~app/components/Wizard/reducer';
+import versions from '~app/components/Versions/reducer';
+import accounts from '~app/components/Accounts/reducer';
+import eventLogs from '~app/components/EventLogs/reducer';
+import dashboard from '~app/components/Dashboard/reducer';
+import websocket from '~app/components/WebSockets/reducer';
+import password from '~app/components/PasswordHandler/reducer';
+import organization from '~app/components/Organization/reducer';
+import processRunner from '~app/components/ProcessRunner/reducer';
+import login from '~app/components/Login/components/CallbackPage/reducer';
+import keyvaultManagement from '~app/components/KeyVaultManagement/reducer';
 
 export default function createRootReducer(history: History) {
   return combineReducers({

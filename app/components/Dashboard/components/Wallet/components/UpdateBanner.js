@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Rocket from '../../../assets/rocket.svg';
-import Icon from '../../../../../common/components/Icon';
-import {openExternalLink} from '../../../../common/service';
+import Icon from '~app/common/components/Icon';
+import { openExternalLink } from '~app/components/common/service';
+import Rocket from '~app/components/Dashboard/assets/rocket.svg';
 
 const EmptyWrapper = styled.div``;
 
