@@ -1,24 +1,44 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import {
+  Switch, Route, useRouteMatch, Redirect
+} from 'react-router-dom';
 import { Loader } from '~app/common/components';
+import Wizard from '~app/components/Wizard/Wizard';
 import wizardSaga from '~app/components/Wizard/saga';
 import { useInjectSaga } from '~app/utils/injectSaga';
+import Header from '~app/components/common/Header/Header';
+import Dashboard from '~app/components/Dashboard/Dashboard';
 import { loadWallet } from '~app/components/Wizard/actions';
 import useAccounts from '~app/components/Accounts/useAccounts';
 import useVersions from '~app/components/Versions/useVersions';
 import walletSaga from '~app/components/KeyVaultManagement/saga';
 import useEventLogs from '~app/components/EventLogs/useEventLogs';
 import { MODAL_TYPES } from '~app/components/Dashboard/constants';
-import RootRoute from '~app/components/EntryPage/routes/RootRoute';
 import * as wizardSelectors from '~app/components/Wizard/selectors';
 import Connection from '~app/backend/common/store-manager/connection';
+import Content from '~app/components/EntryPage/routes/wrappers/Content';
 import * as actionsFromDashboard from '~app/components/Dashboard/actions';
 import SettingsRoute from '~app/components/EntryPage/routes/SettingsRoute';
 import useProcessRunner from '~app/components/ProcessRunner/useProcessRunner';
 import * as keyvaultSelectors from '~app/components/KeyVaultManagement/selectors';
 import { keyvaultLoadLatestVersion } from '~app/components/KeyVaultManagement/actions';
+
+const DashboardWrapper = styled.div`
+  width: 100%;
+  min-height: 100%;
+  padding-top: 70px;
+  background-color: #f7fcff;
+`;
+
+const WizardWrapper = styled.div`
+  width: 100%;
+  min-height: 100%;
+  background-color: #f7fcff;
+  display: grid;
+`;
 
 const wizardKey = 'wizard';
 const walletKey = 'keyvaultManagement';
@@ -92,16 +112,42 @@ const EntryPage = (props: Props) => {
 
   return (
     <Switch>
-      <Route exact path={`${path}`}
-        render={(renderProps) => (
-          <RootRoute
-            showDashboard={showDashboard}
-            showWizard={showWizard}
-            renderProps={{ ...renderProps, ...otherProps }}
-          />
+      <Route
+        exact
+        path={`${path}`}
+        render={() => {
+          if (showWizard) {
+            return <Redirect to={`${path}/wizard`} />;
+          }
+          return <Redirect to={`${path}/dashboard`} />;
+        }}
+      />
+      <Route
+        exact
+        path={`${path}/dashboard`}
+        render={() => (
+          <>
+            <Header withMenu />
+            <Content>
+              <DashboardWrapper>
+                <Dashboard {...otherProps} />
+              </DashboardWrapper>
+            </Content>
+          </>
         )}
       />
-      <Route path={`${path}/settings`}
+      <Route
+        exact
+        path={`${path}/wizard`}
+        render={() => (
+          <WizardWrapper>
+            <Wizard {...otherProps} />
+          </WizardWrapper>
+        )}
+      />
+      <Route
+        exact
+        path={`${path}/settings`}
         render={(renderProps) => (
           <SettingsRoute
             renderProps={{ ...renderProps, ...otherProps }}

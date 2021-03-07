@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import theme from '~app/theme';
 import config from '~app/backend/common/config';
+import useRouting from '~app/common/hooks/useRouting';
 import * as selectors from '~app/components/Wizard/selectors';
 import * as wizardActions from '~app/components/Wizard/actions';
 import { openExternalLink } from '~app/components/common/service';
@@ -72,11 +73,11 @@ const StakingDeposit = (props: Props) => {
   const {updateAccountStatus, loadDepositData, setFinishedWizard, clearWizardData} = actions;
   const [showMoveToBrowserModal, setShowMoveToBrowserModal] = React.useState(false);
   const { loadDashboardData } = useDashboardData();
+  const { goToPage, ROUTES } = useRouting();
 
   useEffect(() => {
     if (isDepositNeeded && publicKey) {
       loadDepositData(publicKey, accountIndex, network);
-      callSetDepositNeeded({isNeeded: false, publicKey, accountIndex, network});
     }
   }, [isDepositNeeded, publicKey]);
 
@@ -86,7 +87,20 @@ const StakingDeposit = (props: Props) => {
       if ('tx_hash' in obj && 'account_id' in obj) {
         setPage(page + 1);
         updateAccountStatus(obj.account_id, obj.tx_hash, true);
-        callSetDepositNeeded({isNeeded: false, publicKey: '', accountIndex: -1, network: ''});
+        // TODO: test deposit better
+        callSetDepositNeeded({
+          isNeeded: false,
+          publicKey: '',
+          accountIndex: -1,
+          network: ''
+        });
+      } else {
+        callSetDepositNeeded({
+          isNeeded: false,
+          publicKey,
+          accountIndex,
+          network
+        });
       }
     }, (e) => notification.error({message: e}));
     return () => cleanDeepLink();
@@ -103,6 +117,7 @@ const StakingDeposit = (props: Props) => {
     await clearWizardData();
     await setFinishedWizard(true);
     await loadDashboardData();
+    goToPage(ROUTES.DASHBOARD);
   };
 
   const openDepositBrowser = async (moveToBrowser) => {

@@ -112,8 +112,8 @@ const LoggedIn = (props: Props) => {
   return (
     <>
       <Switch>
+        <Route exact path={`${path}/test`} component={TestPage} />
         <Route path={`${path}`} component={RootPage} />
-        <Route path={`${path}/test`} component={TestPage} />
       </Switch>
       <ModalsManager />
     </>

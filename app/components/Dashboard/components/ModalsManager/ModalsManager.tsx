@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import useRouting from '~app/common/hooks/useRouting';
 import * as actionsFromUser from '~app/components/User/actions';
 import * as selectors from '~app/components/Dashboard/selectors';
 import { MODAL_TYPES } from '~app/components/Dashboard/constants';
@@ -30,6 +31,7 @@ const ModalsManager = (props: Props) => {
   const { loadAccounts } = accountsActions;
   const { loadUserInfo } = userActions;
   const { loadDashboardData } = useDashboardData();
+  const { goToPage, ROUTES } = useRouting();
 
   const onPasswordSuccess = () => {
     clearModalDisplayData();
@@ -40,6 +42,7 @@ const ModalsManager = (props: Props) => {
     await loadWallet();
     await clearModalDisplayData();
     await loadDashboardData();
+    goToPage(ROUTES.DASHBOARD);
   };
 
   const onAccountRecoverySuccess = async () => {
@@ -49,6 +52,7 @@ const ModalsManager = (props: Props) => {
     loadAccounts();
     clearModalDisplayData();
     await loadDashboardData();
+    goToPage(ROUTES.DASHBOARD);
   };
 
   if (showModal) {
@@ -110,6 +114,7 @@ const ModalsManager = (props: Props) => {
               setFinishedWizard(true);
               await loadDashboardData();
               clearModalDisplayData();
+              goToPage(ROUTES.DASHBOARD);
             }}
             customImage={imageImportFailed}
           />

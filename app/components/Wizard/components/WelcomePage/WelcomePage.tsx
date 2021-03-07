@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import saga from '~app/components/Wizard/saga';
 import config from '~app/backend/common/config';
+import useRouting from '~app/common/hooks/useRouting';
 import { useInjectSaga } from '~app/utils/injectSaga';
 import { InfoWithTooltip } from '~app/common/components';
 import * as userSelectors from '~app/components/User/selectors';
@@ -68,6 +69,7 @@ const WelcomePage = (props: Props) => {
   const { setModalDisplay } = dashboardActions;
 
   const { checkIfPasswordIsNeeded } = usePasswordHandler();
+  const { goToPage, ROUTES } = useRouting();
   useInjectSaga({ key, saga, mode: '' });
   const [showStep2, setStep2Status] = useState(false);
 
@@ -79,7 +81,6 @@ const WelcomePage = (props: Props) => {
     const hasWallet = wallet && (wallet.status === 'active' || wallet.status === 'offline');
     const hasSeed = Connection.db().exists('seed');
     const storedUuid = Connection.db().get('uuid');
-
     const isInRecoveryProcess = Connection.db().get('inRecoveryProcess');
     const isPrimaryDevice = !!storedUuid && (storedUuid === userInfo.uuid);
 
@@ -103,6 +104,7 @@ const WelcomePage = (props: Props) => {
             return;
           }
           setFinishedWizard(true);
+          goToPage(ROUTES.DASHBOARD);
           return;
         }
         setStep2Status(true);

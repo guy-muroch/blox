@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import useRouting from '~app/common/hooks/useRouting';
 import { MODAL_TYPES } from '~app/components/Dashboard/constants';
 import * as actionsFromWizard from '~app/components/Wizard/actions';
 import Connection from '~app/backend/common/store-manager/connection';
@@ -20,8 +21,9 @@ const AddValidatorButtonWrapper = (props: AddValidatorButtonWrapperProps) => {
   const { setModalDisplay, clearModalDisplayData } = dashboardActions;
   const { setAddAnotherAccount } = accountsActions;
   const { setFinishedWizard, setOpenedWizard } = wizardActions;
-  const { checkIfPasswordIsNeeded } = usePasswordHandler();
   const walletNeedsUpdate = keyvaultCurrentVersion !== keyvaultLatestVersion;
+  const { checkIfPasswordIsNeeded } = usePasswordHandler();
+  const { goToPage, ROUTES } = useRouting();
 
   /**
    * Open create/import validator wizard
@@ -31,6 +33,7 @@ const AddValidatorButtonWrapper = (props: AddValidatorButtonWrapperProps) => {
     setFinishedWizard(false);
     setOpenedWizard(true);
     clearModalDisplayData();
+    goToPage(ROUTES.WIZARD);
   };
 
   /**

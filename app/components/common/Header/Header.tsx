@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { ClickAwayListener } from '@material-ui/core';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import useRouting from '~app/common/hooks/useRouting';
 import HeaderLink from '~app/components/common/Header/HeaderLink';
 import { ProfileMenu } from '~app/components/common/Header/components';
 import { getWizardFinishedStatus } from '~app/components/Wizard/selectors';
@@ -73,9 +74,10 @@ const AddValidatorButton = styled.button`
 `;
 
 const Header = (props: Props) => {
-  const { withMenu, profile, logoutUser, location, isDashboard, hideProfileMenu } = props;
+  const { withMenu, profile, logoutUser, hideProfileMenu } = props;
   const [isProfileMenuOpen, toggleProfileMenuOpenDisplay] = useState(false);
-  const showAddValidatorButton = location.pathname === '/logged-in' && isDashboard;
+  const { isOnPage, ROUTES } = useRouting();
+  const showAddValidatorButton = isOnPage(ROUTES.DASHBOARD);
   const hideTopNav = true;
 
   const handleProfileClickAway = () => {
@@ -116,7 +118,6 @@ interface Props extends RouteComponentProps {
   withMenu: boolean;
   profile: Record<string, any>;
   logoutUser: () => void;
-  isDashboard: boolean;
   hideProfileMenu?: boolean;
 }
 

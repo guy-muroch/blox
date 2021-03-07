@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Icon } from 'common/components';
+import useRouting from '~app/common/hooks/useRouting';
 import * as actionsFromWizard from '~app/components/Wizard/actions';
 import * as actionsFromAccounts from '~app/components/Accounts/actions';
 import { getAddAnotherAccount } from '~app/components/Accounts/selectors';
@@ -66,6 +67,7 @@ const Template = (props: Props) => {
   const { isFinishedWizard, addAnotherAccount, step, page, setPage } = rest;
   const { clearAccountsData } = accountsActions;
   const { setFinishedWizard, clearWizardData } = wizardActions;
+  const { goToPage, ROUTES } = useRouting();
 
   /**
    * Close button is show in a template according to conditions:
@@ -83,6 +85,7 @@ const Template = (props: Props) => {
     await clearWizardData();
     await setFinishedWizard(true);
     await loadDashboardData();
+    goToPage(ROUTES.DASHBOARD);
   };
 
   const onBackClick = () => {

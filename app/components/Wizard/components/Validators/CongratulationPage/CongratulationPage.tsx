@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import config from '~app/backend/common/config';
+import useRouting from '~app/common/hooks/useRouting';
 import { SuccessIcon, Confetti } from '~app/common/components';
 import * as actionsFromWizard from '~app/components/Wizard/actions';
 import * as actionsFromAccounts from '~app/components/Accounts/actions';
@@ -22,6 +23,7 @@ const CongratulationPage = (props: Props) => {
   const { setFinishedWizard, setOpenedWizard, clearWizardData } = wizardActions;
   const { loadDashboardData } = useDashboardData();
   const { setTestNetHiddenFlag } = useNetworkSwitcher();
+  const { goToPage, ROUTES } = useRouting();
 
   const onClick = async () => {
     await clearAccountsData();
@@ -29,6 +31,7 @@ const CongratulationPage = (props: Props) => {
     await setFinishedWizard(true);
     await setOpenedWizard(false);
     await loadDashboardData();
+    goToPage(ROUTES.DASHBOARD);
   };
 
   useEffect(() => {
