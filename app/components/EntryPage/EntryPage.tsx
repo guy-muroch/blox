@@ -22,7 +22,6 @@ import Connection from '~app/backend/common/store-manager/connection';
 import Content from '~app/components/EntryPage/routes/wrappers/Content';
 import * as actionsFromDashboard from '~app/components/Dashboard/actions';
 import SettingsRoute from '~app/components/EntryPage/routes/SettingsRoute';
-import useProcessRunner from '~app/components/ProcessRunner/useProcessRunner';
 import * as keyvaultSelectors from '~app/components/KeyVaultManagement/selectors';
 import { keyvaultLoadLatestVersion } from '~app/components/KeyVaultManagement/actions';
 
@@ -59,7 +58,6 @@ const EntryPage = (props: Props) => {
   const { accounts, isLoadingAccounts } = useAccounts();
   const { bloxLiveNeedsUpdate, isLoadingBloxLiveVersion } = useVersions();
   const { eventLogs, isLoadingEventLogs } = useEventLogs();
-  const { processData, error, clearProcessState } = useProcessRunner();
   const { path } = useRouteMatch();
 
   useEffect(() => {
@@ -73,9 +71,6 @@ const EntryPage = (props: Props) => {
     const didntLoadWallet = !walletStatus && !isLoadingWallet && !walletError;
     const didntLoadKeyvaultVersion = !keyvaultLatestVersion && !isLoadingKeyvault && !keyvaultError;
 
-    if (processData || error) {
-      clearProcessState();
-    }
     if (didntLoadKeyvaultVersion) {
       loadWalletLatestVersion();
     }
@@ -123,7 +118,6 @@ const EntryPage = (props: Props) => {
         }}
       />
       <Route
-        exact
         path={`${path}/dashboard`}
         render={() => (
           <>
@@ -137,7 +131,6 @@ const EntryPage = (props: Props) => {
         )}
       />
       <Route
-        exact
         path={`${path}/wizard`}
         render={() => (
           <WizardWrapper>
@@ -146,7 +139,6 @@ const EntryPage = (props: Props) => {
         )}
       />
       <Route
-        exact
         path={`${path}/settings`}
         render={(renderProps) => (
           <SettingsRoute

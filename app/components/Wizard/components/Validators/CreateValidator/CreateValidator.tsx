@@ -43,7 +43,7 @@ const CreateValidator = (props: Props) => {
       accountIndex,
       network
     });
-    setPage(config.PAGES.VALIDATOR.STAKING_DEPOSIT);
+    setPage(config.WIZARD_PAGES.VALIDATOR.STAKING_DEPOSIT);
   };
 
   return (

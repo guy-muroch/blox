@@ -16,7 +16,7 @@ import * as accountSelectors from '~app/components/Accounts/selectors';
 import { allAccountsDeposited } from '~app/components/Accounts/service';
 import * as actionsFromDashboard from '~app/components/Dashboard/actions';
 import usePasswordHandler from '~app/components/PasswordHandler/usePasswordHandler';
-import ButtonWithIcon from '~app/components/Wizard/components/WelcomePage/ButtonWithIcon';
+import ButtonWithIcon from '~app/components/Wizard/components/WizardStartPage/ButtonWithIcon';
 import keyVaultImg from '../../assets/img-key-vault.svg';
 import mainNetImg from '../../assets/img-validator-main-net.svg';
 import bgImage from '../../../../../app/assets/images/bg_staking.jpg';
@@ -62,10 +62,10 @@ toolTipText += 'is requested to attest/propose. To do so, KeyVault must be onlin
 
 const key = 'wizard';
 
-const WelcomePage = (props: Props) => {
+const WizardStartPage = (props: Props) => {
   const { setPage, setStep, step, actions, dashboardActions, wallet, accounts, isLoading,
           isDepositNeeded, addAnotherAccount, userInfo } = props;
-  const { loadWallet, setFinishedWizard } = actions;
+  const { loadWallet } = actions;
   const { setModalDisplay } = dashboardActions;
 
   const { checkIfPasswordIsNeeded } = usePasswordHandler();
@@ -98,16 +98,21 @@ const WelcomePage = (props: Props) => {
           redirectToCreateAccount();
           return;
         }
-        if (accounts && !allAccountsDeposited(accounts)) {
+        if (accounts?.length && !allAccountsDeposited(accounts)) {
           if (isDepositNeeded) {
             redirectToDepositPage();
             return;
           }
-          setFinishedWizard(true);
           goToPage(ROUTES.DASHBOARD);
           return;
         }
-        setStep2Status(true);
+        if (!accounts?.length) {
+          setStep2Status(true);
+          console.warn('setStep2Status#1');
+          return;
+        }
+        console.warn('goToPage(ROUTES.DASHBOARD)#1');
+        goToPage(ROUTES.DASHBOARD);
         return;
       }
       if (storedUuid && accounts?.length === 0) {
@@ -117,7 +122,7 @@ const WelcomePage = (props: Props) => {
   }, [isLoading]);
 
   const onStep1Click = () => {
-    !showStep2 && setPage(config.PAGES.WALLET.SELECT_CLOUD_PROVIDER);
+    !showStep2 && setPage(config.WIZARD_PAGES.WALLET.SELECT_CLOUD_PROVIDER);
   };
 
   const onStep2Click = () => {
@@ -131,22 +136,22 @@ const WelcomePage = (props: Props) => {
   };
 
   const redirectToPassPhrasePage = () => {
-    setPage(config.PAGES.WALLET.IMPORT_OR_GENERATE_SEED);
+    setPage(config.WIZARD_PAGES.WALLET.IMPORT_OR_GENERATE_SEED);
   };
 
   const redirectToCreateAccount = () => {
     if (!accounts?.length) {
-      setStep(config.STEPS.VALIDATOR_SETUP);
-      setPage(config.PAGES.WALLET.IMPORT_OR_GENERATE_SEED);
+      setStep(config.WIZARD_STEPS.VALIDATOR_SETUP);
+      setPage(config.WIZARD_PAGES.WALLET.IMPORT_OR_GENERATE_SEED);
     } else {
       setStep(step + 1);
-      setPage(config.PAGES.VALIDATOR.SELECT_NETWORK);
+      setPage(config.WIZARD_PAGES.VALIDATOR.SELECT_NETWORK);
     }
   };
 
   const redirectToDepositPage = () => {
     setStep(step + 1);
-    setPage(config.PAGES.VALIDATOR.STAKING_DEPOSIT);
+    setPage(config.WIZARD_PAGES.VALIDATOR.STAKING_DEPOSIT);
   };
 
   return (
@@ -202,4 +207,4 @@ type Props = {
 type State = Record<string, any>;
 type Dispatch = (arg0: { type: string }) => any;
 
-export default connect(mapStateToProps, mapDispatchToProps)(WelcomePage);
+export default connect(mapStateToProps, mapDispatchToProps)(WizardStartPage);

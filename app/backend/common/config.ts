@@ -38,11 +38,9 @@ export default class Config {
       ETH_INITIAL_BALANCE: 32.00,
       UNAUTHORIZED_CHECK_INTERVAL: 10 * 60 * 1000,
 
-      // Application pages constants in one central place, environment-independent
-      APP_PAGES: {
-        WELCOME: {
-          DEFAULT: 0
-        },
+      // Wizard pages constants in one central place, environment-independent
+      WIZARD_PAGES: {
+        START_PAGE: 0,
         WALLET: {
           SELECT_CLOUD_PROVIDER: 1,
           CREATE_SERVER: 2,
@@ -59,7 +57,7 @@ export default class Config {
           CONGRATULATIONS: 9
         }
       },
-      APP_STEPS: {
+      WIZARD_STEPS: {
         WIZARD: {
           KEY_VAULT_SETUP: 1,
           VALIDATOR_SETUP: 2,
@@ -110,12 +108,12 @@ export default class Config {
     return this.instance;
   }
 
-  static get PAGES(): any {
-    return this.env.APP_PAGES;
+  static get WIZARD_PAGES(): any {
+    return this.env.WIZARD_PAGES;
   }
 
-  static get STEPS(): any {
-    return this.env.APP_STEPS;
+  static get WIZARD_STEPS(): any {
+    return this.env.WIZARD_STEPS;
   }
 
   static get FLAGS(): any {
