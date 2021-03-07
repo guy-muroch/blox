@@ -20,7 +20,7 @@ import {
   FailureModal,
   ThankYouModal,
   ConfirmationModal } from '~app/components/KeyVaultModals';
-import imageImportFailed from '~app/components/Wizard/assets/img-import-failed.svg';
+import imageImportFailed from '../../../Wizard/assets/img-import-failed.svg';
 
 const ModalsManager = (props: Props) => {
   const { dashboardActions, wizardActions, accountsActions, userActions,

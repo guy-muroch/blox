@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/dist/styled-components.esm';
-import ArrowForwardImage from '~app/assets/images/arrow-forward.svg';
+import ArrowForwardImage from '../../../assets/images/arrow-forward.svg';
 
 const Image = styled.img`
   width: 16px;
