@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import logo from '~app/assets/images/staking-logo.svg';
+import logo from 'assets/images/staking-logo.svg';
 
 const Wrapper = styled.div`
   width: 60%;

@@ -2,7 +2,7 @@ import React from 'react';
 import { ModalTemplate, Button } from '~app/common/components';
 import { MODAL_TYPES } from '~app/components/Dashboard/constants';
 import { Title, Description } from '~app/common/components/ModalTemplate/components';
-import image from '~app/assets/images/img-recovery.svg';
+import image from 'assets/images/img-recovery.svg';
 
 const WelcomeModal = ({onClick, onClose, type}: Props) => {
   return (

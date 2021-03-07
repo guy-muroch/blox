@@ -9,7 +9,7 @@ import { getWizardFinishedStatus } from '~app/components/Wizard/selectors';
 import { logout } from '~app/components/Login/components/CallbackPage/actions';
 import { getUserData } from '~app/components/Login/components/CallbackPage/selectors';
 import AddValidatorButtonWrapper from '~app/components/common/Header/components/AddValidatorButtonWrapper';
-import imageSrc from '~app/assets/images/staking-logo.svg';
+import imageSrc from 'assets/images/staking-logo.svg';
 
 const Wrapper = styled.div`
   width: 100%;

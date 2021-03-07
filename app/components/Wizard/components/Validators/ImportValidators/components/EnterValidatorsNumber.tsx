@@ -6,7 +6,7 @@ import Connection from '~app/backend/common/store-manager/connection';
 import { Paragraph, Warning } from '~app/components/Wizard/components/common';
 import KeyManagerService from '~app/backend/services/key-manager/key-manager.service';
 import { getNetworkForImport } from '~app/components/Wizard/components/Validators/ImportValidators/components/helpers';
-import InfoImage from '~app/assets/images/info.svg';
+import InfoImage from '../../../../../../assets/images/info.svg';
 
 const Image = styled.img`
   width: 16px;

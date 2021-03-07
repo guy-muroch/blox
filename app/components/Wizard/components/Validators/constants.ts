@@ -1,6 +1,6 @@
 import config from '~app/backend/common/config';
-import testNetImage from '~app/components/Wizard/assets/img-validator-test-net.svg';
-import mainNetImage from '~app/components/Wizard/assets/img-validator-main-net.svg';
+import testNetImage from '../../assets/img-validator-test-net.svg';
+import mainNetImage from '../../assets/img-validator-main-net.svg';
 
 export const NETWORKS = {
   pyrmont: {

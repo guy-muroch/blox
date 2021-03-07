@@ -11,7 +11,7 @@ import * as actionsFromDashboard from '~app/components/Dashboard/actions';
 import { PasswordInput, Button, ModalTemplate } from '~app/common/components';
 import * as actionsFromPassword from '~app/components/PasswordHandler/actions';
 import { Title, Description } from '~app/common/components/ModalTemplate/components';
-import image from '~app/components/Wizard/assets/img-password.svg';
+import image from '../Wizard/assets/img-password.svg';
 
 const key = 'password';
 

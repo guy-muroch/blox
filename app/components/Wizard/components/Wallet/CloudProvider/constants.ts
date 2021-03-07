@@ -1,6 +1,6 @@
-import awsImage from '~app/assets/images/logo-amazon.svg';
-import azureImage from '~app/assets/images/logo-azure.svg';
-import googleImage from '~app/assets/images/logo-google-cloud.svg';
+import awsImage from 'assets/images/logo-amazon.svg';
+import azureImage from 'assets/images/logo-azure.svg';
+import googleImage from 'assets/images/logo-google-cloud.svg';
 
 export const CLOUD_PROVIDERS = [
   { label: 'aws', title: 'Amazon Web Server', image: awsImage, isDisabled: false },

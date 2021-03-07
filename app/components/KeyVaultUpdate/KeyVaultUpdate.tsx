@@ -5,7 +5,7 @@ import {
   FailureModal,
   ThankYouModal
 } from '~app/components/KeyVaultModals';
-import activeImage from '~app/components/Wizard/assets/img-key-vault.svg';
+import activeImage from '../Wizard/assets/img-key-vault.svg';
 
 const KeyVaultUpdate = ({onSuccess, onClose}: Props) => {
   const [step, setStep] = useState(1);

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { SuccessIcon, Button, ModalTemplate } from '~app/common/components';
 import { Title, Description, Wrapper } from '~app/common/components/ModalTemplate/components';
-import image from '~app/components/Wizard/assets/img-key-vault.svg';
+import image from '../Wizard/assets/img-key-vault.svg';
 
 const SuccessModal = ({onSuccess, title, text}) => {
   return (

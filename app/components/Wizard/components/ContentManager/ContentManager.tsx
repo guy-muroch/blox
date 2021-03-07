@@ -7,9 +7,9 @@ import WelcomePage from '~app/components/Wizard/components/WelcomePage';
 import * as WalletPages from '~app/components/Wizard/components/Wallet';
 import { getDepositToNetwork } from '~app/components/Accounts/selectors';
 import * as ValidatorPages from '~app/components/Wizard/components/Validators';
-import walletImage from '~app/components/Wizard/assets/img-key-vault.svg';
-import testnetValidatorImage from '~app/components/Wizard/assets/img-validator-test-net.svg';
-import mainnetValidatorImage from '~app/components/Wizard/assets/img-validator-main-net.svg';
+import walletImage from 'components/Wizard/assets/img-key-vault.svg';
+import testnetValidatorImage from '../../assets/img-validator-test-net.svg';
+import mainnetValidatorImage from '../../assets/img-validator-main-net.svg';
 
 const Wrapper = styled.div`
   height: 100%;

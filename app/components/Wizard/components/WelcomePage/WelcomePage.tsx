@@ -16,9 +16,9 @@ import { allAccountsDeposited } from '~app/components/Accounts/service';
 import * as actionsFromDashboard from '~app/components/Dashboard/actions';
 import usePasswordHandler from '~app/components/PasswordHandler/usePasswordHandler';
 import ButtonWithIcon from '~app/components/Wizard/components/WelcomePage/ButtonWithIcon';
-import keyVaultImg from '~app/assets/img-key-vault.svg';
-import bgImage from '~app/assets/images/bg_staking.jpg';
-import mainNetImg from '~app/assets/img-validator-main-net.svg';
+import keyVaultImg from '../../assets/img-key-vault.svg';
+import mainNetImg from '../../assets/img-validator-main-net.svg';
+import bgImage from '../../../../../app/assets/images/bg_staking.jpg';
 
 const Wrapper = styled.div`
   width: 100%;

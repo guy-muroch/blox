@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Tooltip from '~app/common/components/Tooltip';
-import imageSrc from '~app/assets/images/info.svg';
+import imageSrc from 'assets/images/info.svg';
 
 const Image = styled.img`
   width: 13px;

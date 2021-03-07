@@ -9,7 +9,7 @@ import * as actionsFromKeyvault from '~app/components/KeyVaultManagement/actions
 import * as keyvaultSelectors from '~app/components/KeyVaultManagement/selectors';
 import { Title, Description } from '~app/common/components/ModalTemplate/components';
 import { ModalTemplate, Button, PasswordInput, Spinner } from '~app/common/components';
-import image from '~app/assets/images/img-recovery.svg';
+import image from 'assets/images/img-recovery.svg';
 
 const StepIndicator = styled.div`
   font-size: 12px;

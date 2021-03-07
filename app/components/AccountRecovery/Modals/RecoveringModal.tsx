@@ -4,7 +4,7 @@ import Connection from '~app/backend/common/store-manager/connection';
 import { ProcessLoader, ModalTemplate } from '~app/common/components';
 import useProcessRunner from '~app/components/ProcessRunner/useProcessRunner';
 import { Title, SmallText, Wrapper } from '~app/common/components/ModalTemplate/components';
-import image from '~app/assets/images/img-recovery.svg';
+import image from 'assets/images/img-recovery.svg';
 
 const RecoveringModal = (props: Props) => {
   const { isLoading, processMessage, isDone, isServerActive, clearProcessState, loaderPercentage } = useProcessRunner();
