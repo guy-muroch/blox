@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { lastDateFormat } from 'utils/service';
+import { lastDateFormat } from '~app/utils/service';
 
 const Wrapper = styled.div`
   color: ${({theme}) => theme.gray800};
