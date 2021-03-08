@@ -10,7 +10,7 @@ const Wrapper = styled.div`
   position:fixed;
   top: 0;
   left: 0;
-  background-color:rgba(0,0,0,0.1);
+  background-color: #F7FCFF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,7 +51,6 @@ const Loader = (props: LoaderProps) => {
       { withHeader && (
         <Header
           withMenu={withHeaderMenu}
-          isDashboard={false}
           hideProfileMenu={!withHeaderProfileMenu}
         />
       )}
