@@ -1,12 +1,12 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import { ConnectedRouter } from 'connected-react-router';
-import { ThemeProvider } from 'styled-components';
-import { hot } from 'react-hot-loader/root';
 import { History } from 'history';
-import App from '../App';
-import theme from '../../theme';
+import { Provider } from 'react-redux';
+import { hot } from 'react-hot-loader/root';
+import { configureStore } from '@reduxjs/toolkit';
+import { ThemeProvider } from 'styled-components';
+import { ConnectedRouter } from 'connected-react-router';
+import theme from '~app/theme';
+import App from '~app/components/App';
 
 type Props = {
   store: ReturnType<typeof configureStore>;

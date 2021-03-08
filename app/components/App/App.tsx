@@ -135,7 +135,7 @@ const App = (props: AppProps) => {
   }, [didInitApp, isLoggedIn, isLoading]);
 
   if (!didInitApp || isLoading) {
-    return <Loader withHeader />;
+    return <Loader withHeader={false} />;
   }
 
   return (
