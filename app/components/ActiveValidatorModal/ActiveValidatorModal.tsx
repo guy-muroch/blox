@@ -1,7 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CustomModal, Button, SuccessIcon, Confetti } from 'common/components';
-import { truncateText } from 'components/common/service';
+import { saveLastConnection } from '~app/common/service';
+import { truncateText } from '~app/components/common/service';
+import {
+  CustomModal, Button,
+  SuccessIcon, Confetti
+} from '~app/common/components';
 
 const InnerWrapper = styled.div`
   width:100%;
@@ -15,7 +19,7 @@ const Title = styled.h1`
   font-size: 26px;
   font-weight: 900;
   line-height: 1.69;
-  margin: 24px 0px;
+  margin: 24px 0;
   color:${({theme}) => theme.accent2500};
 `;
 
@@ -40,13 +44,23 @@ const CloseButton = styled(Button)`
 const ActiveValidatorModal = ({onClose, activeValidators}: Props) => {
   const [current, setCurrent] = React.useState(0);
   const last = activeValidators.length - 1;
-  const setNext = () => current === last ? onClose() : setCurrent(current + 1);
+  const setNext = () => {
+    if (current === last) {
+      saveLastConnection();
+      onClose();
+    } else {
+      setCurrent(current + 1);
+    }
+  };
   const truncatedPublicKey = truncateText(activeValidators[current].publicKey, 6, 6);
+
   return (
     <CustomModal width={'700px'} height={'462px'} onClose={() => setNext()}>
       <InnerWrapper>
         <Confetti />
-        <Row> <SuccessIcon size={'58px'} fontSize={'50px'} /> </Row>
+        <Row>
+          <SuccessIcon size={'58px'} fontSize={'50px'} />
+        </Row>
         <Title>You Are A Validator</Title>
         <Row>
           <SmallText>
@@ -55,7 +69,9 @@ const ActiveValidatorModal = ({onClose, activeValidators}: Props) => {
             connectivity and availability of KeyVault.
           </SmallText>
         </Row>
-        <Row> <CloseButton onClick={() => setNext()}>View My Validator</CloseButton> </Row>
+        <Row>
+          <CloseButton onClick={() => setNext()}>View My Validator</CloseButton>
+        </Row>
       </InnerWrapper>
     </CustomModal>
   );

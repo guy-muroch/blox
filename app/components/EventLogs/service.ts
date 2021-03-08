@@ -1,15 +1,14 @@
 import moment from 'moment';
-import { loadLastConnection } from 'common/service';
-import { Log } from '../../backend/common/logger/logger';
+import { Log } from '~app/backend/common/logger/logger';
+import { loadLastConnection } from '~app/common/service';
 
-export const normalizedActiveValidators = (eventLogs) => {
-  const logger = new Log();
+const logger = new Log();
+
+export const normalizedActiveValidators = (eventLogs: Record<string, any>[] | [] | null): Record<string, any>[] => {
   const lastConnection = loadLastConnection();
-  logger.debug('user last connection:', lastConnection);
-  const activeValidators = eventLogs.filter((eventlog: Record<string, any>) => {
-    const isActive = eventlog.type === 'validator_assigned';
-    const isBefore = moment(lastConnection).isBefore(eventlog.createdAt);
-    return isActive && isBefore;
+  logger.debug(`App Last Connection Time: ${lastConnection}`);
+  return eventLogs.filter((eventLog: Record<string, any>) => {
+    return eventLog.type === 'validator_assigned'
+      && moment(lastConnection).isBefore(eventLog.createdAt);
   });
-  return activeValidators;
 };
