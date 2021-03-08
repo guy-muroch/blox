@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import Icon from '../Icon';
+import Icon from '~app/common/components/Icon';
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   position: fixed;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -52,7 +52,7 @@ type Props = {
   children: React.ReactNode;
   width: string;
   height: string;
-  onClose: () => void;
+  onClose?: () => void;
 };
 
 type ContentProps = {

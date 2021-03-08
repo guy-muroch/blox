@@ -6,7 +6,6 @@ import animationData from '~app/assets/animations/confetti.json';
 const Wrapper = styled.div`
   position: fixed;
   top: -65px;
-  z-index: 2;
   width: 100%;
 `;
 
@@ -20,11 +19,16 @@ const defaultOptions = {
 
 const confettiArray = [{ speed: 0.5 }, { speed: 0.6 }, { speed: 0.7 }];
 
-const Confetti = () => {
+const Confetti = ({ forDialog }: ConfettiProps) => {
+  const confettiStyle = {
+    zIndex: forDialog ? -1 : 2
+  };
   return (
     <>
       {confettiArray.map((confetti, index) => (
-        <Wrapper key={index}>
+        <Wrapper
+          style={confettiStyle}
+          key={index}>
           <Lottie
             options={defaultOptions}
             playingState="play"
@@ -34,6 +38,14 @@ const Confetti = () => {
       ))}
     </>
   );
+};
+
+type ConfettiProps = {
+  forDialog: boolean
+};
+
+Confetti.defaultProps = {
+  forDialog: false
 };
 
 export default Confetti;

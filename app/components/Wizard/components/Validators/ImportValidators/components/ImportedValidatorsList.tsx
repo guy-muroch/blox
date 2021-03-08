@@ -2,18 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components/dist/styled-components.esm';
-
-import analytics from 'backend/analytics';
-import tableColumns from './table-columns';
-import Table from 'common/components/Table';
-import { getNetworkForImport } from './helpers';
-import { Paragraph, Link } from '../../../common';
-import { MODAL_TYPES } from '../../../../../Dashboard/constants';
-import * as actionsFromDashboard from '../../../../../Dashboard/actions';
-import useProcessRunner from '../../../../../ProcessRunner/useProcessRunner';
-import { Checkbox, ProcessLoader } from '../../../../../../common/components';
-import usePasswordHandler from '../../../../../PasswordHandler/usePasswordHandler';
-import { handlePageClick } from '../../../../../../common/components/Table/service';
+import analytics from '~app/backend/analytics';
+import Table from '~app/common/components/Table';
+import { Checkbox, ProcessLoader } from '~app/common/components';
+import { MODAL_TYPES } from '~app/components/Dashboard/constants';
+import { handlePageClick } from '~app/common/components/Table/service';
+import * as actionsFromDashboard from '~app/components/Dashboard/actions';
+import { Paragraph, Link } from '~app/components/Wizard/components/common';
+import useProcessRunner from '~app/components/ProcessRunner/useProcessRunner';
+import usePasswordHandler from '~app/components/PasswordHandler/usePasswordHandler';
+import tableColumns from '~app/components/Wizard/components/Validators/ImportValidators/components/table-columns';
+import { getNetworkForImport } from '~app/components/Wizard/components/Validators/ImportValidators/components/helpers';
 
 const TableWrapper = styled.div`
   width: 100%;
@@ -97,7 +96,7 @@ const ImportedValidatorsList = ({ show, validators, onDone, dashboardActions }: 
         reason: 'import-failed'
       });
     }
-  }, [isLoading, processData, error]);
+  }, [isLoading, processData, error, isDone]);
 
   const onCreateAccountButtonClick = () => {
     const onSuccess = () => {

@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Regular = styled.i<{ fontSize: string, isDisabled: boolean }>`
+const RegularIcon = styled.i<{ fontSize: string, isDisabled: boolean }>`
   font-size: ${({ fontSize }) => fontSize || '12px'};
   display: flex;
   align-items: center;
   color: ${({ theme, color, isDisabled }) => isDisabled ? theme.gray400 : (color && theme[color]) || '#ffffff'};
 `;
 
-const Clickable = styled(Regular)`
+const ClickableIcon = styled(RegularIcon)`
   cursor: pointer;
   :hover {
     color: ${({ theme, color, isDisabled }) => isDisabled ? theme.gray400 : (color && theme.primary700) || '#ffffff'};
@@ -18,18 +18,24 @@ const Clickable = styled(Regular)`
   }
 `;
 
-const Icon = ({ name, color, fontSize, onClick, isDisabled, style }: Props) => onClick ?
-  (
-    <Clickable
-      style={style || {}}
-      className={`icon-${name}`}
-      color={color}
-      fontSize={fontSize}
-      onClick={onClick}
-      isDisabled={isDisabled}
-    />
-  ) : (
-    <Regular
+const Icon = (props: Props) => {
+  const { name, color, fontSize, onClick, isDisabled, style } = props;
+
+  if (onClick && typeof onClick === 'function') {
+    return (
+      <ClickableIcon
+        style={style || {}}
+        className={`icon-${name}`}
+        color={color}
+        fontSize={fontSize}
+        onClick={onClick}
+        isDisabled={isDisabled}
+      />
+    );
+  }
+
+  return (
+    <RegularIcon
       style={style || {}}
       className={`icon-${name}`}
       color={color}
@@ -37,12 +43,13 @@ const Icon = ({ name, color, fontSize, onClick, isDisabled, style }: Props) => o
       isDisabled={isDisabled}
     />
   );
+};
 
 type Props = {
   name: string;
   isDisabled?: boolean;
   fontSize: string;
-  color: string;
+  color?: string;
   onClick?: () => void;
   style?: object;
 };

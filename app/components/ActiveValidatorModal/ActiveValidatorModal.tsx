@@ -41,7 +41,7 @@ const CloseButton = styled(Button)`
   z-index:20;
 `;
 
-const ActiveValidatorModal = ({onClose, activeValidators}: Props) => {
+const ActiveValidatorModal = ({ onClose, activeValidators }: ActiveValidatorModalProps) => {
   const [current, setCurrent] = React.useState(0);
   const last = activeValidators.length - 1;
   const setNext = () => {
@@ -55,13 +55,19 @@ const ActiveValidatorModal = ({onClose, activeValidators}: Props) => {
   const truncatedPublicKey = truncateText(activeValidators[current].publicKey, 6, 6);
 
   return (
-    <CustomModal width={'700px'} height={'462px'} onClose={() => setNext()}>
+    <CustomModal
+      width={'700px'}
+      height={'462px'}
+      onClose={() => setNext()}
+    >
       <InnerWrapper>
-        <Confetti />
+        <Confetti forDialog />
         <Row>
           <SuccessIcon size={'58px'} fontSize={'50px'} />
         </Row>
-        <Title>You Are A Validator</Title>
+        <Title>
+          You Are A Validator
+        </Title>
         <Row>
           <SmallText>
             Your validator {truncatedPublicKey} is now approved and activated <br />
@@ -70,14 +76,16 @@ const ActiveValidatorModal = ({onClose, activeValidators}: Props) => {
           </SmallText>
         </Row>
         <Row>
-          <CloseButton onClick={() => setNext()}>View My Validator</CloseButton>
+          <CloseButton onClick={() => setNext()}>
+            View My Validator
+          </CloseButton>
         </Row>
       </InnerWrapper>
     </CustomModal>
   );
 };
 
-type Props = {
+type ActiveValidatorModalProps = {
   activeValidators: [{ publicKey: string }];
   onClose: () => void;
 };
