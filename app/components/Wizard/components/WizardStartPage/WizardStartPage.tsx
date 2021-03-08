@@ -168,7 +168,7 @@ const WizardStartPage = (props: Props) => {
         <ButtonWithIcon title="Step 1" subTitle="KeyVault Setup" image={keyVaultImg}
           isDisabled={showStep2} onClick={onStep1Click} isLoading={isLoading}
         />
-        <ButtonWithIcon title="Step 2" subTitle="Create A Validator" image={mainNetImg}
+        <ButtonWithIcon title="Step 2" subTitle="Validator Setup" image={mainNetImg}
           isDisabled={!showStep2} onClick={onStep2Click}
         />
       </Right>
