@@ -94,9 +94,7 @@
     },
     "linux": {
       "target": [
-        "deb",
-        "rpm",
-        "AppImage"
+        "deb"
       ],
       "category": "Finance",
       "mimeTypes": [
@@ -314,7 +312,7 @@
     "lottie-web-react": "^1.0.3",
     "macos-release": "^2.4.1",
     "moment": "^2.27.0",
-    "node-ssh": "^10.0.2",
+    "node-ssh": "10.0.2",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.7",
     "react": "^16.13.1",
