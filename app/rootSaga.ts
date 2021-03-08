@@ -1,16 +1,15 @@
 import { all } from 'redux-saga/effects';
-
-import login from './components/CallbackPage/saga';
-import organization from './components/Organization/saga';
-import wizard from './components/Wizard/saga';
-import websocket from './components/WebSockets/saga';
-import accounts from './components/Accounts/saga';
-import keyvaultManagement from './components/KeyVaultManagement/saga';
-import processRunner from './components/ProcessRunner/saga';
-import versions from './components/Versions/saga';
-import eventLogs from './components/EventLogs/saga';
-import password from './components/PasswordHandler/saga';
-import user from './components/User/saga';
+import user from '~app/components/User/saga';
+import wizard from '~app/components/Wizard/saga';
+import accounts from '~app/components/Accounts/saga';
+import versions from '~app/components/Versions/saga';
+import eventLogs from '~app/components/EventLogs/saga';
+import websocket from '~app/components/WebSockets/saga';
+import password from '~app/components/PasswordHandler/saga';
+import organization from '~app/components/Organization/saga';
+import processRunner from '~app/components/ProcessRunner/saga';
+import login from '~app/components/Login/components/CallbackPage/saga';
+import keyvaultManagement from '~app/components/KeyVaultManagement/saga';
 
 export default function* rootSaga() { // TODO: check injectSaga instead
   yield all([

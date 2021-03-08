@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Text from './Text';
-import Image from './Image';
-import Video from './Video';
-import SubTitle from './SubTitle';
-
+import Text from '~app/components/Wizard/components/Wallet/Guide/components/Text';
+import Image from '~app/components/Wizard/components/Wallet/Guide/components/Image';
+import Video from '~app/components/Wizard/components/Wallet/Guide/components/Video';
+import SubTitle from '~app/components/Wizard/components/Wallet/Guide/components/SubTitle';
 import image2 from '../assets/aws-guide-02.svg';
 import image3 from '../assets/aws-guide-03.svg';
 import image4 from '../assets/aws-guide-04.svg';

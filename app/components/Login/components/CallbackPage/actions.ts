@@ -1,4 +1,4 @@
-import * as actionTypes from './actionTypes';
+import * as actionTypes from '~app/components/Login/components/CallbackPage/actionTypes';
 
 export const login = (connectionName: string) => ({
   type: actionTypes.LOGIN_INIT,

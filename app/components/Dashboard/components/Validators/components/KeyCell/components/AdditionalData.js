@@ -1,29 +1,27 @@
 import React from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
-import usePasswordHandler from '../../../../../../PasswordHandler/usePasswordHandler';
-
-import * as actionsFromWizard from '../../../../../../Wizard/actions';
-
-import { setDepositNeeded } from '../../../../../../Accounts/actions';
-
-import WarningText from './WarningText';
-import BlueButton from './BlueButton';
-import Date from './Date';
+import useRouting from '~app/common/hooks/useRouting';
+import { setDepositNeeded } from '~app/components/Accounts/actions';
+import usePasswordHandler from '~app/components/PasswordHandler/usePasswordHandler';
+import Date from '~app/components/Dashboard/components/Validators/components/KeyCell/components/Date';
+import BlueButton from '~app/components/Dashboard/components/Validators/components/KeyCell/components/BlueButton';
+import WarningText from '~app/components/Dashboard/components/Validators/components/KeyCell/components/WarningText';
 
 const AdditionalData = (props) => {
-  const { publicKey, status, createdAt, wizardActions,
-          accountIndex, callSetDepositNeeded, network } = props;
-  const { setFinishedWizard } = wizardActions;
-
+  const { publicKey, status, createdAt, accountIndex, callSetDepositNeeded, network } = props;
   const { checkIfPasswordIsNeeded } = usePasswordHandler();
+  const { goToPage, ROUTES } = useRouting();
 
   const onFinishSetupClick = async () => {
     const onPasswordSuccess = async () => {
-      await callSetDepositNeeded({isNeeded: true, publicKey, accountIndex, network});
-      await setFinishedWizard(false);
+      await callSetDepositNeeded({
+        isNeeded: true,
+        publicKey,
+        accountIndex,
+        network
+      });
+      goToPage(ROUTES.WIZARD);
     };
     checkIfPasswordIsNeeded(onPasswordSuccess);
   };
@@ -60,12 +58,10 @@ AdditionalData.propTypes = {
   network: PropTypes.string,
   status: PropTypes.string,
   createdAt: PropTypes.string,
-  wizardActions: PropTypes.object,
   callSetDepositNeeded: PropTypes.func,
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  wizardActions: bindActionCreators(actionsFromWizard, dispatch),
   callSetDepositNeeded: (payload) => dispatch(setDepositNeeded(payload)),
 });
 

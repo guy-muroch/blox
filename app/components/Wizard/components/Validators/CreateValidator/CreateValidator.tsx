@@ -1,17 +1,18 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { getNetwork } from '../../../selectors';
-import { loadDepositData } from '../../../actions';
-import * as wizardSelectors from '../../../selectors';
-import { GenerateKeys, KeysGenerated } from './components';
-import { setDepositNeeded } from '../../../../Accounts/actions';
-import useProcessRunner from 'components/ProcessRunner/useProcessRunner';
-import usePasswordHandler from '../../../../PasswordHandler/usePasswordHandler';
+import config from '~app/backend/common/config';
+import { getNetwork } from '~app/components/Wizard/selectors';
+import { loadDepositData } from '~app/components/Wizard/actions';
+import * as wizardSelectors from '~app/components/Wizard/selectors';
+import { setDepositNeeded } from '~app/components/Accounts/actions';
+import useProcessRunner from '~app/components/ProcessRunner/useProcessRunner';
+import usePasswordHandler from '~app/components/PasswordHandler/usePasswordHandler';
+import { GenerateKeys, KeysGenerated } from '~app/components/Wizard/components/Validators/CreateValidator/components';
 
 const CreateValidator = (props: Props) => {
   const { isLoading, isDone, processData, error, startProcess, clearProcessState } = useProcessRunner();
   const { checkIfPasswordIsNeeded } = usePasswordHandler();
-  const { page, setPage, callLoadDepositData, callSetDepositNeeded, selectedNetwork, depositData } = props;
+  const { setPage, callLoadDepositData, callSetDepositNeeded, selectedNetwork, depositData } = props;
   const account = processData && processData.length ? processData[0] : processData;
 
   useEffect(() => {
@@ -36,8 +37,13 @@ const CreateValidator = (props: Props) => {
   const onContinueClick = () => {
     const { publicKey, network } = account;
     const accountIndex = +account.name.replace('account-', '');
-    callSetDepositNeeded({isNeeded: true, publicKey, accountIndex, network});
-    setPage(page + 1);
+    callSetDepositNeeded({
+      isNeeded: true,
+      publicKey,
+      accountIndex,
+      network
+    });
+    setPage(config.WIZARD_PAGES.VALIDATOR.STAKING_DEPOSIT);
   };
 
   return (

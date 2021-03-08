@@ -1,6 +1,6 @@
-import { LOGOUT } from 'components/CallbackPage/actionTypes';
 import produce from 'immer';
-import * as actionTypes from './actionTypes';
+import * as actionTypes from '~app/components/User/actionTypes';
+import { LOGOUT } from '~app/components/Login/components/CallbackPage/actionTypes';
 
 const initialState = {
   info: null,

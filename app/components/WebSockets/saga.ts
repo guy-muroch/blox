@@ -1,14 +1,11 @@
 import { eventChannel, END } from 'redux-saga';
-import { call, put, select, take, takeLatest } from 'redux-saga/effects';
-import io from 'socket.io-client';
 import { notification } from 'antd';
-// import WebSockets from './WebSockets';
-
-import { CONNECT_WEB_SOCKET, SUBSCRIBE_TO_EVENT } from './actionTypes';
-import * as actions from './actions';
-import { getIdToken } from '../CallbackPage/selectors';
-// import { getWebsocket } from './selectors';
-import config from 'backend/common/config';
+import io from 'socket.io-client';
+import { call, put, select, take, takeLatest } from 'redux-saga/effects';
+import config from '~app/backend/common/config';
+import * as actions from '~app/components/WebSockets/actions';
+import { getIdToken } from '~app/components/Login/components/CallbackPage/selectors';
+import { CONNECT_WEB_SOCKET, SUBSCRIBE_TO_EVENT } from '~app/components/WebSockets/actionTypes';
 
 function* onSuccess() {
   yield put(actions.connectToWebSocketsSuccess());

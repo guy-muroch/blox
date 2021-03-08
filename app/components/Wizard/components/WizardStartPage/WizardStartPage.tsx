@@ -2,21 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
-import saga from '../../saga';
-import ButtonWithIcon from './ButtonWithIcon';
-import * as wizardActions from '../../actions';
-import { useInjectSaga } from 'utils/injectSaga';
-import * as wizardSelectors from '../../selectors';
-import { InfoWithTooltip } from 'common/components';
-import config from '../../../../backend/common/config';
-import * as userSelectors from '../../../User/selectors';
-import { MODAL_TYPES } from '../../../Dashboard/constants';
-import * as accountSelectors from '../../../Accounts/selectors';
-import { allAccountsDeposited } from '../../../Accounts/service';
-import Connection from 'backend/common/store-manager/connection';
-import * as actionsFromDashboard from '../../../Dashboard/actions';
-import usePasswordHandler from '../../../PasswordHandler/usePasswordHandler';
-
+import saga from '~app/components/Wizard/saga';
+import config from '~app/backend/common/config';
+import useRouting from '~app/common/hooks/useRouting';
+import { useInjectSaga } from '~app/utils/injectSaga';
+import { InfoWithTooltip } from '~app/common/components';
+import * as userSelectors from '~app/components/User/selectors';
+import * as wizardActions from '~app/components/Wizard/actions';
+import { MODAL_TYPES } from '~app/components/Dashboard/constants';
+import * as wizardSelectors from '~app/components/Wizard/selectors';
+import Connection from '~app/backend/common/store-manager/connection';
+import * as accountSelectors from '~app/components/Accounts/selectors';
+import { allAccountsDeposited } from '~app/components/Accounts/service';
+import * as actionsFromDashboard from '~app/components/Dashboard/actions';
+import usePasswordHandler from '~app/components/PasswordHandler/usePasswordHandler';
+import ButtonWithIcon from '~app/components/Wizard/components/WizardStartPage/ButtonWithIcon';
 import keyVaultImg from '../../assets/img-key-vault.svg';
 import mainNetImg from '../../assets/img-validator-main-net.svg';
 import bgImage from '../../../../../app/assets/images/bg_staking.jpg';
@@ -62,13 +62,14 @@ toolTipText += 'is requested to attest/propose. To do so, KeyVault must be onlin
 
 const key = 'wizard';
 
-const WelcomePage = (props: Props) => {
+const WizardStartPage = (props: Props) => {
   const { setPage, setStep, step, actions, dashboardActions, wallet, accounts, isLoading,
           isDepositNeeded, addAnotherAccount, userInfo } = props;
-  const { loadWallet, setFinishedWizard } = actions;
+  const { loadWallet } = actions;
   const { setModalDisplay } = dashboardActions;
 
   const { checkIfPasswordIsNeeded } = usePasswordHandler();
+  const { goToPage, ROUTES } = useRouting();
   useInjectSaga({ key, saga, mode: '' });
   const [showStep2, setStep2Status] = useState(false);
 
@@ -80,7 +81,6 @@ const WelcomePage = (props: Props) => {
     const hasWallet = wallet && (wallet.status === 'active' || wallet.status === 'offline');
     const hasSeed = Connection.db().exists('seed');
     const storedUuid = Connection.db().get('uuid');
-
     const isInRecoveryProcess = Connection.db().get('inRecoveryProcess');
     const isPrimaryDevice = !!storedUuid && (storedUuid === userInfo.uuid);
 
@@ -98,15 +98,21 @@ const WelcomePage = (props: Props) => {
           redirectToCreateAccount();
           return;
         }
-        if (!allAccountsDeposited(accounts)) {
+        if (accounts?.length && !allAccountsDeposited(accounts)) {
           if (isDepositNeeded) {
             redirectToDepositPage();
             return;
           }
-          setFinishedWizard(true);
+          goToPage(ROUTES.DASHBOARD);
           return;
         }
-        setStep2Status(true);
+        if (!accounts?.length) {
+          setStep2Status(true);
+          console.warn('setStep2Status#1');
+          return;
+        }
+        console.warn('goToPage(ROUTES.DASHBOARD)#1');
+        goToPage(ROUTES.DASHBOARD);
         return;
       }
       if (storedUuid && accounts?.length === 0) {
@@ -116,7 +122,7 @@ const WelcomePage = (props: Props) => {
   }, [isLoading]);
 
   const onStep1Click = () => {
-    !showStep2 && setPage(config.PAGES.WALLET.SELECT_CLOUD_PROVIDER);
+    !showStep2 && setPage(config.WIZARD_PAGES.WALLET.SELECT_CLOUD_PROVIDER);
   };
 
   const onStep2Click = () => {
@@ -130,22 +136,22 @@ const WelcomePage = (props: Props) => {
   };
 
   const redirectToPassPhrasePage = () => {
-    setPage(config.PAGES.WALLET.IMPORT_OR_GENERATE_SEED);
+    setPage(config.WIZARD_PAGES.WALLET.IMPORT_OR_GENERATE_SEED);
   };
 
   const redirectToCreateAccount = () => {
     if (!accounts?.length) {
-      setStep(config.STEPS.VALIDATOR_SETUP);
-      setPage(config.PAGES.WALLET.IMPORT_OR_GENERATE_SEED);
+      setStep(config.WIZARD_STEPS.VALIDATOR_SETUP);
+      setPage(config.WIZARD_PAGES.WALLET.IMPORT_OR_GENERATE_SEED);
     } else {
       setStep(step + 1);
-      setPage(config.PAGES.VALIDATOR.SELECT_NETWORK);
+      setPage(config.WIZARD_PAGES.VALIDATOR.SELECT_NETWORK);
     }
   };
 
   const redirectToDepositPage = () => {
     setStep(step + 1);
-    setPage(config.PAGES.VALIDATOR.STAKING_DEPOSIT);
+    setPage(config.WIZARD_PAGES.VALIDATOR.STAKING_DEPOSIT);
   };
 
   return (
@@ -201,4 +207,4 @@ type Props = {
 type State = Record<string, any>;
 type Dispatch = (arg0: { type: string }) => any;
 
-export default connect(mapStateToProps, mapDispatchToProps)(WelcomePage);
+export default connect(mapStateToProps, mapDispatchToProps)(WizardStartPage);

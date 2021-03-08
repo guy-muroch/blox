@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { setNetworkType } from '../../../actions';
-import { getUserData } from '../../../../CallbackPage/selectors';
-import { Title, SubTitle, Paragraph } from '../../common';
-import CustomButton from './CustomButton';
-import { NETWORKS } from '../constants';
+import { setNetworkType } from '~app/components/Wizard/actions';
+import { NETWORKS } from '~app/components/Wizard/components/Validators/constants';
+import { getUserData } from '~app/components/Login/components/CallbackPage/selectors';
+import { Title, SubTitle, Paragraph } from '~app/components/Wizard/components/common';
+import CustomButton from '~app/components/Wizard/components/Validators/SelectNetwork/CustomButton';
 
 const Wrapper = styled.div`
   width:650px;

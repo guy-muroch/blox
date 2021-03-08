@@ -1,19 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-
-import { getIsLoading, getRecoveryValidStatus, getError } from '../../KeyVaultManagement/selectors';
-import * as actionsFromKeyvault from '../../KeyVaultManagement/actions';
-import saga from '../../KeyVaultManagement/saga';
-
-import { ModalTemplate, Button, PasswordInput, Spinner } from 'common/components';
-import useCreatePassword from 'common/hooks/useCreatePassword';
-import { Title, Description } from 'common/components/ModalTemplate/components';
-import { TextArea } from '../../Wizard/components/common';
-
-import { useInjectSaga } from 'utils/injectSaga';
-
+import { bindActionCreators } from 'redux';
+import { useInjectSaga } from '~app/utils/injectSaga';
+import saga from '~app/components/KeyVaultManagement/saga';
+import useCreatePassword from '~app/common/hooks/useCreatePassword';
+import { TextArea } from '~app/components/Wizard/components/common';
+import * as actionsFromKeyvault from '~app/components/KeyVaultManagement/actions';
+import { Title, Description } from '~app/common/components/ModalTemplate/components';
+import { ModalTemplate, Button, PasswordInput, Spinner } from '~app/common/components';
+import { getIsLoading, getRecoveryValidStatus, getError } from '~app/components/KeyVaultManagement/selectors';
 import image from 'assets/images/img-recovery.svg';
 
 const key = 'keyvaultManagement';

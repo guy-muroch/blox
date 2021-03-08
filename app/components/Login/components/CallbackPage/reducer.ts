@@ -1,6 +1,6 @@
 import produce from 'immer';
-import * as actionTypes from './actionTypes';
-import { State } from './types';
+import { State } from '~app/components/Login/components/CallbackPage/types';
+import * as actionTypes from '~app/components/Login/components/CallbackPage/actionTypes';
 
 export const initialState: State = {
   isLoading: false,

@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Button } from '../../common';
-import Title from '../../common/Title';
-import theme from '../../../../../theme';
-import Icon from '../../../../../common/components/Icon';
+import theme from '~app/theme';
+import Icon from '~app/common/components/Icon';
+import { Button } from '~app/components/Wizard/components/common';
+import Title from '~app/components/Wizard/components/common/Title';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -79,7 +79,7 @@ const ImportOrGenerateSeed = (props: Props) => {
     // Because this is part of condition for Add Validator button
     // And in case of drop-off we should be able to close and
     // return to empty dashboard
-    if (!accounts || !accounts.length) {
+    if (!accounts?.length) {
       setStep(2);
     }
   }, [accounts]);

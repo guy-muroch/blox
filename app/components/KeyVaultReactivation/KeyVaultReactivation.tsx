@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { WelcomeModal, RestartingModal, SuccessModal,
-         ReinstallingModal, FailureModal, ThankYouModal } from '../KeyVaultModals';
-
+import {
+  WelcomeModal, RestartingModal, SuccessModal,
+  ReinstallingModal, FailureModal, ThankYouModal
+} from '~app/components/KeyVaultModals';
 import inactiveImage from '../Wizard/assets/img-key-vault-inactive.svg';
 
 const successText = 'KeyVault is active and all validators are staking normally. We are investigating what caused the issue.';

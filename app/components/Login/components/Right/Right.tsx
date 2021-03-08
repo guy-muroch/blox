@@ -2,17 +2,15 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { SOCIAL_APPS } from '../../../../common/constants';
-import { BUTTONS_TEXTS } from './constants';
-
-import * as loginActions from '../../../CallbackPage/actions';
-import { getIsLoggedIn } from '../../../CallbackPage/selectors';
-import saga from '../../../CallbackPage/saga';
-import { useInjectSaga } from '../../../../utils/injectSaga';
-import { openExternalLink } from '../../../common/service';
+import { SOCIAL_APPS } from '~app/common/constants';
+import { useInjectSaga } from '~app/utils/injectSaga';
+import { openExternalLink } from '~app/components/common/service';
+import saga from '~app/components/Login/components/CallbackPage/saga';
+import { BUTTONS_TEXTS } from '~app/components/Login/components/Right/constants';
+import * as loginActions from '~app/components/Login/components/CallbackPage/actions';
+import { getIsLoggedIn } from '~app/components/Login/components/CallbackPage/selectors';
 
 const key = 'login';
-
 const socialAppsList = Object.values(SOCIAL_APPS);
 
 const Wrapper = styled.div`
@@ -37,7 +35,7 @@ const Title = styled.h2`
   line-height: 1.69;
   letter-spacing: normal;
   color: ${(props) => props.theme.gray800};
-  margin: 0px 0px 40px 0px;
+  margin: 0 0 40px 0;
 `;
 
 const SmallText = styled.div`
@@ -67,7 +65,7 @@ const SocialAppButton = styled.button`
   border-radius: 6px;
   display: flex;
   align-items: center;
-  padding: 0px 12px;
+  padding: 0 12px;
   cursor: pointer;
   color: ${(props) => props.theme.gray600};
   &:hover {

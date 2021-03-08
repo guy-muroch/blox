@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const BlueButton = styled.div`
   height: 20px;
-  font-family: Avenir;
+  font-family: Avenir, serif;
   font-size: 12px;
   font-weight: 900;
   color: ${({ theme }) => theme.primary900};

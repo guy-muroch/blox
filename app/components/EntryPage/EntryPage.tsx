@@ -1,24 +1,44 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
-import { Switch, Route } from 'react-router-dom';
+import {
+  Switch, Route, Redirect
+} from 'react-router-dom';
 import { Loader } from '~app/common/components';
+import Wizard from '~app/components/Wizard/Wizard';
 import wizardSaga from '~app/components/Wizard/saga';
+import useRouting from '~app/common/hooks/useRouting';
 import { useInjectSaga } from '~app/utils/injectSaga';
+import Header from '~app/components/common/Header/Header';
+import Dashboard from '~app/components/Dashboard/Dashboard';
 import { loadWallet } from '~app/components/Wizard/actions';
 import useAccounts from '~app/components/Accounts/useAccounts';
 import useVersions from '~app/components/Versions/useVersions';
 import walletSaga from '~app/components/KeyVaultManagement/saga';
 import useEventLogs from '~app/components/EventLogs/useEventLogs';
 import { MODAL_TYPES } from '~app/components/Dashboard/constants';
-import RootRoute from '~app/components/EntryPage/routes/RootRoute';
 import * as wizardSelectors from '~app/components/Wizard/selectors';
 import Connection from '~app/backend/common/store-manager/connection';
+import Content from '~app/components/EntryPage/routes/wrappers/Content';
 import * as actionsFromDashboard from '~app/components/Dashboard/actions';
 import SettingsRoute from '~app/components/EntryPage/routes/SettingsRoute';
-import useProcessRunner from '~app/components/ProcessRunner/useProcessRunner';
 import * as keyvaultSelectors from '~app/components/KeyVaultManagement/selectors';
 import { keyvaultLoadLatestVersion } from '~app/components/KeyVaultManagement/actions';
+
+const DashboardWrapper = styled.div`
+  width: 100%;
+  min-height: 100%;
+  padding-top: 70px;
+  background-color: #f7fcff;
+`;
+
+const WizardWrapper = styled.div`
+  width: 100%;
+  min-height: 100%;
+  background-color: #f7fcff;
+  display: grid;
+`;
 
 const wizardKey = 'wizard';
 const walletKey = 'keyvaultManagement';
@@ -39,7 +59,7 @@ const EntryPage = (props: Props) => {
   const { accounts, isLoadingAccounts } = useAccounts();
   const { bloxLiveNeedsUpdate, isLoadingBloxLiveVersion } = useVersions();
   const { eventLogs, isLoadingEventLogs } = useEventLogs();
-  const { processData, error, clearProcessState } = useProcessRunner();
+  const { ROUTES } = useRouting();
 
   useEffect(() => {
     const inForgotPasswordProcess = Connection.db().get('inForgotPasswordProcess');
@@ -52,9 +72,6 @@ const EntryPage = (props: Props) => {
     const didntLoadWallet = !walletStatus && !isLoadingWallet && !walletError;
     const didntLoadKeyvaultVersion = !keyvaultLatestVersion && !isLoadingKeyvault && !keyvaultError;
 
-    if (processData || error) {
-      clearProcessState();
-    }
     if (didntLoadKeyvaultVersion) {
       loadWalletLatestVersion();
     }
@@ -91,16 +108,39 @@ const EntryPage = (props: Props) => {
 
   return (
     <Switch>
-      <Route exact path="/"
-        render={(renderProps) => (
-          <RootRoute
-            showDashboard={showDashboard}
-            showWizard={showWizard}
-            renderProps={{ ...renderProps, ...otherProps }}
-          />
+      <Route
+        exact
+        path={ROUTES.LOGGED_IN}
+        render={() => {
+          if (showWizard) {
+            return <Redirect to={ROUTES.WIZARD} />;
+          }
+          return <Redirect to={ROUTES.DASHBOARD} />;
+        }}
+      />
+      <Route
+        path={ROUTES.DASHBOARD}
+        render={() => (
+          <>
+            <Header withMenu />
+            <Content>
+              <DashboardWrapper>
+                <Dashboard {...otherProps} />
+              </DashboardWrapper>
+            </Content>
+          </>
         )}
       />
-      <Route path="/settings"
+      <Route
+        path={ROUTES.WIZARD}
+        render={() => (
+          <WizardWrapper>
+            <Wizard {...otherProps} />
+          </WizardWrapper>
+        )}
+      />
+      <Route
+        path={ROUTES.SETTINGS}
         render={(renderProps) => (
           <SettingsRoute
             renderProps={{ ...renderProps, ...otherProps }}

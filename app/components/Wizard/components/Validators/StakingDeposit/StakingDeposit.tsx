@@ -3,28 +3,33 @@ import { notification } from 'antd';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
-
-import { NETWORKS } from '../constants';
-import theme from '../../../../../theme';
-import { Title, BigButton } from '../../common';
-import * as selectors from '../../../selectors';
-import * as wizardActions from '../../../actions';
-import { MainNetText, TestNetText } from './components';
-import config from '../../../../../backend/common/config';
-import { openExternalLink } from '../../../../common/service';
-import { getData } from '../../../../ProcessRunner/selectors';
-import { getIdToken } from '../../../../CallbackPage/selectors';
-import MoveToBrowserModal from './components/MoveToBrowserModal';
-import { deepLink, cleanDeepLink } from '../../../../App/service';
+import theme from '~app/theme';
+import config from '~app/backend/common/config';
+import useRouting from '~app/common/hooks/useRouting';
+import * as selectors from '~app/components/Wizard/selectors';
+import * as wizardActions from '~app/components/Wizard/actions';
+import { openExternalLink } from '~app/components/common/service';
+import { getData } from '~app/components/ProcessRunner/selectors';
+import { deepLink, cleanDeepLink } from '~app/components/App/service';
+import useDashboardData from '~app/components/Dashboard/useDashboardData';
+import { Title, BigButton } from '~app/components/Wizard/components/common';
+import useProcessRunner from '~app/components/ProcessRunner/useProcessRunner';
+import { NETWORKS } from '~app/components/Wizard/components/Validators/constants';
+import { getIdToken } from '~app/components/Login/components/CallbackPage/selectors';
+import { MainNetText, TestNetText } from '~app/components/Wizard/components/Validators/StakingDeposit/components';
+import MoveToBrowserModal from '~app/components/Wizard/components/Validators/StakingDeposit/components/MoveToBrowserModal';
 import {
-  clearAccountsData, setDepositNeeded,
+  clearAccountsData,
+  setDepositNeeded,
   setAddAnotherAccount
-} from '../../../../Accounts/actions';
+} from '~app/components/Accounts/actions';
 import {
-  getAccounts, getDepositNeededStatus, getDepositToPublicKey,
-  getDepositToIndex, getDepositToNetwork
-} from '../../../../Accounts/selectors';
-import useDashboardData from '../../../../Dashboard/useDashboardData';
+  getAccounts,
+  getDepositNeededStatus,
+  getDepositToPublicKey,
+  getDepositToIndex,
+  getDepositToNetwork
+} from '~app/components/Accounts/selectors';
 
 const Wrapper = styled.div`
   width:580px;
@@ -69,11 +74,12 @@ const StakingDeposit = (props: Props) => {
   const {updateAccountStatus, loadDepositData, setFinishedWizard, clearWizardData} = actions;
   const [showMoveToBrowserModal, setShowMoveToBrowserModal] = React.useState(false);
   const { loadDashboardData } = useDashboardData();
+  const { clearProcessState, isLoading, isDone } = useProcessRunner();
+  const { goToPage, ROUTES } = useRouting();
 
   useEffect(() => {
     if (isDepositNeeded && publicKey) {
       loadDepositData(publicKey, accountIndex, network);
-      callSetDepositNeeded({isNeeded: false, publicKey, accountIndex, network});
     }
   }, [isDepositNeeded, publicKey]);
 
@@ -83,9 +89,14 @@ const StakingDeposit = (props: Props) => {
       if ('tx_hash' in obj && 'account_id' in obj) {
         setPage(page + 1);
         updateAccountStatus(obj.account_id, obj.tx_hash, true);
-        callSetDepositNeeded({isNeeded: false, publicKey: '', accountIndex: -1, network: ''});
+        callSetDepositNeeded({
+          isNeeded: false,
+          publicKey: '',
+          accountIndex: -1,
+          network: ''
+        });
       }
-    }, (e) => notification.error({message: e}));
+    }, (e) => notification.error({ message: e }));
     return () => cleanDeepLink();
   }, []);
 
@@ -100,6 +111,7 @@ const StakingDeposit = (props: Props) => {
     await clearWizardData();
     await setFinishedWizard(true);
     await loadDashboardData();
+    goToPage(ROUTES.DASHBOARD);
   };
 
   const openDepositBrowser = async (moveToBrowser) => {
@@ -119,6 +131,10 @@ const StakingDeposit = (props: Props) => {
       currentAccount = accountFromApi;
     }
 
+    if (!isLoading && isDone) {
+      clearProcessState();
+    }
+
     if (currentAccount) {
       const {depositTo, txData} = depositData;
       await openExternalLink('', `${config.env.WEB_APP_URL}/staking-deposit?account_id=${currentAccount.id}&network_id=${NETWORKS[network].chainId}&public_key=${publicKey}&deposit_to=${depositTo}&tx_data=${txData}&id_token=${idToken}`);
@@ -128,26 +144,45 @@ const StakingDeposit = (props: Props) => {
   };
 
   if (network) {
+    const smallTextStyle = {'fontSize': '14px', 'color': theme.gray800, 'marginTop': '34px'};
+
     return (
       <Wrapper>
         <Title>{NETWORKS[network].name} Staking Deposit</Title>
+
         <SubTitle>To Start Staking, you&apos;ll need to make 2 deposits:</SubTitle>
-        {NETWORKS[network].label === NETWORKS.pyrmont.label ? <TestNetText publicKey={publicKey} onCopy={onCopy} /> :
-        <MainNetText publicKey={publicKey} onCopy={onCopy} />}
-        <SmallText>Total: 32 {NETWORKS[network].label === NETWORKS.pyrmont.label ? 'GoETH' : 'ETH'} + gas
-          fees</SmallText>
-        <SmallText style={{'fontSize': '14px', 'color': theme.gray800, 'marginTop': '34px'}}>You will be transferred to
-          a secured Blox webpage</SmallText>
+
+        {NETWORKS[network].label === NETWORKS.pyrmont.label
+          ? <TestNetText publicKey={publicKey} onCopy={onCopy} />
+          : <MainNetText publicKey={publicKey} onCopy={onCopy} />
+        }
+
+        <SmallText>
+          Total: 32 {NETWORKS[network].label === NETWORKS.pyrmont.label ? 'GoETH' : 'ETH'} + gas
+          fees
+        </SmallText>
+
+        <SmallText
+          style={smallTextStyle}
+        >
+          You will be transferred to
+          a secured Blox webpage
+        </SmallText>
+
         <ButtonsWrapper>
           <BigButton onClick={onMadeDepositButtonClick}>Continue to Web Deposit</BigButton>
           <LaterBtn onClick={moveToDashboard}>I&apos;ll Deposit Later</LaterBtn>
         </ButtonsWrapper>
+
         {showMoveToBrowserModal && (
-        <MoveToBrowserModal onClose={(moveToBrowser) => {
-          setShowMoveToBrowserModal(false);
-          if (!moveToBrowser) moveToDashboard();
-        }} onMoveToBrowser={openDepositBrowser} />
-      )}
+          <MoveToBrowserModal
+            onClose={(moveToBrowser) => {
+              setShowMoveToBrowserModal(false);
+              if (!moveToBrowser) moveToDashboard();
+            }}
+            onMoveToBrowser={openDepositBrowser}
+          />
+        )}
       </Wrapper>
     );
   }

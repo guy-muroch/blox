@@ -1,10 +1,16 @@
 import React from 'react';
 import { shell } from 'electron';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
-import Guide from '../Guide';
-import useCreateServer from 'common/hooks/useCreateServer';
-import { Title, Paragraph, ErrorMessage } from '../../common';
-import { ProcessLoader, Button, PasswordInput, InfoWithTooltip } from 'common/components';
+import { bindActionCreators } from 'redux';
+import config from '~app/backend/common/config';
+import wizardSaga from '~app/components/Wizard/saga';
+import { useInjectSaga } from '~app/utils/injectSaga';
+import * as wizardActions from '~app/components/Wizard/actions';
+import useCreateServer from '~app/common/hooks/useCreateServer';
+import Guide from '~app/components/Wizard/components/Wallet/Guide';
+import { Title, Paragraph, ErrorMessage } from '~app/components/Wizard/components/common';
+import { ProcessLoader, Button, PasswordInput, InfoWithTooltip } from '~app/common/components';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -45,13 +51,18 @@ const moreInfo = `
 `;
 
 const CreateServer = (props: Props) => {
-  const { page, setPage } = props;
+  useInjectSaga({key: 'wizard', saga: wizardSaga, mode: ''});
 
-  const onSuccess = () => setPage(page + 1);
+  const { setPage, actions } = props;
+
+  const onSuccess = () => {
+    actions.loadWallet();
+    setPage(config.WIZARD_PAGES.WALLET.IMPORT_OR_GENERATE_SEED);
+  };
 
   const { isLoading, error, processMessage, loaderPercentage, accessKeyId, setAccessKeyId,
           secretAccessKey, setSecretAccessKey, onStartProcessClick, isPasswordInputDisabled, isButtonDisabled
-        } = useCreateServer({onSuccess});
+        } = useCreateServer({ onSuccess });
 
   return (
     <Wrapper>
@@ -94,6 +105,13 @@ const CreateServer = (props: Props) => {
 type Props = {
   page: number;
   setPage: (page: number) => void;
+  actions: Record<string, any>;
 };
 
-export default CreateServer;
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  actions: bindActionCreators(wizardActions, dispatch)
+});
+
+type Dispatch = (arg0: { type: string }) => any;
+
+export default connect(null, mapDispatchToProps)(CreateServer);

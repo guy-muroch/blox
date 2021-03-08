@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import config from '~app/backend/common/config';
+import useRouting from '~app/common/hooks/useRouting';
 import { InfoWithTooltip } from '~app/common/components';
 import * as actionsFromWizard from '~app/components/Wizard/actions';
 import useDashboardData from '~app/components/Dashboard/useDashboardData';
@@ -37,11 +38,13 @@ const KeysGenerated = (props: Props) => {
   const { setFinishedWizard, clearWizardData } = wizardActions;
   const { loadDashboardData } = useDashboardData();
   const { setTestNetHiddenFlag } = useNetworkSwitcher();
+  const { goToPage, ROUTES } = useRouting();
 
   const onGoToDashboardClick = async () => {
     await clearWizardData();
     await setFinishedWizard(true);
     await loadDashboardData();
+    goToPage(ROUTES.DASHBOARD);
   };
 
   useEffect(() => {

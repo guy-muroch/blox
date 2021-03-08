@@ -1,25 +1,26 @@
-import {call, put, take, takeLatest} from 'redux-saga/effects';
-import {notification} from 'antd';
 import Web3 from 'web3';
-
-import {LOAD_ACCOUNTS} from './actionTypes';
-import * as actions from './actions';
-import {updateAccountStatus} from '../Wizard/actions';
-import AccountService from '../../backend/services/account/account.service';
+import { notification } from 'antd';
+import { call, put, take, takeLatest } from 'redux-saga/effects';
+import config from '~app/backend/common/config';
+import * as actions from '~app/components/Accounts/actions';
+import { updateAccountStatus } from '~app/components/Wizard/actions';
+import { LOAD_ACCOUNTS } from '~app/components/Accounts/actionTypes';
+import AccountService from '~app/backend/services/account/account.service';
 import {
   UPDATE_ACCOUNT_STATUS,
   UPDATE_ACCOUNT_STATUS_FAILURE,
   UPDATE_ACCOUNT_STATUS_SUCCESS
-} from '../Wizard/actionTypes';
-import config from '../../backend/common/config';
+} from '~app/components/Wizard/actionTypes';
 
 function* onLoadingSuccess(response: Record<string, any>) {
   yield put(actions.loadAccountsSuccess(response));
 }
 
-function* onLoadingFailure(error: Record<string, any>) {
-  notification.error({message: 'Error', description: error.message});
-  yield put(actions.loadAccountsFailure(error.response.data));
+function* onLoadingFailure(error: Record<string, any>, silent: boolean = false) {
+  if (!silent) {
+    notification.error({message: 'Error', description: error.message});
+  }
+  yield put(actions.loadAccountsFailure(error.response?.data || error));
 }
 
 function* onGetTxReceiptSuccess(id, txHash, txReceipt) {
@@ -64,7 +65,7 @@ export function* startLoadingAccounts() {
     const withUpdate = yield call([accountService, 'get']);
     yield call(onLoadingSuccess, withUpdate);
   } catch (error) {
-    yield error && call(onLoadingFailure, error);
+    yield error && call(onLoadingFailure, error, !error.response?.data);
   }
 }
 

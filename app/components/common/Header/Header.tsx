@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { ClickAwayListener } from '@material-ui/core';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { logout } from '~app/components/CallbackPage/actions';
+import useRouting from '~app/common/hooks/useRouting';
 import HeaderLink from '~app/components/common/Header/HeaderLink';
-import { getUserData } from '~app/components/CallbackPage/selectors';
 import { ProfileMenu } from '~app/components/common/Header/components';
 import { getWizardFinishedStatus } from '~app/components/Wizard/selectors';
+import { logout } from '~app/components/Login/components/CallbackPage/actions';
+import { getUserData } from '~app/components/Login/components/CallbackPage/selectors';
 import AddValidatorButtonWrapper from '~app/components/common/Header/components/AddValidatorButtonWrapper';
-
 import imageSrc from 'assets/images/staking-logo.svg';
 
 const Wrapper = styled.div`
@@ -74,9 +74,10 @@ const AddValidatorButton = styled.button`
 `;
 
 const Header = (props: Props) => {
-  const { withMenu, profile, logoutUser, location, isDashboard, hideProfileMenu } = props;
+  const { withMenu, profile, logoutUser, hideProfileMenu } = props;
   const [isProfileMenuOpen, toggleProfileMenuOpenDisplay] = useState(false);
-  const showAddValidatorButton = location.pathname === '/' && isDashboard;
+  const { isOnPage, ROUTES } = useRouting();
+  const showAddValidatorButton = isOnPage(ROUTES.DASHBOARD);
   const hideTopNav = true;
 
   const handleProfileClickAway = () => {
@@ -117,7 +118,6 @@ interface Props extends RouteComponentProps {
   withMenu: boolean;
   profile: Record<string, any>;
   logoutUser: () => void;
-  isDashboard: boolean;
   hideProfileMenu?: boolean;
 }
 

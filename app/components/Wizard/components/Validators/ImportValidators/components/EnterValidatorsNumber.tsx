@@ -1,13 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/dist/styled-components.esm';
-
-import { getNetworkForImport } from './helpers';
-import { Paragraph, Warning } from '../../../common';
-import { ArrowButton } from '../../../../../../common/components';
-import BloxTooltip from '../../../../../../common/components/Tooltip';
-import Connection from '../../../../../../backend/common/store-manager/connection';
-import KeyManagerService from '../../../../../../backend/services/key-manager/key-manager.service';
-
+import { ArrowButton } from '~app/common/components';
+import BloxTooltip from '~app/common/components/Tooltip';
+import Connection from '~app/backend/common/store-manager/connection';
+import { Paragraph, Warning } from '~app/components/Wizard/components/common';
+import KeyManagerService from '~app/backend/services/key-manager/key-manager.service';
+import { getNetworkForImport } from '~app/components/Wizard/components/Validators/ImportValidators/components/helpers';
 import InfoImage from '../../../../../../assets/images/info.svg';
 
 const Image = styled.img`

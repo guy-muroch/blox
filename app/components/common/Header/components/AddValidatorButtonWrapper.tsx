@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import useRouting from '~app/common/hooks/useRouting';
 import { MODAL_TYPES } from '~app/components/Dashboard/constants';
 import * as actionsFromWizard from '~app/components/Wizard/actions';
 import Connection from '~app/backend/common/store-manager/connection';
 import * as actionsFromAccounts from '~app/components/Accounts/actions';
 import * as actionsFromDashboard from '~app/components/Dashboard/actions';
+import useProcessRunner from '~app/components/ProcessRunner/useProcessRunner';
 import { getLatestVersion } from '~app/components/KeyVaultManagement/selectors';
 import usePasswordHandler from '~app/components/PasswordHandler/usePasswordHandler';
 import { getWalletStatus, getWalletVersion } from '~app/components/Wizard/selectors';
@@ -20,8 +22,10 @@ const AddValidatorButtonWrapper = (props: AddValidatorButtonWrapperProps) => {
   const { setModalDisplay, clearModalDisplayData } = dashboardActions;
   const { setAddAnotherAccount } = accountsActions;
   const { setFinishedWizard, setOpenedWizard } = wizardActions;
-  const { checkIfPasswordIsNeeded } = usePasswordHandler();
   const walletNeedsUpdate = keyvaultCurrentVersion !== keyvaultLatestVersion;
+  const { checkIfPasswordIsNeeded } = usePasswordHandler();
+  const { goToPage, ROUTES } = useRouting();
+  const { clearProcessState, isLoading, isDone, error } = useProcessRunner();
 
   /**
    * Open create/import validator wizard
@@ -31,6 +35,7 @@ const AddValidatorButtonWrapper = (props: AddValidatorButtonWrapperProps) => {
     setFinishedWizard(false);
     setOpenedWizard(true);
     clearModalDisplayData();
+    goToPage(ROUTES.WIZARD);
   };
 
   /**
@@ -99,6 +104,10 @@ const AddValidatorButtonWrapper = (props: AddValidatorButtonWrapperProps) => {
    * Root function of calling import/create validator logic
    */
   const onAddValidatorClick = async () => {
+    if ((!isLoading && isDone) || error) {
+      clearProcessState();
+    }
+
     if (walletNeedsUpdate) {
       return showPasswordProtectedDialog(updateKeyVaultDialogActivator);
     }

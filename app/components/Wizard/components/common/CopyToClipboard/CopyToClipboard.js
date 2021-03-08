@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Lottie from 'lottie-web-react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { CopyToClipboardIcon } from '..';
-
-import animationData from '../../../../../assets/animations/pulsar.json';
+import animationData from '~app/assets/animations/pulsar.json';
+import { CopyToClipboardIcon } from '~app/components/Wizard/components/common';
 
 const Wrapper = styled.div`
   width: 566px;
@@ -24,8 +23,8 @@ const Textarea = styled.textarea`
   padding: 32px 22px;
   position: absolute;
   z-index: 1;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   color: ${({ theme }) => theme.gray600};
   font-size: 11px;
   font-weight: 500;
