@@ -10,6 +10,7 @@ import { getAddAnotherAccount } from '~app/components/Accounts/selectors';
 import useDashboardData from '~app/components/Dashboard/useDashboardData';
 import { getWizardFinishedStatus } from '~app/components/Wizard/selectors';
 import { contentAnimation } from '~app/components/Wizard/components/common';
+import useProcessRunner from '~app/components/ProcessRunner/useProcessRunner';
 import Navigation from '~app/components/Wizard/components/common/Template/Navigation';
 
 const Wrapper = styled.div`
@@ -68,6 +69,7 @@ const Template = (props: Props) => {
   const { clearAccountsData } = accountsActions;
   const { setFinishedWizard, clearWizardData } = wizardActions;
   const { goToPage, ROUTES } = useRouting();
+  const { isLoading, isDone, processData } = useProcessRunner();
 
   /**
    * Close button is show in a template according to conditions:
@@ -81,11 +83,13 @@ const Template = (props: Props) => {
   const { loadDashboardData } = useDashboardData();
 
   const onCloseClick = async () => {
-    await clearAccountsData();
-    await clearWizardData();
-    await setFinishedWizard(true);
-    await loadDashboardData();
-    goToPage(ROUTES.DASHBOARD);
+    if (!isLoading && isDone && processData) {
+      await clearAccountsData();
+      await clearWizardData();
+      await setFinishedWizard(true);
+      await loadDashboardData();
+    }
+    await goToPage(ROUTES.DASHBOARD);
   };
 
   const onBackClick = () => {
