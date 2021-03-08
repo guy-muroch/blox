@@ -1,11 +1,11 @@
-export const getModalDisplayStatus = (state) => state.dashboard.show;
+export const getModalDisplayStatus = (state) => state.dashboard.dialog.show;
 
-export const getModalType = (state) => state.dashboard.type;
+export const getModalType = (state) => state.dashboard.dialog.type;
 
-export const getModalText = (state) => state.dashboard.text;
+export const getModalText = (state) => state.dashboard.dialog.text;
 
-export const getModalOnSuccess = (state) => state.dashboard.onSuccess;
+export const getModalOnSuccess = (state) => state.dashboard.dialog.onSuccess;
 
-export const getModalData = (state) => state.dashboard;
+export const getModalData = (state) => state.dashboard.dialog;
 
 export const getTestNetIsHiddenFlag = (state) => state.dashboard.testNet?.isHidden;

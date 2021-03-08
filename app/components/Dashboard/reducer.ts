@@ -1,20 +1,25 @@
 import produce from 'immer';
-import * as actionTypes from './actionTypes';
+import * as actionTypes from '~app/components/Dashboard/actionTypes';
 
 const initialState = {
   testNet: {
     isHidden: false
   },
-  type: '',
-  show: false,
-  text: '',
-  onSuccess: null,
-  confirmation: {
-    title: '',
-    confirmButtonText: '',
-    cancelButtonText: '',
-    onConfirmButtonClick: null,
-    onCancelButtonClick: null
+  dialog: {
+    // Usual modal dialog attributes
+    type: '',
+    show: false,
+    text: '',
+    onSuccess: null,
+
+    // Attributes for confirmation dialog
+    confirmation: {
+      title: '',
+      confirmButtonText: '',
+      cancelButtonText: '',
+      onConfirmButtonClick: null,
+      onCancelButtonClick: null
+    }
   }
 };
 
@@ -22,18 +27,18 @@ const initialState = {
 const dashboardReducer = (state = initialState, action: Action) => produce(state, (draft) => {
   switch (action.type) {
     case actionTypes.SET_MODAL_DISPLAY:
-      draft.type = action.payload.type;
-      draft.show = action.payload.show;
-      draft.text = action.payload.text;
-      draft.confirmation = action.payload.confirmation;
-      draft.onSuccess = draft.confirmation?.onConfirmButtonClick || action.payload.onSuccess;
+      draft.dialog = {
+        type: action.payload.type,
+        show: action.payload.show,
+        text: action.payload.text,
+        confirmation: action.payload.confirmation ?? initialState.dialog.confirmation,
+        onSuccess: action.payload.confirmation?.onConfirmButtonClick
+          || action.payload.onSuccess
+          || null
+      };
       break;
     case actionTypes.CLEAR_MODAL_DISPLAY_DATA:
-      draft.type = initialState.type;
-      draft.show = initialState.show;
-      draft.text = initialState.text;
-      draft.onSuccess = initialState.onSuccess;
-      draft.confirmation = initialState.confirmation;
+      draft.dialog = initialState.dialog;
       break;
     case actionTypes.SET_TESTNET_FLAG:
       draft.testNet.isHidden = action.payload.testNet?.isHidden || initialState.testNet.isHidden;
