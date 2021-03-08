@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import {
-  Switch, Route, useRouteMatch, Redirect
+  Switch, Route, Redirect
 } from 'react-router-dom';
 import { Loader } from '~app/common/components';
 import Wizard from '~app/components/Wizard/Wizard';
 import wizardSaga from '~app/components/Wizard/saga';
+import useRouting from '~app/common/hooks/useRouting';
 import { useInjectSaga } from '~app/utils/injectSaga';
 import Header from '~app/components/common/Header/Header';
 import Dashboard from '~app/components/Dashboard/Dashboard';
@@ -58,7 +59,7 @@ const EntryPage = (props: Props) => {
   const { accounts, isLoadingAccounts } = useAccounts();
   const { bloxLiveNeedsUpdate, isLoadingBloxLiveVersion } = useVersions();
   const { eventLogs, isLoadingEventLogs } = useEventLogs();
-  const { path } = useRouteMatch();
+  const { ROUTES } = useRouting();
 
   useEffect(() => {
     const inForgotPasswordProcess = Connection.db().get('inForgotPasswordProcess');
@@ -109,16 +110,16 @@ const EntryPage = (props: Props) => {
     <Switch>
       <Route
         exact
-        path={`${path}`}
+        path={ROUTES.LOGGED_IN}
         render={() => {
           if (showWizard) {
-            return <Redirect to={`${path}/wizard`} />;
+            return <Redirect to={ROUTES.WIZARD} />;
           }
-          return <Redirect to={`${path}/dashboard`} />;
+          return <Redirect to={ROUTES.DASHBOARD} />;
         }}
       />
       <Route
-        path={`${path}/dashboard`}
+        path={ROUTES.DASHBOARD}
         render={() => (
           <>
             <Header withMenu />
@@ -131,7 +132,7 @@ const EntryPage = (props: Props) => {
         )}
       />
       <Route
-        path={`${path}/wizard`}
+        path={ROUTES.WIZARD}
         render={() => (
           <WizardWrapper>
             <Wizard {...otherProps} />
@@ -139,7 +140,7 @@ const EntryPage = (props: Props) => {
         )}
       />
       <Route
-        path={`${path}/settings`}
+        path={ROUTES.SETTINGS}
         render={(renderProps) => (
           <SettingsRoute
             renderProps={{ ...renderProps, ...otherProps }}

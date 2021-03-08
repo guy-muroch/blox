@@ -1,14 +1,16 @@
 import React from 'react';
-import { Switch, Route, withRouter, useRouteMatch } from 'react-router-dom';
+import { Switch, Route, withRouter } from 'react-router-dom';
 import Login from '~app/components/Login';
+import useRouting from '~app/common/hooks/useRouting';
 import CallbackPage from '~app/components/Login/components/CallbackPage';
 
 const NotLoggedIn = () => {
-  const { path } = useRouteMatch();
+  const { ROUTES } = useRouting();
+
   return (
     <Switch>
-      <Route exact path={`${path}`} component={Login} />
-      <Route path={`${path}/callback`} component={CallbackPage} />
+      <Route exact path={ROUTES.LOGIN} component={Login} />
+      <Route path={ROUTES.LOGIN_CALLBACK} component={CallbackPage} />
     </Switch>
   );
 };

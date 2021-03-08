@@ -2,7 +2,6 @@ import { useHistory, useRouteMatch } from 'react-router-dom';
 
 const useRouting = () => {
   const history = useHistory();
-  const { path } = useRouteMatch();
 
   /**
    * Go to specified page and call callback when done
@@ -22,6 +21,7 @@ const useRouting = () => {
    * Get current page
    */
   const getCurrentPage = (): string => {
+    const { path } = useRouteMatch();
     return path;
   };
 
@@ -36,18 +36,24 @@ const useRouting = () => {
     return String(currentPage) === page;
   };
 
+  const ROUTES: any = {
+    ROOT: '/',
+    LOGIN: '/login',
+    LOGGED_IN: '/logged-in',
+    NOT_FOUND: ''
+  };
+
+  ROUTES.WIZARD = `${ROUTES.LOGGED_IN}/wizard`;
+  ROUTES.SETTINGS = `${ROUTES.LOGGED_IN}/settings`;
+  ROUTES.DASHBOARD = `${ROUTES.LOGGED_IN}/dashboard`;
+  ROUTES.TEST_PAGE = `${ROUTES.LOGGED_IN}/test`;
+  ROUTES.LOGIN_CALLBACK = `${ROUTES.LOGIN}/callback`;
+
   return {
     goToPage,
     getCurrentPage,
     isOnPage,
-
-    // Supported routes
-    ROUTES: {
-      DASHBOARD: '/logged-in/dashboard',
-      WIZARD: '/logged-in/wizard',
-      SETTINGS: '/logged-in/settings',
-      LOGIN: '/login'
-    }
+    ROUTES
   };
 };
 

@@ -2,10 +2,11 @@ import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import Button from './Button';
-import MenuButton from './MenuButton';
-import Connection from 'backend/common/store-manager/connection';
-import { openLocalDirectory } from 'common/service';
+import useRouting from '~app/common/hooks/useRouting';
+import { openLocalDirectory } from '~app/common/service';
+import Connection from '~app/backend/common/store-manager/connection';
+import Button from '~app/components/common/Header/components/ProfileMenu/Button';
+import MenuButton from '~app/components/common/Header/components/ProfileMenu/MenuButton';
 
 const Wrapper = styled.div`
   position: relative;
@@ -20,20 +21,20 @@ const Menu = styled.div`
   background: #ffffff;
   position: absolute;
   top: 32px;
-  right: 0px;
-  box-shadow: 0px 2px 4px 0px ${({ theme }) => theme.gray80015};
+  right: 0;
+  box-shadow: 0 2px 4px 0 ${({ theme }) => theme.gray80015};
   border-radius: 4px;
 `;
 
 const Image = styled.img`
   width: 26px;
-  height: 26;
+  height: 26px;
   border-radius: 50%;
 `;
 
 const MenuItem = styled.div`
   width: 100%;
-  padding: 12px 0px;
+  padding: 12px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -70,6 +71,8 @@ const ProfileMenu = forwardRef(
     };
 
     const { email, name, picture } = profile;
+    const { ROUTES } = useRouting();
+
     return (
       <Wrapper ref={ref}>
         <Button isOpen={isOpen} onClick={() => toggleOpen(!isOpen)}>
@@ -84,7 +87,7 @@ const ProfileMenu = forwardRef(
             <Separator />
             {canViewTestPage() && (
               <MenuItem>
-                <Link to={'/logged-in/test'} style={{marginLeft: '16px'}}>Test page</Link>
+                <Link to={ROUTES.TEST_PAGE} style={{marginLeft: '16px'}}>Test page</Link>
               </MenuItem>
             )}
             <MenuItem>

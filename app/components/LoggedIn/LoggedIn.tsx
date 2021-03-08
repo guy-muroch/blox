@@ -5,14 +5,15 @@ import {
   Switch,
   Route,
   withRouter,
-  RouteComponentProps,
-  useRouteMatch } from 'react-router-dom';
+  RouteComponentProps
+} from 'react-router-dom';
 import TestPage from '~app/components/Test';
 import { Loader } from '~app/common/components';
 import userSaga from '~app/components/User/saga';
 import EntryPage from '~app/components/EntryPage';
 import { onWindowClose } from '~app/common/service';
 import wizardSaga from '~app/components/Wizard/saga';
+import useRouting from '~app/common/hooks/useRouting';
 import { useInjectSaga } from '~app/utils/injectSaga';
 import accountsSaga from '~app/components/Accounts/saga';
 import webSocketSaga from '~app/components/WebSockets/saga';
@@ -68,7 +69,7 @@ const LoggedIn = (props: Props) => {
   const { loadUserInfo } = userActions;
 
   const [isFinishLoadingAll, toggleFinishLoadingAll] = useState(false);
-  const { path } = useRouteMatch();
+  const { ROUTES } = useRouting();
 
   useEffect(() => {
     callLoadWallet();
@@ -112,8 +113,8 @@ const LoggedIn = (props: Props) => {
   return (
     <>
       <Switch>
-        <Route exact path={`${path}/test`} component={TestPage} />
-        <Route path={`${path}`} component={RootPage} />
+        <Route exact path={ROUTES.TEST_PAGE} component={TestPage} />
+        <Route path={ROUTES.LOGGED_IN} component={RootPage} />
       </Switch>
       <ModalsManager />
     </>

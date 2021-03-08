@@ -13,6 +13,7 @@ import userSaga from '~app/components/User/saga';
 import { getOsVersion } from '~app/utils/service';
 import { useInjectSaga } from '~app/utils/injectSaga';
 import NotLoggedIn from '~app/components/NotLoggedIn';
+import useRouting from '~app/common/hooks/useRouting';
 import { Log } from '~app/backend/common/logger/logger';
 import NotFoundPage from '~app/components/NotFoundPage';
 import GlobalStyle from '~app/common/styles/global-styles';
@@ -37,19 +38,21 @@ type AppRouterProps = {
 };
 
 const AppRouter = ({ isLoggedIn }: AppRouterProps) => {
+  const { ROUTES } = useRouting();
+
   return (
     <Switch>
-      <Route exact path="/" render={() => {
-        const redirectUrl = isLoggedIn ? '/logged-in' : '/login';
+      <Route exact path={ROUTES.ROOT} render={() => {
+        const redirectUrl = isLoggedIn ? ROUTES.LOGGED_IN : ROUTES.LOGIN;
         if (isLoggedIn && logoutNotification.key) {
           notification.close(logoutNotification.key);
           logoutNotification.key = '';
         }
         return <Redirect to={redirectUrl} />;
       }} />
-      <Route path="/logged-in" component={LoggedIn} />
-      <Route path="/login" component={NotLoggedIn} />
-      <Route path="" component={NotFoundPage} />
+      <Route path={ROUTES.LOGGED_IN} component={LoggedIn} />
+      <Route path={ROUTES.LOGIN} component={NotLoggedIn} />
+      <Route path={ROUTES.NOT_FOUND} component={NotFoundPage} />
     </Switch>
   );
 };
