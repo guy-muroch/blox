@@ -6,41 +6,13 @@ import useRouting from '~app/common/hooks/useRouting';
 import { openLocalDirectory } from '~app/common/service';
 import Connection from '~app/backend/common/store-manager/connection';
 import Button from '~app/components/common/Header/components/ProfileMenu/Button';
-import MenuButton from '~app/components/common/Header/components/ProfileMenu/MenuButton';
-
-const Wrapper = styled.div`
-  position: relative;
-  margin-left: 15px;
-`;
-
-const Menu = styled.div`
-  width: 240px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background: #ffffff;
-  position: absolute;
-  top: 32px;
-  right: 0;
-  box-shadow: 0 2px 4px 0 ${({ theme }) => theme.gray80015};
-  border-radius: 4px;
-`;
+import { Menu, MenuWrapper, MenuItem, MenuItemSeparator, MenuButton } from '~app/common/components/Menu';
+import {Icon} from "../../../../../common/components";
 
 const Image = styled.img`
   width: 26px;
   height: 26px;
   border-radius: 50%;
-`;
-
-const MenuItem = styled.div`
-  width: 100%;
-  padding: 12px 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
 `;
 
 const Name = styled.span`
@@ -51,12 +23,6 @@ const Name = styled.span`
 const Email = styled.span`
   color: ${({ theme }) => theme.gray400};
   padding: 4px 16px;
-`;
-
-const Separator = styled.div`
-  width: 100%;
-  height: 1px;
-  background-color: ${({ theme }) => theme.gray300};
 `;
 
 const ProfileMenu = forwardRef(
@@ -72,33 +38,46 @@ const ProfileMenu = forwardRef(
 
     const { email, name, picture } = profile;
     const { ROUTES } = useRouting();
+    const testPageIconStyle = {
+      display: 'flex',
+      float: 'left',
+      marginRight: 5
+    };
+    const menuButtonTextStyle = { display: 'flex' };
 
     return (
-      <Wrapper ref={ref}>
+      <MenuWrapper ref={ref}>
         <Button isOpen={isOpen} onClick={() => toggleOpen(!isOpen)}>
           <Image src={picture} />
         </Button>
         {isOpen && (
           <Menu>
-            <MenuItem>
+            <MenuItem style={{ paddingTop: 10 }}>
               <Name>{name}</Name>
               <Email>{email}</Email>
             </MenuItem>
-            <Separator />
+            <MenuItemSeparator />
             {canViewTestPage() && (
               <MenuItem>
-                <Link to={ROUTES.TEST_PAGE} style={{marginLeft: '16px'}}>Test page</Link>
+                <MenuButton>
+                  <Link to={ROUTES.TEST_PAGE}>
+                    <Icon name="blox-icon-60-x-60" color="primary600" fontSize="18px" style={testPageIconStyle} />
+                    <span style={menuButtonTextStyle}>Test page</span>
+                  </Link>
+                </MenuButton>
               </MenuItem>
             )}
             <MenuItem>
-              <MenuButton onClick={openLogsFolder}>Open logs folder</MenuButton>
+              <MenuButton onClick={openLogsFolder}>
+                Open Logs Folder
+              </MenuButton>
             </MenuItem>
             <MenuItem>
               <MenuButton onClick={logout}>Log Out</MenuButton>
             </MenuItem>
           </Menu>
         )}
-      </Wrapper>
+      </MenuWrapper>
     );
   },
 );

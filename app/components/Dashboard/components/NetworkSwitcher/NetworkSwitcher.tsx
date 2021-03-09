@@ -1,113 +1,92 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { grey, blue } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
-import { Select, MenuItem, FormControl } from '@material-ui/core';
+import { blue, grey } from '@material-ui/core/colors';
+import { ClickAwayListener } from '@material-ui/core';
+import { Icon } from '~app/common/components';
 import config from '~app/backend/common/config';
 import BaseStore from '~app/backend/common/store-manager/base-store';
+import { Menu, MenuWrapper, MenuItem, MenuButton } from '~app/common/components/Menu';
 import useNetworkSwitcher from '~app/components/Dashboard/components/NetworkSwitcher/useNetworkSwitcher';
 
 const NetworkSwitcherWrapper = styled.div`
   text-align: right;
   color: ${({theme}) => theme.gray600};
   margin-top: -30px;
+  font-size: 12px;
+`;
+
+const NetworkSwitcherButton = styled.div`
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 7px;
 `;
 
 const useStyles = makeStyles(() => ({
-  formControl: {
-    border: 0,
-    '& .MuiSelect-select:hover': {
-      color: blue['900']
-    },
-    '& .Mui-focused': {
-      '& .MuiSelect-select': {
+  menu: {
+    zIndex: 1,
+    width: 150
+  },
+  menuItem: {
+    '& > a': {
+      color: grey['600'],
+      '&:hover': {
         color: blue['900']
       }
     },
-    '& .MuiSelect-select': {
-      '&:focus': {
-        backgroundColor: 'transparent'
-      },
-      color: grey['600'],
-      fontSize: 12
-    }
-  },
-  select: {
-    '&:before, &:after, &:focus': {
-      border: 0,
-    },
-    '&:hover:not(.Mui-disabled):before, &:active:not(.Mui-disabled):before, &:focus:not(.Mui-disabled):before': {
-      border: 0,
-    }
-  },
-  menuItem: {
     fontSize: 14,
-    '&:hover': {
-      color: blue['900']
-    },
-    '&.Mui-selected': {
-      color: blue['900'],
-      backgroundColor: 'transparent'
-    }
+  },
+  menuIcon: {
+    display: 'inline',
+    marginLeft: 3,
+    float: 'right'
   }
 }));
 
 const testNetConfigKey = config.FLAGS.DASHBOARD.TESTNET_HIDDEN;
-const baseStore = new BaseStore();
+const baseStore: BaseStore = new BaseStore();
 
 const NetworkSwitcher = () => {
   const isConfigHideTestNet = baseStore.get(testNetConfigKey);
   const [isTestNetHidden, setTestNetHidden] = useState(Boolean(isConfigHideTestNet));
-  const [selectValue, setSelectValue] = useState(isTestNetHidden ? 1 : 2);
+  const [isMenuOpened, toggleMenuOpen] = useState(false);
   const { setTestNetHiddenFlag } = useNetworkSwitcher();
   const styles = useStyles();
 
-  const handleChange = (event) => {
-    const isHidden = event.target.value === 1;
-    setSelectValue(isHidden ? 1 : 2);
-    setTestNetHidden(isHidden);
-  };
-
   useEffect(() => {
     setTestNetHiddenFlag(isTestNetHidden);
-  }, [isTestNetHidden, selectValue]);
+  }, [isTestNetHidden]);
+
+  const onMenuItemClick = (value: boolean) => {
+    toggleMenuOpen(false);
+    setTestNetHidden(value);
+  };
 
   return (
     <NetworkSwitcherWrapper>
-      <FormControl className={styles.formControl}>
-        <Select
-          labelId="network-switcher-label"
-          id="network-switcher-select"
-          value={selectValue}
-          onChange={handleChange}
-          className={styles.select}
-          MenuProps={{
-            anchorOrigin: {
-              vertical: 'bottom',
-              horizontal: 'right'
-            },
-            transformOrigin: {
-              vertical: 'top',
-              horizontal: 'right'
-            },
-            getContentAnchorEl: null
-          }}
-        >
-          <MenuItem
-            className={styles.menuItem}
-            value={1}
-          >
-            Mainnet Network
-          </MenuItem>
-          <MenuItem
-            className={styles.menuItem}
-            value={2}
-          >
-            Testnet Network
-          </MenuItem>
-        </Select>
-      </FormControl>
+      <ClickAwayListener onClickAway={() => toggleMenuOpen(false)}>
+        <MenuWrapper style={{ display: 'inline-block' }}>
+          <NetworkSwitcherButton onClick={() => toggleMenuOpen(!isMenuOpened)}>
+            {isTestNetHidden ? 'Mainnet Network' : 'Testnet Network'}
+            <Icon color={grey[600]} name="angle-down" fontSize="15px" className={styles.menuIcon} />
+          </NetworkSwitcherButton>
+          {isMenuOpened && (
+            <Menu className={styles.menu}>
+              <MenuItem className={styles.menuItem}>
+                <MenuButton onClick={() => { onMenuItemClick(true); }}>
+                  Mainnet Network
+                </MenuButton>
+              </MenuItem>
+              <MenuItem className={styles.menuItem}>
+                <MenuButton onClick={() => { onMenuItemClick(false); }}>
+                  Testnet Network
+                </MenuButton>
+              </MenuItem>
+            </Menu>
+          )}
+        </MenuWrapper>
+      </ClickAwayListener>
     </NetworkSwitcherWrapper>
   );
 };

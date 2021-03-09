@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Button = styled.div`
+const Button = styled.div<{ isOpen: boolean }>`
   width: 30px;
   height: 30px;
   display: flex;
