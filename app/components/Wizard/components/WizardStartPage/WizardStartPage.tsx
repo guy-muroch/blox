@@ -19,7 +19,7 @@ import usePasswordHandler from '~app/components/PasswordHandler/usePasswordHandl
 import ButtonWithIcon from '~app/components/Wizard/components/WizardStartPage/ButtonWithIcon';
 import keyVaultImg from '../../assets/img-key-vault.svg';
 import mainNetImg from '../../assets/img-validator-main-net.svg';
-import bgImage from '../../../../../app/assets/images/bg_staking.jpg';
+import bgImage from '../../../../assets/images/bg_staking.jpg';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -80,12 +80,13 @@ const WizardStartPage = (props: Props) => {
 
     const hasWallet = wallet && (wallet.status === 'active' || wallet.status === 'offline');
     const hasSeed = Connection.db().exists('seed');
-    const storedUuid = Connection.db().get('uuid');
+    const finishedRecoveryOrInstallProcess = Connection.db().get('uuid');
     const isInRecoveryProcess = Connection.db().get('inRecoveryProcess');
-    const isPrimaryDevice = !!storedUuid && (storedUuid === userInfo.uuid);
+    const isPrimaryDevice = !!finishedRecoveryOrInstallProcess && (finishedRecoveryOrInstallProcess === userInfo.uuid);
 
     if (hasWallet) {
-      if (!storedUuid && !userInfo.uuid && accounts?.length > 0) {
+      // Has wallet but run on different device
+      if (!finishedRecoveryOrInstallProcess && !userInfo.uuid && accounts?.length > 0) {
         setModalDisplay({ show: true, type: MODAL_TYPES.DEVICE_SWITCH });
         return;
       }
@@ -93,31 +94,33 @@ const WizardStartPage = (props: Props) => {
         setModalDisplay({ show: true, type: MODAL_TYPES.DEVICE_SWITCH });
         return;
       }
+
+      // Having saved seed in the app
       if (hasSeed) {
+        // Have accounts and not all of them deposited
+        // And one of them needs deposit (opened deposit page)
+        if (accounts?.length && !allAccountsDeposited(accounts) && isDepositNeeded) {
+          return redirectToDepositPage();
+        }
+
+        // Clicked on Add Validator button
         if (addAnotherAccount) {
-          redirectToCreateAccount();
-          return;
+          return redirectToCreateAccount();
         }
-        if (accounts?.length && !allAccountsDeposited(accounts)) {
-          if (isDepositNeeded) {
-            redirectToDepositPage();
-            return;
-          }
-          goToPage(ROUTES.DASHBOARD);
-          return;
-        }
+
+        // Not finished initial installation (no accounts when there's seed)
         if (!accounts?.length) {
-          setStep2Status(true);
-          console.warn('setStep2Status#1');
-          return;
+          return setStep2Status(true);
         }
-        console.warn('goToPage(ROUTES.DASHBOARD)#1');
-        goToPage(ROUTES.DASHBOARD);
-        return;
       }
-      if (storedUuid && accounts?.length === 0) {
-        redirectToPassPhrasePage();
+
+      // No seed and just installed or recovered without accounts
+      if (finishedRecoveryOrInstallProcess && accounts?.length === 0) {
+        return redirectToImportOrGenerateSeed();
       }
+
+      // Nothing to do more in wizard -> go to dash
+      goToPage(ROUTES.DASHBOARD);
     }
   }, [isLoading]);
 
@@ -135,7 +138,7 @@ const WizardStartPage = (props: Props) => {
     }
   };
 
-  const redirectToPassPhrasePage = () => {
+  const redirectToImportOrGenerateSeed = () => {
     setPage(config.WIZARD_PAGES.WALLET.IMPORT_OR_GENERATE_SEED);
   };
 
