@@ -27,7 +27,7 @@ export default merge.smart(baseConfig, {
 
   output: {
     path: path.join(__dirname, '..', 'app/dist'),
-    publicPath: '../dist/',
+    publicPath: './dist/',
     filename: 'renderer.prod.js',
   },
 
@@ -124,6 +124,7 @@ export default merge.smart(baseConfig, {
           options: {
             limit: 10000,
             mimetype: 'application/font-woff',
+            name: 'assets/fonts/[name]__[hash:base64:5].[ext]'
           },
         },
       },
@@ -135,6 +136,7 @@ export default merge.smart(baseConfig, {
           options: {
             limit: 10000,
             mimetype: 'application/font-woff',
+            name: 'assets/fonts/[name]__[hash:base64:5].[ext]'
           },
         },
       },
@@ -146,13 +148,19 @@ export default merge.smart(baseConfig, {
           options: {
             limit: 10000,
             mimetype: 'application/octet-stream',
+            name: 'assets/fonts/[name]__[hash:base64:5].[ext]'
           },
         },
       },
       // EOT Font
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        use: 'file-loader',
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: 'assets/fonts/[name]__[hash:base64:5].[ext]'
+          }
+        },
       },
       // SVG Font
       {
@@ -162,13 +170,19 @@ export default merge.smart(baseConfig, {
           options: {
             limit: 30000,
             mimetype: 'image/svg+xml',
+            name: 'assets/images/[name]__[hash:base64:5].[ext]'
           },
         },
       },
       // Common Image Formats
       {
         test: /\.(?:ico|gif|png|jpg|jpeg|webp)$/,
-        use: 'url-loader',
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: 'assets/images/[name]__[hash:base64:5].[ext]'
+          }
+        },
       },
     ],
   },
