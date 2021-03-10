@@ -122,7 +122,7 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10000,
+            limit: false,
             mimetype: 'application/font-woff',
             name: 'assets/fonts/[name]__[hash:base64:5].[ext]'
           },
@@ -134,7 +134,7 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10000,
+            limit: false,
             mimetype: 'application/font-woff',
             name: 'assets/fonts/[name]__[hash:base64:5].[ext]'
           },
@@ -146,7 +146,7 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10000,
+            limit: false,
             mimetype: 'application/octet-stream',
             name: 'assets/fonts/[name]__[hash:base64:5].[ext]'
           },
@@ -168,7 +168,7 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 30000,
+            limit: false,
             mimetype: 'image/svg+xml',
             name: 'assets/images/[name]__[hash:base64:5].[ext]'
           },
