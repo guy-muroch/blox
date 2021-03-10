@@ -4,12 +4,17 @@ import axios, { AxiosError } from 'axios';
 import { Catch } from '~app/backend/decorators';
 import config from '~app/backend/common/config';
 import { Log } from '~app/backend/common/logger/logger';
+import BaseStore from '~app/backend/common/store-manager/base-store';
+import Connection from '~app/backend/common/store-manager/connection';
 
 export default class Http {
   baseUrl?: string;
   protected instance: any;
   protected logger: Log;
   private static eventEmitter: EventEmitter;
+  private baseStore: BaseStore;
+  private static testHeaders: any;
+  private static featureSessionExpiredListenersExists: boolean;
   public static EVENTS = {
     UNAUTHORIZED: 'http/error/unauthorized'
   };
@@ -20,10 +25,39 @@ export default class Http {
   constructor() {
     this.logger = new Log('http');
     this.instance = axios.create();
+    this.baseStore = new BaseStore();
 
     Http.initEventEmitter();
     this.initRetryHandler();
     this.initUnauthorizedHandler();
+    this.testLoginExpired();
+  }
+
+  /**
+   * Trigger token to be expired:
+   *    window.dispatchEvent(new CustomEvent('expire-session'))
+   *
+   * Trigger token to not be expired:
+   *    window.dispatchEvent(new CustomEvent('un-expire-session'))
+   */
+  private testLoginExpired() {
+    if (!this.baseStore.get('feature:session-expired:test')) {
+      return;
+    }
+    if (Http.featureSessionExpiredListenersExists) {
+      return;
+    }
+    window.addEventListener('expire-session', () => {
+      Http.testHeaders = {
+        'Authorization': `Bearer ${Connection.db().get('authToken')}-CORRUPTED!`
+      };
+      console.warn('❌ ❌ ❌ BEARER TOKEN IS EXPIRED NOW');
+    });
+    window.addEventListener('un-expire-session', () => {
+      Http.testHeaders = {};
+      console.warn('✅ ✅ ✅ BEARER TOKEN NOW CLEANED UP');
+    });
+    Http.featureSessionExpiredListenersExists = true;
   }
 
   /**
@@ -78,6 +112,7 @@ export default class Http {
         headers: {
           ...this.instance.defaults.headers.common,
           ...headers,
+          ...Http.testHeaders
         }
       });
       return fullResponse ? response : response.data;

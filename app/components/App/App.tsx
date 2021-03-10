@@ -125,11 +125,11 @@ const App = (props: AppProps) => {
           (obj) => {
             if ('token_id' in obj) {
               setSession(obj.token_id);
+              unauthorizedSubscribe();
             }
           },
           loginFailure
         );
-        unauthorizedSubscribe();
       });
     }
   }, [didInitApp, isLoggedIn, isLoading]);
