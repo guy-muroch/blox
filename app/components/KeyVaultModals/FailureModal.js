@@ -1,16 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { reportCrash } from '~app/components/common/service';
 import { Button, FailureIcon, ModalTemplate } from '~app/common/components';
 import { Title, Description, Wrapper } from '~app/common/components/ModalTemplate/components';
 import image from '../Wizard/assets/img-key-vault-inactive.svg';
 
+const LoaderText = styled.span`
+  padding-top: 5px;
+  font-size: 12px;
+  color: ${({ theme }) => theme.primary900};
+  min-height: 20px;
+  display: block;
+`;
+
 const FailureModal = ({ title, subtitle, onClick, onClose, customImage }) => {
-  const contactSupport = async () => {
+  const [showLoaderText, setShowLoaderText] = useState(false);
+  const onSendReportClick = async () => {
+    setShowLoaderText(true);
     await reportCrash();
-    await onClick();
+
+    setTimeout(async () => {
+      setShowLoaderText(false);
+      await onClick();
+    }, 3000);
   };
   const description = subtitle || 'Please contact our support team to resolve this issue.';
+
   return (
     <ModalTemplate onClose={onClose} image={customImage || image}>
       <Wrapper>
@@ -19,7 +35,15 @@ const FailureModal = ({ title, subtitle, onClick, onClose, customImage }) => {
       </Wrapper>
       <Description>{description}</Description>
       <Wrapper>
-        <Button onClick={contactSupport}>Contact Blox</Button> <br />
+        <Button
+          isDisabled={showLoaderText}
+          onClick={onSendReportClick}
+        >
+          Send Report
+        </Button>
+        <LoaderText>
+          {showLoaderText ? 'Sending error report...' : ''} &nbsp;
+        </LoaderText>
       </Wrapper>
     </ModalTemplate>
   );
