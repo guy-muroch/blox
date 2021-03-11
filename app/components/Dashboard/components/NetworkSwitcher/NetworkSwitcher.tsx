@@ -18,10 +18,11 @@ const NetworkSwitcherWrapper = styled.div`
 `;
 
 const NetworkSwitcherButton = styled.div<{ isActive }>`
+  font-size: 12px;
   cursor: pointer;
   display: inline-block;
   margin-top: 7px;
-  color: ${({ isActive }) => isActive ? blue[900] : grey['600']}
+  color: ${({ isActive }) => isActive ? blue[600] : grey['600']}
 `;
 
 const useStyles = makeStyles(() => ({
@@ -31,9 +32,9 @@ const useStyles = makeStyles(() => ({
   },
   menuItem: {
     '& > a': {
-      color: grey['600'],
+      color: grey[600],
       '&:hover': {
-        color: blue['900']
+        color: blue[600]
       }
     },
     fontSize: 14,
@@ -73,9 +74,9 @@ const NetworkSwitcher = () => {
             isActive={isMenuOpened}
           >
             {isTestNetHidden ? 'Mainnet Network' : 'Testnet Network'}
-            {isMenuOpened
-              ? <Icon color={isMenuOpened ? blue[900] : grey[600]} name="expand-more" fontSize="15px" className={styles.menuIcon} />
-              : <Icon color={isMenuOpened ? blue[900] : grey[600]} name="expand-less" fontSize="15px" className={styles.menuIcon} />
+            {!isMenuOpened
+              ? <Icon color={isMenuOpened ? blue[600] : grey[600]} name="expand-more" fontSize="15px" className={styles.menuIcon} />
+              : <Icon color={isMenuOpened ? blue[600] : grey[600]} name="expand-less" fontSize="15px" className={styles.menuIcon} />
             }
           </NetworkSwitcherButton>
           {isMenuOpened && (
