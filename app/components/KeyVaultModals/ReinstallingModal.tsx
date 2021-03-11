@@ -29,18 +29,18 @@ const getProcessName = (keyVaultCurrentVersion: string, keyVaultLatestVersion: s
     latest: new RegExp(versionRegexp).exec(keyVaultLatestVersion)?.groups ?? null
   };
   if (!parsedVersions.current?.major || !parsedVersions.latest?.major) {
-    return ProcessName.REINSTALL;
+    return ProcessName.UPGRADE;
   }
   if (parseInt(parsedVersions.latest.major, 10) > parseInt(parsedVersions.current.major, 10)) {
-    return ProcessName.UPGRADE;
-  }
-  if (!parsedVersions.current?.minor || !parsedVersions.latest?.minor) {
     return ProcessName.REINSTALL;
   }
-  if (parseInt(parsedVersions.latest.minor, 10) > parseInt(parsedVersions.current.minor, 10)) {
+  if (!parsedVersions.current?.minor || !parsedVersions.latest?.minor) {
     return ProcessName.UPGRADE;
   }
-  return ProcessName.REINSTALL;
+  if (parseInt(parsedVersions.latest.minor, 10) > parseInt(parsedVersions.current.minor, 10)) {
+    return ProcessName.REINSTALL;
+  }
+  return ProcessName.UPGRADE;
 };
 
 const ReinstallingModal = (props: Props) => {
