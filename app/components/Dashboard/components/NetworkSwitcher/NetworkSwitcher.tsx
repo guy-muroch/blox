@@ -17,10 +17,11 @@ const NetworkSwitcherWrapper = styled.div`
   font-size: 12px;
 `;
 
-const NetworkSwitcherButton = styled.div`
+const NetworkSwitcherButton = styled.div<{ isActive }>`
   cursor: pointer;
   display: inline-block;
   margin-top: 7px;
+  color: ${({ isActive }) => isActive ? blue[900] : grey['600']}
 `;
 
 const useStyles = makeStyles(() => ({
@@ -67,9 +68,15 @@ const NetworkSwitcher = () => {
     <NetworkSwitcherWrapper>
       <ClickAwayListener onClickAway={() => toggleMenuOpen(false)}>
         <MenuWrapper style={{ display: 'inline-block' }}>
-          <NetworkSwitcherButton onClick={() => toggleMenuOpen(!isMenuOpened)}>
+          <NetworkSwitcherButton
+            onClick={() => toggleMenuOpen(!isMenuOpened)}
+            isActive={isMenuOpened}
+          >
             {isTestNetHidden ? 'Mainnet Network' : 'Testnet Network'}
-            <Icon color={grey[600]} name="angle-down" fontSize="15px" className={styles.menuIcon} />
+            {isMenuOpened
+              ? <Icon color={isMenuOpened ? blue[900] : grey[600]} name="expand-more" fontSize="15px" className={styles.menuIcon} />
+              : <Icon color={isMenuOpened ? blue[900] : grey[600]} name="expand-less" fontSize="15px" className={styles.menuIcon} />
+            }
           </NetworkSwitcherButton>
           {isMenuOpened && (
             <Menu className={styles.menu}>
