@@ -17,10 +17,10 @@ import useRouting from '~app/common/hooks/useRouting';
 import { Log } from '~app/backend/common/logger/logger';
 import NotFoundPage from '~app/components/NotFoundPage';
 import GlobalStyle from '~app/common/styles/global-styles';
-import { deepLink, initApp } from '~app/components/App/service';
 import Http from '~app/backend/common/communication-manager/http';
 import BaseStore from '~app/backend/common/store-manager/base-store';
 import loginSaga from '~app/components/Login/components/CallbackPage/saga';
+import { deepLink, initApp, cleanDeepLink } from '~app/components/App/service';
 import * as loginActions from '~app/components/Login/components/CallbackPage/actions';
 import { getIsLoggedIn, getIsLoading } from '~app/components/Login/components/CallbackPage/selectors';
 
@@ -120,18 +120,18 @@ const App = (props: AppProps) => {
 
   useEffect(() => {
     if (!didInitApp) {
-      init().then(() => {
-        deepLink(
-          (obj) => {
-            if ('token_id' in obj) {
-              setSession(obj.token_id);
-              unauthorizedSubscribe();
-            }
-          },
-          loginFailure
-        );
-      });
+      init();
     }
+    cleanDeepLink();
+    deepLink(
+      (obj) => {
+        if ('token_id' in obj) {
+          setSession(obj.token_id);
+          unauthorizedSubscribe();
+        }
+      },
+      loginFailure
+    );
   }, [didInitApp, isLoggedIn, isLoading]);
 
   if (!didInitApp || isLoading) {
