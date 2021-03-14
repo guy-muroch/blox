@@ -4,60 +4,30 @@ import axios, { AxiosError } from 'axios';
 import { Catch } from '~app/backend/decorators';
 import config from '~app/backend/common/config';
 import { Log } from '~app/backend/common/logger/logger';
-import BaseStore from '~app/backend/common/store-manager/base-store';
 import Connection from '~app/backend/common/store-manager/connection';
 
 export default class Http {
+  protected notAuthRequest: boolean = false;
+  protected storePrefix: string = '';
   baseUrl?: string;
   protected instance: any;
   protected logger: Log;
   private static eventEmitter: EventEmitter;
-  private baseStore: BaseStore;
-  private static testHeaders: any;
-  private static featureSessionExpiredListenersExists: boolean;
   public static EVENTS = {
-    UNAUTHORIZED: 'http/error/unauthorized'
+    UNAUTHORIZED: 'http/error/unauthorized',
+    AUTHORIZED: 'http/authorized'
   };
-  private static STATUS = {
+  public static STATUS = {
     UNAUTHORIZED: 401
   };
 
   constructor() {
     this.logger = new Log('http');
     this.instance = axios.create();
-    this.baseStore = new BaseStore();
 
     Http.initEventEmitter();
     this.initRetryHandler();
     this.initUnauthorizedHandler();
-    this.testLoginExpired();
-  }
-
-  /**
-   * Trigger token to be expired:
-   *    window.dispatchEvent(new CustomEvent('expire-session'))
-   *
-   * Trigger token to not be expired:
-   *    window.dispatchEvent(new CustomEvent('un-expire-session'))
-   */
-  private testLoginExpired() {
-    if (!this.baseStore.get('feature:session-expired:test')) {
-      return;
-    }
-    if (Http.featureSessionExpiredListenersExists) {
-      return;
-    }
-    window.addEventListener('expire-session', () => {
-      Http.testHeaders = {
-        'Authorization': `Bearer ${Connection.db().get('authToken')}-CORRUPTED!`
-      };
-      console.warn('❌ ❌ ❌ BEARER TOKEN IS EXPIRED NOW');
-    });
-    window.addEventListener('un-expire-session', () => {
-      Http.testHeaders = {};
-      console.warn('✅ ✅ ✅ BEARER TOKEN NOW CLEANED UP');
-    });
-    Http.featureSessionExpiredListenersExists = true;
   }
 
   /**
@@ -65,10 +35,13 @@ export default class Http {
    */
   private initUnauthorizedHandler() {
     this.instance.interceptors.response.use(response => {
+      if (response.status >= 200 && response.status <= 206) {
+        Http.eventEmitter.emit(Http.EVENTS.AUTHORIZED);
+      }
       return response;
     }, error => {
       if (error.response.status === Http.STATUS.UNAUTHORIZED) {
-        return Http.eventEmitter.emit(Http.EVENTS.UNAUTHORIZED, error);
+        Http.eventEmitter.emit(Http.EVENTS.UNAUTHORIZED, error);
       }
       return error;
     });
@@ -102,17 +75,27 @@ export default class Http {
     return Http.eventEmitter;
   }
 
+  /**
+   * Before every single request which is with authorization - setup auth header
+   */
+  protected setupAuthHeader() {
+    const authToken = Connection.db(this.storePrefix).get('authToken');
+    if (!this.notAuthRequest && authToken) {
+      this.instance.defaults.headers.common.Authorization = `Bearer ${authToken}`;
+    }
+  }
+
   @Catch()
   async request(method: string, url: string, data: any = null, headers: any = null, fullResponse: boolean = false): Promise<any> {
     try {
+      this.setupAuthHeader();
       const response = await this.instance({
         url,
         method,
         data,
         headers: {
           ...this.instance.defaults.headers.common,
-          ...headers,
-          ...Http.testHeaders
+          ...headers
         }
       });
       return fullResponse ? response : response.data;

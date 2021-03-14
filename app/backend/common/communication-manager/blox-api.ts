@@ -1,10 +1,7 @@
-import Http from './http';
-import config from '../config';
-import Connection from '../store-manager/connection';
-export default class BloxApi extends Http {
-  private storePrefix: string;
-  private notAuthRequest: boolean;
+import config from '~app/backend/common/config';
+import Http from '~app/backend/common/communication-manager/http';
 
+export default class BloxApi extends Http {
   constructor(prefix: string = '', notAuthRequest = false) {
     super();
     this.storePrefix = prefix;
@@ -14,8 +11,5 @@ export default class BloxApi extends Http {
 
   init = () => {
     this.instance.defaults.baseURL = this.baseUrl;
-    if (!this.notAuthRequest) {
-      this.instance.defaults.headers.common.Authorization = `Bearer ${Connection.db(this.storePrefix).get('authToken')}`;
-    }
   };
 }
