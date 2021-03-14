@@ -6,7 +6,7 @@ import { blue, grey } from '@material-ui/core/colors';
 import { ClickAwayListener } from '@material-ui/core';
 import { Icon } from '~app/common/components';
 import config from '~app/backend/common/config';
-import BaseStore from '~app/backend/common/store-manager/base-store';
+import Connection from '~app/backend/common/store-manager/connection';
 import { Menu, MenuWrapper, MenuItem, MenuButton } from '~app/common/components/Menu';
 import useNetworkSwitcher from '~app/components/Dashboard/components/NetworkSwitcher/useNetworkSwitcher';
 
@@ -46,23 +46,22 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const testNetConfigKey = config.FLAGS.DASHBOARD.TESTNET_HIDDEN;
-const baseStore: BaseStore = new BaseStore();
+const testNetConfigKey = config.FLAGS.DASHBOARD.TESTNET_SHOW;
 
 const NetworkSwitcher = () => {
-  const isConfigHideTestNet = baseStore.get(testNetConfigKey);
-  const [isTestNetHidden, setTestNetHidden] = useState(Boolean(isConfigHideTestNet));
+  const isTestNetShowInConfig = Connection.db().get(testNetConfigKey);
+  const [isTestNetShow, setTestNetShow] = useState(Boolean(isTestNetShowInConfig));
   const [isMenuOpened, toggleMenuOpen] = useState(false);
-  const { setTestNetHiddenFlag } = useNetworkSwitcher();
+  const { setTestNetShowFlag } = useNetworkSwitcher();
   const styles = useStyles();
 
   useEffect(() => {
-    setTestNetHiddenFlag(isTestNetHidden);
-  }, [isTestNetHidden]);
+    setTestNetShowFlag(isTestNetShow);
+  }, [isTestNetShow]);
 
   const onMenuItemClick = (value: boolean) => {
     toggleMenuOpen(false);
-    setTestNetHidden(value);
+    setTestNetShow(value);
   };
 
   return (
@@ -73,7 +72,7 @@ const NetworkSwitcher = () => {
             onClick={() => toggleMenuOpen(!isMenuOpened)}
             isActive={isMenuOpened}
           >
-            {isTestNetHidden ? 'Mainnet Network' : 'Testnet Network'}
+            {!isTestNetShow ? 'Mainnet Network' : 'Testnet Network'}
             {!isMenuOpened
               ? <Icon color={isMenuOpened ? blue[600] : grey[600]} name="expand-more" fontSize="15px" className={styles.menuIcon} />
               : <Icon color={isMenuOpened ? blue[600] : grey[600]} name="expand-less" fontSize="15px" className={styles.menuIcon} />
@@ -82,12 +81,12 @@ const NetworkSwitcher = () => {
           {isMenuOpened && (
             <Menu className={styles.menu}>
               <MenuItem className={styles.menuItem}>
-                <MenuButton onClick={() => { onMenuItemClick(true); }}>
+                <MenuButton onClick={() => { onMenuItemClick(false); }}>
                   Mainnet Network
                 </MenuButton>
               </MenuItem>
               <MenuItem className={styles.menuItem}>
-                <MenuButton onClick={() => { onMenuItemClick(false); }}>
+                <MenuButton onClick={() => { onMenuItemClick(true); }}>
                   Testnet Network
                 </MenuButton>
               </MenuItem>

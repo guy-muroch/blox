@@ -25,7 +25,7 @@ const Wrapper = styled.div`
 
 const Dashboard = (props) => {
   const { walletStatus, accounts, eventLogs,
-    walletVersion, walletNeedsUpdate, bloxLiveNeedsUpdate, isTestNetHidden } = props;
+    walletVersion, walletNeedsUpdate, bloxLiveNeedsUpdate, isTestNetShow } = props;
   const showNetworkSwitcher = accountsHaveMoreThanOneNetwork(accounts);
   const [filteredAccounts, setFilteredAccounts] = React.useState(null);
   const [accountsSummary, setAccountsSummary] = React.useState(null);
@@ -39,7 +39,7 @@ const Dashboard = (props) => {
         if (!showNetworkSwitcher) {
           return true;
         }
-        if (isTestNetHidden) {
+        if (!isTestNetShow) {
           return account.network === config.env.MAINNET_NETWORK;
         }
         return account.network === config.env.PYRMONT_NETWORK;
@@ -47,7 +47,7 @@ const Dashboard = (props) => {
     } else {
       setFilteredAccounts(null);
     }
-  }, [accounts, isTestNetHidden, showNetworkSwitcher]);
+  }, [accounts, isTestNetShow, showNetworkSwitcher]);
 
   // Filtered accounts after "network switch" effect
   React.useEffect(() => {
@@ -84,9 +84,15 @@ const Dashboard = (props) => {
         showNetworkSwitcher={showNetworkSwitcher}
       />
 
-      <Validators accounts={normalizedAccounts} />
+      <Validators
+        accounts={normalizedAccounts}
+        showNetworkSwitcher={showNetworkSwitcher}
+      />
 
-      <EventLogs events={normalizedEventLogs} />
+      <EventLogs
+        events={normalizedEventLogs}
+        showNetworkSwitcher={showNetworkSwitcher}
+      />
 
       <DiscordButton />
     </Wrapper>
@@ -100,11 +106,11 @@ Dashboard.propTypes = {
   accounts: PropTypes.array,
   eventLogs: PropTypes.array,
   bloxLiveNeedsUpdate: PropTypes.bool,
-  isTestNetHidden: PropTypes.bool,
+  isTestNetShow: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => ({
-  isTestNetHidden: dashboardSelectors.getTestNetIsHiddenFlag(state)
+  isTestNetShow: dashboardSelectors.getTestNetShowFlag(state)
 });
 
 export default connect(mapStateToProps, null)(Dashboard);

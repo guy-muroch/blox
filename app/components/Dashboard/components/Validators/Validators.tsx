@@ -43,7 +43,7 @@ const Title = styled.h1`
   margin-bottom: 20px;
 `;
 
-const Validators = ({ accounts, isTestNetHidden }) => {
+const Validators = ({ accounts, isTestNetShow, showNetworkSwitcher }) => {
   const PAGE_SIZE = 10;
   const [pagedAccounts, setPagedAccounts] = React.useState([]);
   const [paginationInfo, setPaginationInfo] = React.useState(null);
@@ -56,14 +56,17 @@ const Validators = ({ accounts, isTestNetHidden }) => {
       setFilteredAccounts([]);
     } else {
       setFilteredAccounts(accounts.filter((account) => {
-        if (isTestNetHidden) {
+        if (!showNetworkSwitcher) {
+          return true;
+        }
+        if (!isTestNetShow) {
           return account.network === config.env.MAINNET_NETWORK;
         }
         return account.network === config.env.PYRMONT_NETWORK;
       }));
     }
     setPaginationInfo(null);
-  }, [accounts, isTestNetHidden]);
+  }, [accounts, isTestNetShow, showNetworkSwitcher]);
 
   const onPageClick = (offset) => {
     handlePageClick(filteredAccounts, offset, setPagedAccounts, setPaginationInfo, PAGE_SIZE);
@@ -115,11 +118,12 @@ const Validators = ({ accounts, isTestNetHidden }) => {
 
 Validators.propTypes = {
   accounts: PropTypes.array,
-  isTestNetHidden: PropTypes.bool
+  isTestNetShow: PropTypes.bool,
+  showNetworkSwitcher: PropTypes.bool
 };
 
 const mapStateToProps = (state) => ({
-  isTestNetHidden: dashboardSelectors.getTestNetIsHiddenFlag(state)
+  isTestNetShow: dashboardSelectors.getTestNetShowFlag(state)
 });
 
 export default connect(mapStateToProps, null)(Validators);

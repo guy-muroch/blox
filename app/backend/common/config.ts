@@ -65,7 +65,7 @@ export default class Config {
       },
       FLAGS: {
         DASHBOARD: {
-          TESTNET_HIDDEN: 'dashboard:testNet:isHidden',
+          TESTNET_SHOW: 'dashboard:testNet:show',
         },
         FEATURES: {
           IMPORT_NETWORK: 'feature:import:network'

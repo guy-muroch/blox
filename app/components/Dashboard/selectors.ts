@@ -8,4 +8,4 @@ export const getModalOnSuccess = (state) => state.dashboard.dialog.onSuccess;
 
 export const getModalData = (state) => state.dashboard.dialog;
 
-export const getTestNetIsHiddenFlag = (state) => state.dashboard.testNet?.isHidden;
+export const getTestNetShowFlag = (state) => state.dashboard.testNet?.show;

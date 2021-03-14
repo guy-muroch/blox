@@ -3,7 +3,7 @@ import * as actionTypes from '~app/components/Dashboard/actionTypes';
 
 const initialState = {
   testNet: {
-    isHidden: false
+    show: false
   },
   dialog: {
     // Usual modal dialog attributes
@@ -41,7 +41,7 @@ const dashboardReducer = (state = initialState, action: Action) => produce(state
       draft.dialog = initialState.dialog;
       break;
     case actionTypes.SET_TESTNET_FLAG:
-      draft.testNet.isHidden = action.payload.testNet?.isHidden || initialState.testNet.isHidden;
+      draft.testNet.show = action.payload.testNet?.show || initialState.testNet.show;
       break;
   }
 });

@@ -22,7 +22,7 @@ const Title = styled.h1`
   margin-bottom: 20px;
 `;
 
-const EventLogs = ({ events, isTestNetHidden }) => {
+const EventLogs = ({ events, isTestNetShow, showNetworkSwitcher }) => {
   const PAGE_SIZE = 10;
   const [pagedEvents, setPagedEvents] = React.useState([]);
   const [paginationInfo, setPaginationInfo] = React.useState(null);
@@ -36,14 +36,17 @@ const EventLogs = ({ events, isTestNetHidden }) => {
         if (!event.network) {
           return true;
         }
-        if (isTestNetHidden) {
+        if (!showNetworkSwitcher) {
+          return true;
+        }
+        if (!isTestNetShow) {
           return event.network === config.env.MAINNET_NETWORK;
         }
         return event.network === config.env.PYRMONT_NETWORK;
       }));
     }
     setPaginationInfo(null);
-  }, [events, isTestNetHidden]);
+  }, [events, isTestNetShow, showNetworkSwitcher]);
 
   const onPageClick = (offset) => {
     handlePageClick(filteredEvents, offset, setPagedEvents, setPaginationInfo, PAGE_SIZE);
@@ -75,11 +78,12 @@ const EventLogs = ({ events, isTestNetHidden }) => {
 
 EventLogs.propTypes = {
   events: PropTypes.array,
-  isTestNetHidden: PropTypes.bool
+  isTestNetShow: PropTypes.bool,
+  showNetworkSwitcher: PropTypes.bool
 };
 
 const mapStateToProps = (state) => ({
-  isTestNetHidden: dashboardSelectors.getTestNetIsHiddenFlag(state)
+  isTestNetShow: dashboardSelectors.getTestNetShowFlag(state)
 });
 
 export default connect(mapStateToProps, null)(EventLogs);

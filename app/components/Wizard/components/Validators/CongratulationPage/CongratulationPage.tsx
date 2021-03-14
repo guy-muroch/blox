@@ -22,7 +22,7 @@ const CongratulationPage = (props: Props) => {
   const { clearAccountsData } = accountsActions;
   const { setFinishedWizard, setOpenedWizard, clearWizardData } = wizardActions;
   const { loadDashboardData } = useDashboardData();
-  const { setTestNetHiddenFlag } = useNetworkSwitcher();
+  const { setTestNetShowFlag } = useNetworkSwitcher();
   const { goToPage, ROUTES } = useRouting();
 
   const onClick = async () => {
@@ -35,7 +35,7 @@ const CongratulationPage = (props: Props) => {
   };
 
   useEffect(() => {
-    setTestNetHiddenFlag(getNetworkForImport() !== config.env.PYRMONT_NETWORK);
+    setTestNetShowFlag(getNetworkForImport() === config.env.PYRMONT_NETWORK);
   });
 
   return (

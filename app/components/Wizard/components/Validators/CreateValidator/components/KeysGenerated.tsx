@@ -37,7 +37,7 @@ const KeysGenerated = (props: Props) => {
   const { onClick, validatorData, wizardActions, depositData } = props;
   const { setFinishedWizard, clearWizardData } = wizardActions;
   const { loadDashboardData } = useDashboardData();
-  const { setTestNetHiddenFlag } = useNetworkSwitcher();
+  const { setTestNetShowFlag } = useNetworkSwitcher();
   const { goToPage, ROUTES } = useRouting();
 
   const onGoToDashboardClick = async () => {
@@ -48,7 +48,7 @@ const KeysGenerated = (props: Props) => {
   };
 
   useEffect(() => {
-    setTestNetHiddenFlag(validatorData.network !== config.env.PYRMONT_NETWORK);
+    setTestNetShowFlag(validatorData.network === config.env.PYRMONT_NETWORK);
   });
 
   return (
