@@ -1,6 +1,6 @@
-import Store from './store';
-import { Log } from '../logger/logger';
-import { Catch, Step } from '../../decorators';
+import { Catch, Step } from '~app/backend/decorators';
+import { Log } from '~app/backend/common/logger/logger';
+import Store from '~app/backend/common/store-manager/store';
 
 const instances = {};
 
@@ -11,6 +11,14 @@ export default class Connection {
     Connection.userId = payload.currentUserId;
     const name = `${payload.currentUserId}${payload.prefix || ''}`;
     instances[name] = new Store(payload.prefix);
+    Connection.init(payload);
+  }
+
+  /**
+   * Re-initialize with new auth token and user id without re-creating store
+   */
+  static init(payload: { currentUserId: string, authToken: string, prefix?: string }) {
+    const name = `${payload.currentUserId}${payload.prefix || ''}`;
     instances[name].init(payload.currentUserId, payload.authToken);
   }
 

@@ -112,7 +112,8 @@ export default class Auth {
 
   private setupConnection(authResult: Auth0ResponseData, userProfile: Profile) {
     // Regular setup
-    Connection.setup({ currentUserId: userProfile.sub, authToken: authResult.id_token });
+    const payload = { currentUserId: userProfile.sub, authToken: authResult.id_token };
+    Connection.setup(payload);
 
     // Test functionality
     const featureSessionExpiredSeconds = this.baseStore.get('feature:session-expired:test');
@@ -132,10 +133,10 @@ export default class Auth {
 
     setTimeout(() => {
       console.warn(`🚩🚩🚩️ After ${featureSessionExpiredSeconds} seconds delay now reinitializing "store-manager/connection"`);
-      const authToken = `${authResult.id_token}-EXPIRED`;
+      payload.authToken = `${authResult.id_token}-EXPIRED`;
       console.warn('🚩🚩🚩️ New token will be saved in store:');
-      console.warn(authToken);
-      Connection.setup({ currentUserId: userProfile.sub, authToken });
+      console.warn(payload.authToken);
+      Connection.init(payload);
     }, seconds * 1000);
   }
 

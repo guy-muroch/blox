@@ -6,8 +6,9 @@ import { PROCESS_SUBSCRIBE } from './actionTypes';
 import { Log } from '../../backend/common/logger/logger';
 import { processInstantiator, Listener } from './service';
 
+const logger = new Log('startProcess');
+
 function* startProcess(action) {
-  const logger = new Log();
   const { payload } = action;
   const { name, params } = payload;
   const network = params?.network ?? (yield select(getNetwork));
