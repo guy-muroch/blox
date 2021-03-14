@@ -79,9 +79,11 @@ export default class Http {
    * Before every single request which is with authorization - setup auth header
    */
   protected setupAuthHeader() {
-    const authToken = Connection.db(this.storePrefix).get('authToken');
-    if (!this.notAuthRequest && authToken) {
-      this.instance.defaults.headers.common.Authorization = `Bearer ${authToken}`;
+    if (!this.notAuthRequest) {
+      const authToken = Connection.db(this.storePrefix).get('authToken');
+      if (authToken) {
+        this.instance.defaults.headers.common.Authorization = `Bearer ${authToken}`;
+      }
     }
   }
 
