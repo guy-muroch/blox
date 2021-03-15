@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
+import Auth from '~app/components/Auth/Auth';
 import { SOCIAL_APPS } from '~app/common/constants';
 import { useInjectSaga } from '~app/utils/injectSaga';
 import { openExternalLink } from '~app/components/common/service';
@@ -142,6 +143,14 @@ const AlreadyHaveLink = styled.a`
 const Right = ({ actions }: Props) => {
   useInjectSaga({ key, saga, mode: '' });
   const [isSignUp, toggleSignUp] = useState(1);
+
+  const onLoginClick = (lowerCaseLabel: string) => {
+    Auth.events.emit(Auth.AUTH_EVENTS.LOGIN_BUTTON_CLICKED);
+    setTimeout(() => {
+      actions.login(lowerCaseLabel);
+    }, 250);
+  };
+
   return (
     <Wrapper>
       <InnerWrapper>
@@ -156,7 +165,7 @@ const Right = ({ actions }: Props) => {
               <SocialAppButton
                 key={index}
                 type="button"
-                onClick={() => actions.login(lowerCaseLabel)}
+                onClick={() => onLoginClick(lowerCaseLabel)}
               >
                 <SocialButtonIcon src={currentIcon.default} />
                 <SocialButtonText>

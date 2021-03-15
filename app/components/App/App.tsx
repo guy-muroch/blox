@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { version } from '~app/package.json';
+import Auth from '~app/components/Auth/Auth';
 import analytics from '~app/backend/analytics';
 import LoggedIn from '~app/components/LoggedIn';
 import { Loader } from '~app/common/components';
@@ -17,7 +18,6 @@ import useRouting from '~app/common/hooks/useRouting';
 import { Log } from '~app/backend/common/logger/logger';
 import NotFoundPage from '~app/components/NotFoundPage';
 import GlobalStyle from '~app/common/styles/global-styles';
-import Http from '~app/backend/common/communication-manager/http';
 import BaseStore from '~app/backend/common/store-manager/base-store';
 import loginSaga from '~app/components/Login/components/CallbackPage/saga';
 import { deepLink, initApp, cleanDeepLink } from '~app/components/App/service';
@@ -27,8 +27,7 @@ import { getIsLoggedIn, getIsLoading } from '~app/components/Login/components/Ca
 const loginKey = 'login';
 const userKey = 'user';
 const baseStore: BaseStore = new BaseStore();
-const logger: Log = new Log();
-const http: Http = new Http();
+const logger: Log = new Log('App');
 const logoutNotification = {
   key: ''
 };
@@ -69,7 +68,19 @@ const App = (props: AppProps) => {
   const { isLoggedIn, isLoading, actions } = props;
   const { setSession, loginFailure } = actions;
 
-  const unauthorizedListener = () => {
+  const onLoginButtonClickedListener = () => {
+    if (logoutNotification.key) {
+      notification.close(logoutNotification.key);
+      logoutNotification.key = '';
+    }
+  };
+
+  const onLoginButtonClickedSubscribe = () => {
+    Auth.events.removeListener(Auth.AUTH_EVENTS.LOGIN_BUTTON_CLICKED, onLoginButtonClickedListener);
+    Auth.events.on(Auth.AUTH_EVENTS.LOGIN_BUTTON_CLICKED, onLoginButtonClickedListener);
+  };
+
+  const sessionExpiredListener = () => {
     actions.logout();
     if (!logoutNotification.key) {
       logoutNotification.key = 'logged-out';
@@ -113,9 +124,9 @@ const App = (props: AppProps) => {
     await initApp();
   };
 
-  const unauthorizedSubscribe = () => {
-    http.events.removeListener(Http.EVENTS.UNAUTHORIZED, unauthorizedListener);
-    http.events.once(Http.EVENTS.UNAUTHORIZED, unauthorizedListener);
+  const sessionExpiredSubscribe = () => {
+    Auth.events.removeListener(Auth.AUTH_EVENTS.SESSION_EXPIRED, sessionExpiredListener);
+    Auth.events.once(Auth.AUTH_EVENTS.SESSION_EXPIRED, sessionExpiredListener);
   };
 
   useEffect(() => {
@@ -127,11 +138,12 @@ const App = (props: AppProps) => {
       (obj) => {
         if ('token_id' in obj) {
           setSession(obj.token_id);
-          unauthorizedSubscribe();
+          sessionExpiredSubscribe();
         }
       },
       loginFailure
     );
+    onLoginButtonClickedSubscribe();
   }, [didInitApp, isLoggedIn, isLoading]);
 
   if (!didInitApp || isLoading) {

@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { ClickAwayListener } from '@material-ui/core';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import Auth from '~app/components/Auth/Auth';
 import useRouting from '~app/common/hooks/useRouting';
 import HeaderLink from '~app/components/common/Header/HeaderLink';
-import Http from '~app/backend/common/communication-manager/http';
 import { ProfileMenu } from '~app/components/common/Header/components';
 import { getWizardFinishedStatus } from '~app/components/Wizard/selectors';
 import { logout } from '~app/components/Login/components/CallbackPage/actions';
@@ -74,8 +74,6 @@ const AddValidatorButton = styled.button`
   }
 `;
 
-const http: Http = new Http();
-
 const Header = (props: Props) => {
   const { withMenu, profile, logoutUser, hideProfileMenu } = props;
   const [isProfileMenuOpen, toggleProfileMenuOpenDisplay] = useState(false);
@@ -88,7 +86,7 @@ const Header = (props: Props) => {
   };
 
   const onLogoutUserClick = () => {
-    http.events.removeAllListeners(Http.EVENTS.UNAUTHORIZED);
+    Auth.events.removeAllListeners(Auth.AUTH_EVENTS.SESSION_EXPIRED);
     logoutUser();
   };
 

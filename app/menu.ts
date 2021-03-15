@@ -170,7 +170,7 @@ export default class MenuBuilder {
         {
           label: 'Community Discussions',
           click() {
-            shell.openExternal('https://discord.gg/VgHDdAP');
+            shell.openExternal('http://bit.ly/30HwvsC');
           },
         },
         {

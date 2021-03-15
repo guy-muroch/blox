@@ -13,7 +13,7 @@ export const loadEventLogsFailure = (error: Record<string, any>) => ({
   payload: !_.isEmpty(error) ? { ...error } : null
 });
 
-export const showActiveValidatorsPopup = (activeValidators: []) => ({
+export const showActiveValidatorsPopup = (activeValidators: Record<string, any>[] | []) => ({
   type: actionTypes.SHOW_ACTIVE_VALIDATORS_POP_UP,
   payload: activeValidators,
 });

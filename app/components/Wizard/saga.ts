@@ -20,18 +20,22 @@ function* onLoadWalletSuccess(response) {
   }
 }
 
-function* onLoadWalletFailure(error) {
-  yield put(actions.loadWalletFailure(error));
-  notification.error({message: 'Error', description: error.message});
+function* onLoadWalletFailure(error, silent?: boolean) {
+  if (!silent) {
+    yield put(actions.loadWalletFailure(error));
+    notification.error({message: 'Error', description: error.message});
+  }
 }
 
 function* onLoadDepositDataSuccess(depositData) {
   yield put(actions.loadDepositDataSuccess(depositData));
 }
 
-function* onLoadDepositDataFailure(error) {
+function* onLoadDepositDataFailure(error, silent?: boolean) {
   yield put(actions.loadDepositDataFailure(error));
-  notification.error({message: 'Error', description: error.message});
+  if (!silent) {
+    notification.error({message: 'Error', description: error.message});
+  }
 }
 
 function* loadWallet() {
@@ -40,7 +44,7 @@ function* loadWallet() {
     const response = yield call([walletService, 'get']);
     yield call(onLoadWalletSuccess, response);
   } catch (error) {
-    yield error && call(onLoadWalletFailure, error);
+    yield error && call(onLoadWalletFailure, error, !error.response?.data);
   }
 }
 
@@ -52,7 +56,7 @@ function* loadDepositData(action) {
     const response = yield call([accountService, 'getDepositData'], publicKey, accountIndex, network);
     yield call(onLoadDepositDataSuccess, response);
   } catch (error) {
-    yield error && call(onLoadDepositDataFailure, error);
+    yield error && call(onLoadDepositDataFailure, error, !error.response?.data);
   }
 }
 

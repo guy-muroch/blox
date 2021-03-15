@@ -20,7 +20,7 @@ export function* startLoadingEventLogs() {
   }
 }
 
-function* onLoadingEventLogsSuccess(response: Record<string, any>) {
+function* onLoadingEventLogsSuccess(response: Record<string, any>[] | []) {
   const activeValidators = normalizedActiveValidators(response);
   if (activeValidators.length > 0) {
     activeValidators.forEach(({ network }) => {
@@ -34,7 +34,7 @@ function* onLoadingEventLogsSuccess(response: Record<string, any>) {
   yield put(actions.loadEventLogsSuccess(response));
 }
 
-function* onLoadingEventLogsFailure(error: Record<string, any>, silent: boolean = false) {
+function* onLoadingEventLogsFailure(error: Record<string, any>, silent?: boolean) {
   if (!silent) {
     notification.error({message: 'Error', description: error.message});
   }

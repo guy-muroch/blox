@@ -16,7 +16,7 @@ function* onLoadingSuccess(response: Record<string, any>) {
   yield put(actions.loadAccountsSuccess(response));
 }
 
-function* onLoadingFailure(error: Record<string, any>, silent: boolean = false) {
+function* onLoadingFailure(error: Record<string, any>, silent?: boolean) {
   if (!silent) {
     notification.error({message: 'Error', description: error.message});
   }
