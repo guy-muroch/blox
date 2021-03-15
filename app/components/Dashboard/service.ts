@@ -77,7 +77,7 @@ const fixNumOfDigits = (summary) => {
   for (const [key, value] of Object.entries(summary)) {
     if (Number.isNaN(value)) { return null; }
     // @ts-ignore
-    newObject[key] = value.toFixed(2);
+    newObject[key] = value.toFixed(10);
   }
   return newObject;
 };
