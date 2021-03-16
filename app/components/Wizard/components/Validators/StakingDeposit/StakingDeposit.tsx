@@ -72,7 +72,7 @@ const StakingDeposit = (props: Props) => {
   } = props;
   const {updateAccountStatus, loadDepositData, setFinishedWizard, clearWizardData} = actions;
   const [showMoveToBrowserModal, setShowMoveToBrowserModal] = React.useState(false);
-  const { loadDashboardData } = useDashboardData();
+  const { loadDataAfterNewAccount } = useDashboardData();
   const { goToPage, ROUTES } = useRouting();
 
   useEffect(() => {
@@ -108,8 +108,10 @@ const StakingDeposit = (props: Props) => {
     await callClearAccountsData();
     await clearWizardData();
     await setFinishedWizard(true);
-    await loadDashboardData();
-    goToPage(ROUTES.DASHBOARD);
+    // Reload accounts and event logs before reaching dash
+    await loadDataAfterNewAccount().then(() => {
+      goToPage(ROUTES.DASHBOARD);
+    });
   };
 
   const openDepositBrowser = async (moveToBrowser) => {
