@@ -43,6 +43,7 @@ jobs:
         uses: fluffy-bunny/action-filequery@v0.2dev
         with:
           fileExtensions: "[\".exe\",\".msi\"]"
+          recursive: false
           folder: release-win
           outputFile: 'release-win/files-to-sign.txt'
 
