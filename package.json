@@ -103,7 +103,7 @@
     },
     "directories": {
       "buildResources": "resources",
-      "output": "release"
+      "output": "release-${os}"
     },
     "publish": {
       "provider": "github",
