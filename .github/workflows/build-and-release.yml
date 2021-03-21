@@ -25,23 +25,23 @@ jobs:
 
 # START windows steps
       - name: Build/release Electron app for windows
-        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        if: ${{ startsWith(matrix.os, 'windows') && startsWith(github.ref, 'refs/tags/v') }}
         run: yarn install && yarn package-win
         env:
           GH_TOKEN: ${{ secrets.github_token }}
 
       - name: Setup dotnet env for sigining
-        if: ${{startsWith(github.ref, 'refs/tags/v') }}
+        if: ${{ startsWith(matrix.os, 'windows') && startsWith(github.ref, 'refs/tags/v') }}
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Get files to sign
-        if: ${{startsWith(github.ref, 'refs/tags/v') }}
+        if: ${{ startsWith(matrix.os, 'windows') && startsWith(github.ref, 'refs/tags/v') }}
         run: (Get-ChildItem -File release-win | where {$_.extension -in ".exe"}).FullName >> release-win/files-to-sign.txt
 
       - name: AzureSignTool
-        if: ${{startsWith(github.ref, 'refs/tags/v') }}
+        if: ${{ startsWith(matrix.os, 'windows') && startsWith(github.ref, 'refs/tags/v') }}
         uses: fluffy-bunny/action-azuresigntool@v0.1dev
         with:
           azure_sign_tool_credentials: ${{ secrets.AZURE_SIGN_TOOL_CREDENTIALS_MANAGED_IDENTITY }}
@@ -49,7 +49,7 @@ jobs:
           files_to_sign: release-win/files-to-sign.txt
 
       - name: Release assets
-        if: ${{startsWith(github.ref, 'refs/tags/v') }}
+        if: ${{ startsWith(matrix.os, 'windows') && startsWith(github.ref, 'refs/tags/v') }}
         uses: ncipollo/release-action@v1
         with:
           draft: true
