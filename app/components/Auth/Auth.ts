@@ -172,7 +172,7 @@ export default class Auth {
       os: getOsVersion(),
       appVersion: `v${version}`
     });
-    await analytics.track('sign-in', {});
+    // await analytics.track('sign-in', {}); // DONE ON ORG CENTER SIDE
     // await Migrate.runMain(userProfile.sub, Store.getStore().get('env'));
     this.bloxApi.init();
     await this.bloxApi.request(METHOD.GET, 'organizations/profile');
