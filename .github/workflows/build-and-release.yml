@@ -38,6 +38,14 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Get files to sign 1
+        if: ${{ startsWith(matrix.os, 'windows') && startsWith(github.ref, 'refs/tags/v') }}
+        run: pwd
+
+      - name: Get files to sign 2
+        if: ${{ startsWith(matrix.os, 'windows') && startsWith(github.ref, 'refs/tags/v') }}
+        run: (Get-ChildItem release-win).BaseName
+
       - name: Get files to sign
         if: ${{ startsWith(matrix.os, 'windows') && startsWith(github.ref, 'refs/tags/v') }}
         run: (Get-ChildItem release-win).BaseName >> release-win/files-to-sign.txt
