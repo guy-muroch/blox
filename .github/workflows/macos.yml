@@ -32,7 +32,7 @@ jobs:
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building
           # release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-          release: 'true'
+          release: 'false'
 
           max_attempts: '2'
           mac_certs: ${{ secrets.mac_certs }}
@@ -41,3 +41,12 @@ jobs:
           # macOS notarization API key
           API_KEY_ID: ${{ secrets.api_key_id }}
           API_KEY_ISSUER_ID: ${{ secrets.api_key_issuer_id }}
+
+      - name: Release assets
+        if: ${{startsWith(github.ref, 'refs/tags/v') }}
+        uses: ncipollo/release-action@v1
+        with:
+          draft: true
+          allowUpdates: true
+          artifacts: "release-mac/*.dmg"
+          token: ${{ secrets.GITHUB_TOKEN }}
