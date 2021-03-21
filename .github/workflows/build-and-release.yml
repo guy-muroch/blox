@@ -44,11 +44,15 @@ jobs:
 
       - name: Get files to sign 2
         if: ${{ startsWith(matrix.os, 'windows') && startsWith(github.ref, 'refs/tags/v') }}
-        run: (Get-ChildItem release-win).BaseName
+        run: (Get-ChildItem -File release-win).BaseName
 
       - name: Get files to sign
         if: ${{ startsWith(matrix.os, 'windows') && startsWith(github.ref, 'refs/tags/v') }}
-        run: (Get-ChildItem release-win).BaseName >> release-win/files-to-sign.txt
+        run: (Get-ChildItem -File release-win).BaseName >> release-win/files-to-sign.txt
+
+      - name: Get files to sign 3
+        if: ${{ startsWith(matrix.os, 'windows') && startsWith(github.ref, 'refs/tags/v') }}
+        run: cat release-win/files-to-sign.txt
 
       - name: AzureSignTool
         if: ${{ startsWith(matrix.os, 'windows') && startsWith(github.ref, 'refs/tags/v') }}
