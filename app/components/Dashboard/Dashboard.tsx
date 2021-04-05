@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import config from '~app/backend/common/config';
 import { Loader, DiscordButton } from '~app/common/components';
 import EventLogs from '~app/components/Dashboard/components/EventLogs';
+import MyImages from '~app/components/Dashboard/components/MyImages';
 import * as dashboardSelectors from '~app/components/Dashboard/selectors';
 import { Wallet, Validators } from '~app/components/Dashboard/components';
 import {
@@ -83,6 +84,7 @@ const Dashboard = (props) => {
 
   return (
     <Wrapper>
+      <MyImages />
       <Wallet
         isActive={walletStatus === 'active'}
         version={walletVersion}
